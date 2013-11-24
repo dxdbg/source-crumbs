@@ -1,4 +1,4 @@
-package net.sourcecrumbs.api;
+package net.sourcecrumbs.api.transunit;
 
 import java.nio.file.Path;
 
@@ -23,4 +23,9 @@ public interface TranslationUnit
      * @return the directory in which the source file was compiled
      */
     Path getCompilationDirectory();
+
+    /**
+     * @return the complete path for the source file
+     */
+    Path getPath();
 }

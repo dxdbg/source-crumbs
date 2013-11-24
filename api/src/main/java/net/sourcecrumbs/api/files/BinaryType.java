@@ -1,4 +1,4 @@
-package net.sourcecrumbs.api;
+package net.sourcecrumbs.api.files;
 
 /**
  * An enumeration for all binary types

@@ -1,6 +1,4 @@
-package net.sourcecrumbs.api;
-
-import java.util.List;
+package net.sourcecrumbs.api.transunit;
 
 /**
  * Represents a container for TranslationUnits
@@ -12,5 +10,5 @@ public interface TranslationUnitContainer
     /**
      * @return the translation units in this container
      */
-    List<TranslationUnit> getTranslationUnits();
+    Iterable<TranslationUnit> getTranslationUnits();
 }

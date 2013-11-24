@@ -1,4 +1,4 @@
-package net.sourcecrumbs.api;
+package net.sourcecrumbs.api.symbols;
 
 import com.google.common.primitives.UnsignedLong;
 

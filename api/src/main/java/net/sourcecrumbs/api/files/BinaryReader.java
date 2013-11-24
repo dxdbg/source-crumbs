@@ -1,4 +1,4 @@
-package net.sourcecrumbs.api;
+package net.sourcecrumbs.api.files;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -1,4 +1,4 @@
-package net.sourcecrumbs.api;
+package net.sourcecrumbs.api.files;
 
 /**
  * Thrown when a binary file is opened and its format is unknown or unsupported.
