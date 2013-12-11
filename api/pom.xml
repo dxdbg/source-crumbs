@@ -40,11 +40,4 @@ POSSIBILITY OF SUCH DAMAGE.
     <packaging>jar</packaging>
     <name>Source Crumbs API</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0</version>
-        </dependency>
-    </dependencies>
 </project>

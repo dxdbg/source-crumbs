@@ -1,7 +1,5 @@
 package net.sourcecrumbs.api.symbols;
 
-import com.google.common.primitives.UnsignedLong;
-
 /**
  * A Symbol is a label for a memory address.
  *
@@ -11,5 +9,5 @@ public interface Symbol
 {
     String getName();
 
-    UnsignedLong getAddress();
+    long getAddress();
 }
