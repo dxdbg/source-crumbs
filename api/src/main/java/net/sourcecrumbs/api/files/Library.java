@@ -1,15 +1,11 @@
 package net.sourcecrumbs.api.files;
 
-import net.sourcecrumbs.api.machinecode.MachineCodeSource;
-import net.sourcecrumbs.api.symbols.SymbolContainer;
-import net.sourcecrumbs.api.transunit.TranslationUnitContainer;
-
 /**
  * Represents a native library
  *
  * @author mcnulty
  */
-public abstract class Library implements SymbolContainer, TranslationUnitContainer, Binary, MachineCodeSource
+public abstract class Library implements Binary
 {
     @Override
     public BinaryType getBinaryType() {

@@ -26,37 +26,35 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
-
-import java.util.List;
+package net.sourcecrumbs.api.machinecode;
 
 import net.sourcecrumbs.api.Range;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.machinecode.SourceLine;
-import net.sourcecrumbs.api.machinecode.SourceLineRange;
+import net.sourcecrumbs.api.transunit.TranslationUnit;
 
 /**
+ * Bean describing a source code line range in a translation unit
+ *
  * @author mcnulty
  */
-public class DwarfMachineCodeMapping implements MachineCodeMapping {
+public class SourceLineRange {
 
-    @Override
-    public List<Range<Long>> getMachineCodeRanges(SourceLine sourceLine) {
-        return null;
+    private TranslationUnit translationUnit;
+
+    private Range<Long> lineRange;
+
+    public TranslationUnit getTranslationUnit() {
+        return translationUnit;
     }
 
-    @Override
-    public List<SourceLineRange> getSourceLinesRanges(long machineCodeAddress) {
-        return null;
+    public void setTranslationUnit(TranslationUnit translationUnit) {
+        this.translationUnit = translationUnit;
     }
 
-    @Override
-    public long getNextStatementAddress(SourceLine sourceLine, boolean descend) {
-        return 0;
+    public Range<Long> getLineRange() {
+        return lineRange;
     }
 
-    @Override
-    public long getNextStatementAddress(long address, boolean descend) {
-        return 0;
+    public void setLineRange(Range<Long> lineRange) {
+        this.lineRange = lineRange;
     }
 }

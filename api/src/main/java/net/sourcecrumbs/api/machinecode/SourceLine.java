@@ -26,37 +26,39 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
+package net.sourcecrumbs.api.machinecode;
 
-import java.util.List;
-
-import net.sourcecrumbs.api.Range;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.machinecode.SourceLine;
-import net.sourcecrumbs.api.machinecode.SourceLineRange;
+import net.sourcecrumbs.api.transunit.NoSuchLineException;
+import net.sourcecrumbs.api.transunit.TranslationUnit;
 
 /**
+ * Represents a source code line in a source file
+ *
  * @author mcnulty
  */
-public class DwarfMachineCodeMapping implements MachineCodeMapping {
+public class SourceLine {
 
-    @Override
-    public List<Range<Long>> getMachineCodeRanges(SourceLine sourceLine) {
-        return null;
+    private TranslationUnit translationUnit;
+
+    private long line;
+
+    public TranslationUnit getTranslationUnit() {
+        return translationUnit;
     }
 
-    @Override
-    public List<SourceLineRange> getSourceLinesRanges(long machineCodeAddress) {
-        return null;
+    public void setTranslationUnit(TranslationUnit translationUnit) {
+        this.translationUnit = translationUnit;
     }
 
-    @Override
-    public long getNextStatementAddress(SourceLine sourceLine, boolean descend) {
-        return 0;
+    public long getLine() {
+        return line;
     }
 
-    @Override
-    public long getNextStatementAddress(long address, boolean descend) {
-        return 0;
+    public void setLine(long line) {
+        this.line = line;
+    }
+
+    public String getLineText() throws NoSuchLineException {
+        return translationUnit.getSourceLineText(line);
     }
 }

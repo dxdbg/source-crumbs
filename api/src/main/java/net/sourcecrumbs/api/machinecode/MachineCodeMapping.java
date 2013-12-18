@@ -31,6 +31,7 @@ package net.sourcecrumbs.api.machinecode;
 import java.util.List;
 
 import net.sourcecrumbs.api.Range;
+import net.sourcecrumbs.api.transunit.TranslationUnit;
 
 /**
  * A container for mapping source lines to machine code and vice versa
@@ -46,14 +47,34 @@ public interface MachineCodeMapping {
      *
      * @return the machine code address ranges
      */
-    List<Range<Long>> getMachineCodeRanges(long sourceLine);
+    List<Range<Long>> getMachineCodeRanges(SourceLine sourceLine);
 
     /**
-     * Obtains the source line ranges that are associated with the specified machine code address
+     * Obtains the source lines ranges that are associated with the specified machine code address
      *
      * @param machineCodeAddress the machine code address
      *
-     * @return the source line ranges
+     * @return the source lines
      */
-    List<Range<Long>> getSourceLineRanges(long machineCodeAddress);
+    List<SourceLineRange> getSourceLinesRanges(long machineCodeAddress);
+
+    /**
+     * Gets the machine code address of the next statement following the given source line
+     *
+     * @param sourceLine the source line
+     * @param descend true, if the next statement calculation should descend into function/method calls
+     *
+     * @return the machine code address or 0 if no address could be determined
+     */
+    long getNextStatementAddress(SourceLine sourceLine, boolean descend);
+
+    /**
+     * Gets the machine code address of the next statement following the given machine code address
+     *
+     * @param address the machine code address
+     * @param descend true, if the next statement calculation should descend into function/method calls
+     *
+     * @return the machine code address or 0 if no address could be determined
+     */
+    long getNextStatementAddress(long address, boolean descend);
 }

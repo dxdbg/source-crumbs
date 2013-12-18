@@ -33,6 +33,10 @@ import java.nio.file.Path;
 
 import net.sourcecrumbs.api.files.Binary;
 import net.sourcecrumbs.api.files.BinaryReader;
+import net.sourcecrumbs.api.files.CoreFile;
+import net.sourcecrumbs.api.files.Executable;
+import net.sourcecrumbs.api.files.Library;
+import net.sourcecrumbs.api.files.ObjectFile;
 import net.sourcecrumbs.api.files.UnknownFormatException;
 
 /**
@@ -44,6 +48,26 @@ public class ElfReader implements BinaryReader {
 
     @Override
     public Binary open(Path path) throws IOException, UnknownFormatException {
+        return null;
+    }
+
+    @Override
+    public Executable openExecutable(Path path) throws IOException, UnknownFormatException {
+        return null;
+    }
+
+    @Override
+    public CoreFile openCoreFile(Path path) throws IOException, UnknownFormatException {
+        return null;
+    }
+
+    @Override
+    public Library openLibrary(Path path) throws IOException, UnknownFormatException {
+        return null;
+    }
+
+    @Override
+    public ObjectFile openObjectFile(Path path) throws IOException, UnknownFormatException {
         return null;
     }
 }

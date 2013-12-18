@@ -53,6 +53,10 @@ public class Range<T extends Number> {
     }
 
     public boolean isSingleValue() {
-        return start == end;
+        return start.equals(end);
+    }
+
+    public int getIntLength() {
+        return end.intValue() - start.intValue();
     }
 }

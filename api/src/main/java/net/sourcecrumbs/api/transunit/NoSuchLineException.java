@@ -26,37 +26,25 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
-
-import java.util.List;
-
-import net.sourcecrumbs.api.Range;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.machinecode.SourceLine;
-import net.sourcecrumbs.api.machinecode.SourceLineRange;
+package net.sourcecrumbs.api.transunit;
 
 /**
+ * Thrown when no information can be determined about a line
+ *
  * @author mcnulty
  */
-public class DwarfMachineCodeMapping implements MachineCodeMapping {
+public class NoSuchLineException extends Exception {
 
-    @Override
-    public List<Range<Long>> getMachineCodeRanges(SourceLine sourceLine) {
-        return null;
+    private static final long serialVersionUID = -8680763958548676813L;
+
+    public NoSuchLineException() {
     }
 
-    @Override
-    public List<SourceLineRange> getSourceLinesRanges(long machineCodeAddress) {
-        return null;
+    public NoSuchLineException(String message) {
+        super(message);
     }
 
-    @Override
-    public long getNextStatementAddress(SourceLine sourceLine, boolean descend) {
-        return 0;
-    }
-
-    @Override
-    public long getNextStatementAddress(long address, boolean descend) {
-        return 0;
+    public NoSuchLineException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

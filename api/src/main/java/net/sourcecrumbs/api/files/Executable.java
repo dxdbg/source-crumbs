@@ -11,7 +11,7 @@ import net.sourcecrumbs.api.transunit.TranslationUnitContainer;
  *
  * @author mcnulty
  */
-public abstract class Executable implements SymbolContainer, TranslationUnitContainer, Binary, MachineCodeSource
+public abstract class Executable implements Binary
 {
     public abstract List<Library> getLibraries();
 
