@@ -28,50 +28,14 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
-import java.util.List;
-
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
 import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 
 /**
- * High-level abstraction of an ELF executable
+ * Top-level interface for all high-level ELF file abstractions
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public interface ELF {
 
-    private final ElfFile elfFile;
-
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
-
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
-
-    @Override
-    public List<Library> getLibraries() {
-        return null;
-    }
-
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
+    ElfFile getElfFile();
 }

@@ -26,52 +26,57 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.refimpl.elf.spec;
 
-import java.util.List;
+import static net.sourcecrumbs.refimpl.elf.spec.constants.DataTypeSizes.*;
 
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+import org.codehaus.preon.annotation.BoundBuffer;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.LazyLoading;
+
+import net.sourcecrumbs.refimpl.elf.spec.constants.DataEncoding;
+import net.sourcecrumbs.refimpl.elf.spec.constants.ElfClass;
 
 /**
- * High-level abstraction of an ELF executable
+ * The identification bytes for an ELF file
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public class ElfIdent {
 
-    private final ElfFile elfFile;
+    @BoundBuffer(match = { 0x7f, 'E', 'L', 'F'})
+    private byte[] fileIdentification;
 
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
+    @BoundNumber(size=UnsignedChar)
+    private ElfClass elfClass;
+
+    @BoundNumber(size=UnsignedChar)
+    private DataEncoding dataEncoding;
+
+    @BoundNumber(size=UnsignedChar)
+    private byte idVersion;
+
+    @BoundList(size="9", type=byte.class)
+    private byte[] padding;
+
+    public byte[] getFileIdentification() {
+        return fileIdentification;
     }
 
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
+    public ElfClass getElfClass() {
+        return elfClass;
     }
 
-    @Override
-    public List<Library> getLibraries() {
-        return null;
+    public DataEncoding getDataEncoding() {
+        return dataEncoding;
     }
 
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
+    public byte getIdVersion() {
+        return idVersion;
     }
 
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
+    public byte[] getPadding() {
+        return padding;
     }
 }

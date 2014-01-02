@@ -32,11 +32,25 @@ import net.sourcecrumbs.api.files.ObjectFile;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.symbols.Symbol;
 import net.sourcecrumbs.api.transunit.TranslationUnit;
+import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 
 /**
+ * High-level abstraction of an ELF object file
+ *
  * @author mcnulty
  */
-public class ElfObjectFile extends ObjectFile {
+public class ElfObjectFile extends ObjectFile implements ELF {
+
+    private final ElfFile elfFile;
+
+    public ElfObjectFile(ElfFile elfFile) {
+        this.elfFile = elfFile;
+    }
+
+    @Override
+    public ElfFile getElfFile() {
+        return elfFile;
+    }
 
     @Override
     public MachineCodeMapping getMachineCodeMapping() {

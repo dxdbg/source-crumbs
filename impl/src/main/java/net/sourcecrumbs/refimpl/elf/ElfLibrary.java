@@ -28,9 +28,6 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
-import java.util.List;
-
-import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.api.files.Library;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.symbols.Symbol;
@@ -38,26 +35,21 @@ import net.sourcecrumbs.api.transunit.TranslationUnit;
 import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 
 /**
- * High-level abstraction of an ELF executable
+ * High-level abstraction of an ELF library
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public class ElfLibrary extends Library implements ELF {
 
     private final ElfFile elfFile;
 
-    public ElfExecutable(ElfFile elfFile) {
+    public ElfLibrary(ElfFile elfFile) {
         this.elfFile = elfFile;
     }
 
     @Override
     public ElfFile getElfFile() {
         return elfFile;
-    }
-
-    @Override
-    public List<Library> getLibraries() {
-        return null;
     }
 
     @Override

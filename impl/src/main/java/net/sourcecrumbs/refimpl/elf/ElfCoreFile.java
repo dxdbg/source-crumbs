@@ -32,11 +32,20 @@ import net.sourcecrumbs.api.files.CoreFile;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.symbols.Symbol;
 import net.sourcecrumbs.api.transunit.TranslationUnit;
+import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 
 /**
+ * High-level abstraction of an ELF core file
+ *
  * @author mcnulty
  */
-public class ElfCoreFile extends CoreFile {
+public class ElfCoreFile extends CoreFile implements ELF {
+
+    private final ElfFile elfFile;
+
+    public ElfCoreFile(ElfFile elfFile) {
+        this.elfFile = elfFile;
+    }
 
     @Override
     public MachineCodeMapping getMachineCodeMapping() {
@@ -51,5 +60,10 @@ public class ElfCoreFile extends CoreFile {
     @Override
     public Iterable<TranslationUnit> getTranslationUnits() {
         return null;
+    }
+
+    @Override
+    public ElfFile getElfFile() {
+        return elfFile;
     }
 }

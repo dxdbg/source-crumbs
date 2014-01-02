@@ -26,52 +26,37 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.refimpl.elf.spec.constants;
 
-import java.util.List;
-
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 /**
- * High-level abstraction of an ELF executable
+ * ELF file types
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public enum FileType {
 
-    private final ElfFile elfFile;
+    @BoundEnumOption(0)
+    ET_NONE,
 
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
+    @BoundEnumOption(1)
+    ET_REL,
 
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
+    @BoundEnumOption(2)
+    ET_EXEC,
 
-    @Override
-    public List<Library> getLibraries() {
-        return null;
-    }
+    @BoundEnumOption(3)
+    ET_DYN,
 
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
+    @BoundEnumOption(4)
+    ET_CORE,
 
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
+    @BoundEnumOption(0xff00)
+    ET_LOPROC,
 
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
+    @BoundEnumOption(0xffff)
+    ET_HIPROC,
+
+    UNKNOWN;
 }

@@ -28,50 +28,34 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.Test;
 
 import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
- * High-level abstraction of an ELF executable
+ * Throw-away test used to experiment with the library
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public class SandboxTest {
 
-    private final ElfFile elfFile;
+    @Test
+    public void loadExec() throws Exception {
+        ElfReader reader = new ElfReader();
 
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
+        Path execPath = Paths.get("");
 
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
+        Executable exec = reader.openExecutable(execPath);
+        assertTrue(exec instanceof ElfExecutable);
 
-    @Override
-    public List<Library> getLibraries() {
-        return null;
-    }
-
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
+        ElfExecutable elfExec = (ElfExecutable) exec;
+        assertEquals(MachineType.EM_X86_64, elfExec.getElfFile().getHeader().getMachineType());
     }
 }

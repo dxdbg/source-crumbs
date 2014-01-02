@@ -26,52 +26,14 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
-
-import java.util.List;
-
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+package net.sourcecrumbs.refimpl.elf.spec.constants;
 
 /**
- * High-level abstraction of an ELF executable
+ * Misc. constants for ELF
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public class MiscConstants {
 
-    private final ElfFile elfFile;
-
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
-
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
-
-    @Override
-    public List<Library> getLibraries() {
-        return null;
-    }
-
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
+    public static final byte[] MAGIC_NUMBER = { 0x7f, 'E', 'L', 'F' };
 }

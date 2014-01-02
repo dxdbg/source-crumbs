@@ -26,30 +26,25 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.refimpl.elf.spec.constants;
 
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 /**
+ * Enum for EI_CLASS values
+ *
  * @author mcnulty
  */
-public class EflLibrary extends Library {
+public enum ElfClass {
 
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
+    @BoundEnumOption(0)
+    ELFCLASSNONE,
 
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
+    @BoundEnumOption(1)
+    ELFCLASS32,
 
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
+    @BoundEnumOption(2)
+    ELFCLASS64,
+
+    UNKNOWN;
 }

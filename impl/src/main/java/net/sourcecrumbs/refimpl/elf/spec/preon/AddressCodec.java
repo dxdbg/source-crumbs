@@ -26,52 +26,48 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.refimpl.elf.spec.preon;
 
-import java.util.List;
+import java.io.IOException;
 
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.buffer.ByteOrder;
+import org.codehaus.preon.channel.BitChannel;
+
+import net.sourcecrumbs.refimpl.elf.spec.Address;
 
 /**
- * High-level abstraction of an ELF executable
+ * Codec for Elf*_Addr fields
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public class AddressCodec extends ClassLengthFieldCodec<Address> {
 
-    private final ElfFile elfFile;
-
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
+    /**
+     * Constructor.
+     *
+     * @param length the length of a class-specific field in bits
+     * @param byteOrder the byte order of the field
+     */
+    protected AddressCodec(int length, ByteOrder byteOrder) {
+        super(length, byteOrder);
     }
 
     @Override
-    public ElfFile getElfFile() {
-        return elfFile;
+    public Address decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException {
+        return new Address(buffer.readAsLong(length, byteOrder));
     }
 
     @Override
-    public List<Library> getLibraries() {
-        return null;
+    public void encode(Address value, BitChannel channel, Resolver resolver) throws IOException {
+        channel.write(length, value.getValue(), byteOrder);
     }
 
     @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
+    public Class<?>[] getTypes() {
+        return new Class<?>[] { Address.class };
     }
 }

@@ -26,52 +26,25 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.refimpl.elf.spec.constants;
 
-import java.util.List;
-
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 /**
- * High-level abstraction of an ELF executable
+ * The data encoding of the ELF file's processor-specific data
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public enum DataEncoding {
 
-    private final ElfFile elfFile;
+    @BoundEnumOption(0)
+    ELFDATANONE,
 
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
+    @BoundEnumOption(1)
+    ELFDATA2LSB,
 
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
+    @BoundEnumOption(2)
+    ELFDATA2MSB,
 
-    @Override
-    public List<Library> getLibraries() {
-        return null;
-    }
-
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
+    UNKNOWN;
 }

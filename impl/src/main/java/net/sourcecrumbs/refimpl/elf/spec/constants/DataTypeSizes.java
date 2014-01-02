@@ -26,52 +26,20 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
-
-import java.util.List;
-
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+package net.sourcecrumbs.refimpl.elf.spec.constants;
 
 /**
- * High-level abstraction of an ELF executable
+ * Data types sizes used in an ELF file
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public class DataTypeSizes {
 
-    private final ElfFile elfFile;
+    public static final String ElfHalf = "16";
 
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
+    public static final String ElfSWord = "32";
 
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
+    public static final String ElfWord = "32";
 
-    @Override
-    public List<Library> getLibraries() {
-        return null;
-    }
-
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
+    public static final String UnsignedChar = "8";
 }

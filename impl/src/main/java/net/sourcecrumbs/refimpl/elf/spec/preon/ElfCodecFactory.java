@@ -26,52 +26,45 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.refimpl.elf.spec.preon;
 
-import java.util.List;
+import java.lang.reflect.AnnotatedElement;
 
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.api.files.Library;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.ResolverContext;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.buffer.ByteOrder;
+
+import net.sourcecrumbs.refimpl.elf.spec.Address;
+import net.sourcecrumbs.refimpl.elf.spec.Offset;
 
 /**
- * High-level abstraction of an ELF executable
+ * Codec factory for creating ElfCodecs
  *
  * @author mcnulty
  */
-public class ElfExecutable extends Executable implements ELF {
+public class ElfCodecFactory implements CodecFactory {
 
-    private final ElfFile elfFile;
+    private final int classLength;
 
-    public ElfExecutable(ElfFile elfFile) {
-        this.elfFile = elfFile;
+    private final ByteOrder classByteOrder;
+
+    public ElfCodecFactory(int classLength, ByteOrder classByteOrder) {
+        this.classLength = classLength;
+        this.classByteOrder = classByteOrder;
     }
 
     @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
+    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
+        if (metadata == null || metadata.isAnnotationPresent(Bound.class)) {
+            if (Address.class.equals(type)) {
+                return (Codec<T>) new AddressCodec(classLength, classByteOrder);
+            }else if (Offset.class.equals(type)) {
+                return (Codec<T>) new OffsetCodec(classLength, classByteOrder);
+            }
+        }
 
-    @Override
-    public List<Library> getLibraries() {
-        return null;
-    }
-
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
         return null;
     }
 }
