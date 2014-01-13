@@ -26,23 +26,13 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.sections;
 
 /**
- * Represents an Elf*_Addr field
+ * A section that doesn't actually have any content in the ELF file
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public class NoBits implements SectionContent {
 
-    private final long value;
-
-    public Address(long value) {
-        this.value = value;
-    }
-
-    @Override
-    public long getValue() {
-        return value;
-    }
 }

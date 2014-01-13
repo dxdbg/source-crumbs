@@ -26,23 +26,17 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.sections;
+
+import org.codehaus.preon.annotation.BoundList;
 
 /**
- * Represents an Elf*_Addr field
+ * A generic section that just returns the bytes from the section
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public class GenericSection implements SectionContent {
 
-    private final long value;
-
-    public Address(long value) {
-        this.value = value;
-    }
-
-    @Override
-    public long getValue() {
-        return value;
-    }
+    @BoundList(size = "outer.sectionHeader.size.value", type=Byte.class)
+    protected byte[] data;
 }

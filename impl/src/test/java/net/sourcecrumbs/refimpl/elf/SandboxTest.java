@@ -28,12 +28,15 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Test;
 
 import net.sourcecrumbs.api.files.Executable;
+import net.sourcecrumbs.refimpl.BaseNativeFileTest;
 import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
 
 import static org.junit.Assert.assertEquals;
@@ -44,18 +47,21 @@ import static org.junit.Assert.assertTrue;
  *
  * @author mcnulty
  */
-public class SandboxTest {
+public class SandboxTest extends BaseNativeFileTest {
 
     @Test
     public void loadExec() throws Exception {
         ElfReader reader = new ElfReader();
 
-        Path execPath = Paths.get("");
-
-        Executable exec = reader.openExecutable(execPath);
+        Executable exec = reader.openExecutable(filePath);
         assertTrue(exec instanceof ElfExecutable);
 
         ElfExecutable elfExec = (ElfExecutable) exec;
         assertEquals(MachineType.EM_X86_64, elfExec.getElfFile().getHeader().getMachineType());
+    }
+
+    @Override
+    protected URL getFileUrl() throws MalformedURLException {
+        return new URL("http://mcnulty.github.io/native-file-tests/files/linux/v2.6.32/basic-64bit-dynamic");
     }
 }

@@ -26,23 +26,27 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.preon;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Represents an Elf*_Addr field
+ * Annotation used to indicate that a field begins at the absolute offset into the buffer. The value is a Limbo
+ * expression.
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AbsoluteOffset {
 
-    private final long value;
+    /**
+     * @return a Limbo expression for the absolute offset in bits
+     */
+    String value();
 
-    public Address(long value) {
-        this.value = value;
-    }
-
-    @Override
-    public long getValue() {
-        return value;
-    }
+    /**
+     * @return true if the bit stream passed to the codec should be adjusted and used to read the object
+     */
+    boolean adjustBitStream() default false;
 }

@@ -89,55 +89,111 @@ public class ElfHeader {
         return ident;
     }
 
+    public void setIdent(ElfIdent ident) {
+        this.ident = ident;
+    }
+
     public FileType getFileType() {
         return fileType;
+    }
+
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
     }
 
     public MachineType getMachineType() {
         return machineType;
     }
 
+    public void setMachineType(MachineType machineType) {
+        this.machineType = machineType;
+    }
+
     public int getVersion() {
         return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public Address getEntry() {
         return entry;
     }
 
+    public void setEntry(Address entry) {
+        this.entry = entry;
+    }
+
     public Offset getProgramHeaderOffset() {
         return programHeaderOffset;
+    }
+
+    public void setProgramHeaderOffset(Offset programHeaderOffset) {
+        this.programHeaderOffset = programHeaderOffset;
     }
 
     public Offset getSectionHeaderOffset() {
         return sectionHeaderOffset;
     }
 
+    public void setSectionHeaderOffset(Offset sectionHeaderOffset) {
+        this.sectionHeaderOffset = sectionHeaderOffset;
+    }
+
     public int getFlags() {
         return flags;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = flags;
     }
 
     public int getHeaderSize() {
         return headerSize;
     }
 
+    public void setHeaderSize(int headerSize) {
+        this.headerSize = headerSize;
+    }
+
     public int getProgramHeaderSize() {
         return programHeaderSize;
+    }
+
+    public void setProgramHeaderSize(int programHeaderSize) {
+        this.programHeaderSize = programHeaderSize;
     }
 
     public int getNumProgramHeaders() {
         return numProgramHeaders;
     }
 
+    public void setNumProgramHeaders(int numProgramHeaders) {
+        this.numProgramHeaders = numProgramHeaders;
+    }
+
     public int getSectionHeaderSize() {
         return sectionHeaderSize;
+    }
+
+    public void setSectionHeaderSize(int sectionHeaderSize) {
+        this.sectionHeaderSize = sectionHeaderSize;
     }
 
     public int getNumSectionHeaders() {
         return numSectionHeaders;
     }
 
+    public void setNumSectionHeaders(int numSectionHeaders) {
+        this.numSectionHeaders = numSectionHeaders;
+    }
+
     public int getSectionNameStrIndex() {
         return sectionNameStrIndex;
+    }
+
+    public void setSectionNameStrIndex(int sectionNameStrIndex) {
+        this.sectionNameStrIndex = sectionNameStrIndex;
     }
 }

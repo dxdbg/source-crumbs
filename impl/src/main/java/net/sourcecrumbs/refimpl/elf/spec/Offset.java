@@ -33,9 +33,15 @@ package net.sourcecrumbs.refimpl.elf.spec;
  *
  * @author mcnulty
  */
-public class Offset extends ClassLengthField {
+public class Offset implements ClassLengthField {
+
+    private final long value;
 
     public Offset(long value) {
-        super(value);
+        this.value = value;
+    }
+
+    public long getValue() {
+        return value;
     }
 }

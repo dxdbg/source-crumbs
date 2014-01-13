@@ -64,19 +64,39 @@ public class ElfIdent {
         return fileIdentification;
     }
 
+    public void setFileIdentification(byte[] fileIdentification) {
+        this.fileIdentification = fileIdentification;
+    }
+
     public ElfClass getElfClass() {
         return elfClass;
+    }
+
+    public void setElfClass(ElfClass elfClass) {
+        this.elfClass = elfClass;
     }
 
     public DataEncoding getDataEncoding() {
         return dataEncoding;
     }
 
+    public void setDataEncoding(DataEncoding dataEncoding) {
+        this.dataEncoding = dataEncoding;
+    }
+
     public byte getIdVersion() {
         return idVersion;
     }
 
+    public void setIdVersion(byte idVersion) {
+        this.idVersion = idVersion;
+    }
+
     public byte[] getPadding() {
         return padding;
+    }
+
+    public void setPadding(byte[] padding) {
+        this.padding = padding;
     }
 }

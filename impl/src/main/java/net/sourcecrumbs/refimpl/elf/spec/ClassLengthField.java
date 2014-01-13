@@ -33,15 +33,7 @@ package net.sourcecrumbs.refimpl.elf.spec;
  *
  * @author mcnulty
  */
-public abstract class ClassLengthField {
+public interface ClassLengthField {
 
-    protected final long value;
-
-    protected ClassLengthField(long value) {
-        this.value = value;
-    }
-
-    public long getValue() {
-        return value;
-    }
+    long getValue();
 }

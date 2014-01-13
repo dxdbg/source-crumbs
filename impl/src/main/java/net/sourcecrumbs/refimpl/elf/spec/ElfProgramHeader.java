@@ -29,20 +29,10 @@
 package net.sourcecrumbs.refimpl.elf.spec;
 
 /**
- * Represents an Elf*_Addr field
+ * Header for segment in an ELF file
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public class ElfProgramHeader {
 
-    private final long value;
-
-    public Address(long value) {
-        this.value = value;
-    }
-
-    @Override
-    public long getValue() {
-        return value;
-    }
 }

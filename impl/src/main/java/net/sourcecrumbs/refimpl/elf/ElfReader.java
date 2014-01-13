@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
+import org.codehaus.preon.CodecFactory;
 import org.codehaus.preon.Codecs;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.buffer.ByteOrder;
@@ -46,6 +48,7 @@ import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 import net.sourcecrumbs.refimpl.elf.spec.ElfIdent;
 import net.sourcecrumbs.refimpl.elf.spec.constants.FileType;
+import net.sourcecrumbs.refimpl.elf.spec.preon.AbsoluteOffsetCodecDecorator;
 import net.sourcecrumbs.refimpl.elf.spec.preon.ElfCodecFactory;
 
 /**
@@ -54,6 +57,8 @@ import net.sourcecrumbs.refimpl.elf.spec.preon.ElfCodecFactory;
  * @author mcnulty
  */
 public class ElfReader implements BinaryReader {
+
+    private static final AbsoluteOffsetCodecDecorator codecDecorator = new AbsoluteOffsetCodecDecorator();
 
     @Override
     public Binary open(Path path) throws IOException, UnknownFormatException {
@@ -149,7 +154,9 @@ public class ElfReader implements BinaryReader {
 
             ElfCodecFactory elfCodecFactory = new ElfCodecFactory(classLength, byteOrder);
 
-            Codec<ElfFile> fileCodec = Codecs.create(ElfFile.class, elfCodecFactory);
+            Codec<ElfFile> fileCodec = Codecs.create(ElfFile.class,
+                    new CodecFactory[]{elfCodecFactory},
+                    new CodecDecorator[]{codecDecorator});
             return Codecs.decode(fileCodec, path.toFile());
         }catch (DecodingException e) {
             throw new UnknownFormatException(e);

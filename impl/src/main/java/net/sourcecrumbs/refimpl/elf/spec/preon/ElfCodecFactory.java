@@ -38,6 +38,7 @@ import org.codehaus.preon.buffer.ByteOrder;
 
 import net.sourcecrumbs.refimpl.elf.spec.Address;
 import net.sourcecrumbs.refimpl.elf.spec.Offset;
+import net.sourcecrumbs.refimpl.elf.spec.WordField;
 
 /**
  * Codec factory for creating ElfCodecs
@@ -62,6 +63,8 @@ public class ElfCodecFactory implements CodecFactory {
                 return (Codec<T>) new AddressCodec(classLength, classByteOrder);
             }else if (Offset.class.equals(type)) {
                 return (Codec<T>) new OffsetCodec(classLength, classByteOrder);
+            }else if (WordField.class.equals(type)) {
+                return (Codec<T>) new WordFieldCodec(classLength, classByteOrder);
             }
         }
 

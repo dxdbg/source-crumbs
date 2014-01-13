@@ -26,23 +26,13 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.sections;
 
 /**
- * Represents an Elf*_Addr field
+ * Marker interface for the body of a Section
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public interface SectionContent {
 
-    private final long value;
-
-    public Address(long value) {
-        this.value = value;
-    }
-
-    @Override
-    public long getValue() {
-        return value;
-    }
 }

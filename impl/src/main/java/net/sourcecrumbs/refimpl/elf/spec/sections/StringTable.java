@@ -26,23 +26,24 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.sections;
+
+import java.nio.charset.StandardCharsets;
 
 /**
- * Represents an Elf*_Addr field
+ * A string table contained in an ELF section. Provides methods to interpret the raw binary content.
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public class StringTable extends GenericSection {
 
-    private final long value;
+    public String getString(int index) {
+        if (index >= 0 && index <= data.length) {
+            int size = index;
+            for (; data[size] != '\0'; size++);
+            return new String(data, index, size, StandardCharsets.US_ASCII);
+        }
 
-    public Address(long value) {
-        this.value = value;
-    }
-
-    @Override
-    public long getValue() {
-        return value;
+        return "";
     }
 }

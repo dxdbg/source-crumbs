@@ -28,7 +28,16 @@
 
 package net.sourcecrumbs.refimpl.elf.spec;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.If;
+import org.codehaus.preon.annotation.Init;
+
+import net.sourcecrumbs.refimpl.elf.spec.preon.AbsoluteOffset;
+import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 
 /**
  * Top level data structure representing an ELF file
@@ -40,7 +49,43 @@ public class ElfFile {
     @Bound
     private ElfHeader header;
 
+    /*
+    @If("header.numProgramHeaders > 0 && header.programHeaderSize != 0")
+    @BoundList(type = ElfSegment.class, size = "header.numProgramHeaders")
+    @AbsoluteOffset(value = "header.programHeaderOffset.value * 8", adjustBitStream = true)
+    private ElfSegment[] programHeaders;
+    */
+
+    @If("header.numSectionHeaders > 0 && header.sectionHeaderSize > 0")
+    @BoundList(type = ElfSection.class, size = "header.numSectionHeaders")
+    @AbsoluteOffset(value = "header.sectionHeaderOffset.value * 8", adjustBitStream = false)
+    private ElfSection[] sections;
+
+    private final Map<String, ElfSection> sectionsByName = new HashMap<>();
+
+    @Init
+    public void initialize() {
+
+        // Initialize the mapping from section name to sections
+        if (header.getSectionNameStrIndex() < sections.length && header.getSectionNameStrIndex() >= 0) {
+            ElfSection shStrTable = sections[header.getSectionNameStrIndex()];
+            if (shStrTable.getSectionContent() instanceof StringTable) {
+                StringTable table = (StringTable)shStrTable.getSectionContent();
+                for (ElfSection section : sections) {
+                    String name = table.getString(section.getSectionHeader().getNameIndex());
+                    if (!name.isEmpty()) {
+                        sectionsByName.put(name, section);
+                    }
+                }
+            }
+        }
+    }
+
     public ElfHeader getHeader() {
         return header;
+    }
+
+    public void setHeader(ElfHeader header) {
+        this.header = header;
     }
 }

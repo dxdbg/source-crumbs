@@ -28,21 +28,15 @@
 
 package net.sourcecrumbs.refimpl.elf.spec;
 
+import org.codehaus.preon.annotation.Bound;
+
 /**
- * Represents an Elf*_Addr field
+ * A segment in an ELF file
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public class ElfSegment {
 
-    private final long value;
-
-    public Address(long value) {
-        this.value = value;
-    }
-
-    @Override
-    public long getValue() {
-        return value;
-    }
+    @Bound
+    private ElfProgramHeader programHeader;
 }

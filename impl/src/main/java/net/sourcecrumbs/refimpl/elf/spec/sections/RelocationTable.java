@@ -26,23 +26,13 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.sections;
 
 /**
- * Represents an Elf*_Addr field
+ * Relocation table contained in an ELF section
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public class RelocationTable implements SectionContent {
 
-    private final long value;
-
-    public Address(long value) {
-        this.value = value;
-    }
-
-    @Override
-    public long getValue() {
-        return value;
-    }
 }

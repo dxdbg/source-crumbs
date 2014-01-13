@@ -26,23 +26,43 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.preon;
+
+import java.lang.reflect.AnnotatedElement;
+
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
+import org.codehaus.preon.ResolverContext;
+import org.codehaus.preon.el.Expressions;
 
 /**
- * Represents an Elf*_Addr field
+ * Similar to the {@link org.codehaus.preon.codec.SlicingCodecDecorator}, this codec decorator uses an {@link AbsoluteOffset}
+ * annotation to "jump" a BitBuffer ahead to a predetermined location and continue decoding the object at that
+ * point.
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
-
-    private final long value;
-
-    public Address(long value) {
-        this.value = value;
-    }
+public class AbsoluteOffsetCodecDecorator implements CodecDecorator {
 
     @Override
-    public long getValue() {
-        return value;
+    public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata, Class<T> type, ResolverContext context) {
+        AbsoluteOffset absoluteOffset = getOffsetAnnotation(type, metadata);
+        if (absoluteOffset != null) {
+            return new AbsoluteOffsetCodec<T>(decorated, Expressions.create(context, absoluteOffset.value()), absoluteOffset.adjustBitStream());
+        }
+        return decorated;
+    }
+
+    private <T> AbsoluteOffset getOffsetAnnotation(Class<T> type, AnnotatedElement metaData) {
+
+        if (type.isAnnotationPresent(AbsoluteOffset.class)) {
+            return type.getAnnotation(AbsoluteOffset.class);
+        }
+
+        if (metaData != null && metaData.isAnnotationPresent(AbsoluteOffset.class)) {
+            return metaData.getAnnotation(AbsoluteOffset.class);
+        }
+
+        return null;
     }
 }

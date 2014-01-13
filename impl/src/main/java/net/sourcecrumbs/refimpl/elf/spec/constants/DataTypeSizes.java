@@ -41,5 +41,7 @@ public class DataTypeSizes {
 
     public static final String ElfWord = "32";
 
+    public static final String ElfXWord = "64";
+
     public static final String UnsignedChar = "8";
 }

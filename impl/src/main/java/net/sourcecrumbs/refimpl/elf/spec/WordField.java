@@ -29,15 +29,15 @@
 package net.sourcecrumbs.refimpl.elf.spec;
 
 /**
- * Represents an Elf*_Addr field
+ * A field that is the word length of the architecture for the file
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public class WordField implements ClassLengthField {
 
     private final long value;
 
-    public Address(long value) {
+    public WordField(long value) {
         this.value = value;
     }
 

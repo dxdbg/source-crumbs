@@ -26,23 +26,39 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.sym;
+
+import net.sourcecrumbs.refimpl.elf.spec.Address;
+import net.sourcecrumbs.refimpl.elf.spec.WordField;
 
 /**
- * Represents an Elf*_Addr field
+ * Encapsulates an ELF symbol the layout for which differs depending on the machine type for the file
  *
  * @author mcnulty
  */
-public class Address implements ClassLengthField {
+public interface ElfSymbol {
 
-    private final long value;
+    int getNameIndex();
 
-    public Address(long value) {
-        this.value = value;
-    }
+    void setNameIndex(int nameIndex);
 
-    @Override
-    public long getValue() {
-        return value;
-    }
+    Address getValue();
+
+    void setValue(Address value);
+
+    WordField getSize();
+
+    void setSize(WordField size);
+
+    byte getInfo();
+
+    void setInfo(byte info);
+
+    byte getOther();
+
+    void setOther(byte other);
+
+    short getSectionIndex();
+
+    void setSectionIndex(short sectionIndex);
 }
