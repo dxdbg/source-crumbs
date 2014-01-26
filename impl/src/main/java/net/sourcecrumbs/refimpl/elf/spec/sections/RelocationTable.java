@@ -28,6 +28,11 @@
 
 package net.sourcecrumbs.refimpl.elf.spec.sections;
 
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.If;
+
+import net.sourcecrumbs.refimpl.elf.spec.rel.Relocation;
+
 /**
  * Relocation table contained in an ELF section
  *
@@ -35,4 +40,7 @@ package net.sourcecrumbs.refimpl.elf.spec.sections;
  */
 public class RelocationTable implements SectionContent {
 
+    @If("outer.sectionHeader.size.entrySize.value != 0")
+    @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.size.entrySize.value")
+    private Relocation[] relocations;
 }

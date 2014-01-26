@@ -26,26 +26,37 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.constants;
 
-import org.codehaus.preon.annotation.BoundObject;
-import org.codehaus.preon.annotation.Choices;
-import org.codehaus.preon.annotation.Choices.Choice;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 /**
- * A segment in an ELF file
+ * The type of an ELF symbol
  *
  * @author mcnulty
  */
-public class ElfSegment {
+public enum SymbolType {
 
-    @BoundObject(
-            selectFrom = @Choices(
-                    alternatives = {
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS32", type = Elf32ProgramHeader.class),
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS64", type = Elf64ProgramHeader.class)
-                    }
-            )
-    )
-    private ElfProgramHeader programHeader;
+    @BoundEnumOption(0)
+    STT_NOTYPE,
+
+    @BoundEnumOption(1)
+    STT_OBJECT,
+
+    @BoundEnumOption(2)
+    STT_FUNC,
+
+    @BoundEnumOption(3)
+    STT_SECTION,
+
+    @BoundEnumOption(4)
+    STT_FILE,
+
+    @BoundEnumOption(13)
+    STT_LOPROC,
+
+    @BoundEnumOption(15)
+    STT_HIPROC,
+
+    UNKNOWN;
 }

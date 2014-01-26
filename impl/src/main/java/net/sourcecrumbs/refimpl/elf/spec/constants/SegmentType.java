@@ -26,26 +26,43 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.constants;
 
-import org.codehaus.preon.annotation.BoundObject;
-import org.codehaus.preon.annotation.Choices;
-import org.codehaus.preon.annotation.Choices.Choice;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 /**
- * A segment in an ELF file
+ * The type of a segment in an ELF file
  *
  * @author mcnulty
  */
-public class ElfSegment {
+public enum SegmentType {
 
-    @BoundObject(
-            selectFrom = @Choices(
-                    alternatives = {
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS32", type = Elf32ProgramHeader.class),
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS64", type = Elf64ProgramHeader.class)
-                    }
-            )
-    )
-    private ElfProgramHeader programHeader;
+    @BoundEnumOption(0)
+    PT_NULL,
+
+    @BoundEnumOption(1)
+    PT_LOAD,
+
+    @BoundEnumOption(2)
+    PT_DYNAMIC,
+
+    @BoundEnumOption(3)
+    PT_INTERP,
+
+    @BoundEnumOption(4)
+    PT_NOTE,
+
+    @BoundEnumOption(5)
+    PT_SHLIB,
+
+    @BoundEnumOption(6)
+    PT_PHDR,
+
+    @BoundEnumOption(0x70000000)
+    PT_LOPROC,
+
+    @BoundEnumOption(0x7fffffff)
+    PT_HIPROC,
+
+    UNKNOWN;
 }

@@ -28,37 +28,71 @@
 
 package net.sourcecrumbs.refimpl.elf.spec.sym;
 
+import org.codehaus.preon.annotation.BoundEnumOption;
+import org.codehaus.preon.util.EnumUtils;
+
 import net.sourcecrumbs.refimpl.elf.spec.Address;
 import net.sourcecrumbs.refimpl.elf.spec.WordField;
+import net.sourcecrumbs.refimpl.elf.spec.constants.SymbolBinding;
+import net.sourcecrumbs.refimpl.elf.spec.constants.SymbolType;
 
 /**
  * Encapsulates an ELF symbol the layout for which differs depending on the machine type for the file
  *
  * @author mcnulty
  */
-public interface ElfSymbol {
+public abstract class ElfSymbol {
 
-    int getNameIndex();
+    /** The name index for an undefined symbol */
+    public static final int STN_UNDEF = 0;
 
-    void setNameIndex(int nameIndex);
+    public abstract int getNameIndex();
 
-    Address getValue();
+    public abstract void setNameIndex(int nameIndex);
 
-    void setValue(Address value);
+    public abstract Address getValue();
 
-    WordField getSize();
+    public abstract void setValue(Address value);
 
-    void setSize(WordField size);
+    public abstract WordField getSize();
 
-    byte getInfo();
+    public abstract void setSize(WordField size);
 
-    void setInfo(byte info);
+    public abstract byte getInfo();
 
-    byte getOther();
+    public abstract void setInfo(byte info);
 
-    void setOther(byte other);
+    public abstract byte getOther();
 
-    short getSectionIndex();
+    public abstract void setOther(byte other);
 
-    void setSectionIndex(short sectionIndex);
+    public abstract short getSectionIndex();
+
+    public abstract void setSectionIndex(short sectionIndex);
+
+    public SymbolBinding getSymbolBinding() {
+        return EnumUtils.getBoundEnumOptionIndex(SymbolBinding.class).get(getInfo() >> 4);
+    }
+
+    public void setSymbolBinding(SymbolBinding binding) throws IllegalArgumentException {
+        try {
+            BoundEnumOption option = SymbolBinding.class.getField(binding.name()).getAnnotation(BoundEnumOption.class);
+            setInfo((byte)(((byte)(getInfo() & 0x0f)) | ((byte)option.value())));
+        }catch (NoSuchFieldException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public SymbolType getSymbolType() {
+        return EnumUtils.getBoundEnumOptionIndex(SymbolType.class).get(getInfo() & 0xf);
+    }
+
+    public void setSymbolType(SymbolType symbolType) throws IllegalArgumentException {
+        try {
+            BoundEnumOption option = SymbolType.class.getField(symbolType.name()).getAnnotation(BoundEnumOption.class);
+            setInfo((byte)(((byte)(getInfo() & 0xf0)) | ((byte)option.value())));
+        }catch (NoSuchFieldException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 }

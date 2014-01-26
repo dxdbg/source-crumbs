@@ -49,12 +49,10 @@ public class ElfFile {
     @Bound
     private ElfHeader header;
 
-    /*
     @If("header.numProgramHeaders > 0 && header.programHeaderSize != 0")
     @BoundList(type = ElfSegment.class, size = "header.numProgramHeaders")
     @AbsoluteOffset(value = "header.programHeaderOffset.value * 8", adjustBitStream = true)
-    private ElfSegment[] programHeaders;
-    */
+    private ElfSegment[] segments;
 
     @If("header.numSectionHeaders > 0 && header.sectionHeaderSize > 0")
     @BoundList(type = ElfSection.class, size = "header.numSectionHeaders")

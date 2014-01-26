@@ -26,26 +26,50 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.rel;
 
-import org.codehaus.preon.annotation.BoundObject;
-import org.codehaus.preon.annotation.Choices;
-import org.codehaus.preon.annotation.Choices.Choice;
+import org.codehaus.preon.annotation.Bound;
+
+import net.sourcecrumbs.refimpl.elf.spec.Offset;
+import net.sourcecrumbs.refimpl.elf.spec.WordField;
 
 /**
- * A segment in an ELF file
+ * The element in an AddendRelocation
  *
  * @author mcnulty
  */
-public class ElfSegment {
+public class AddendRelocation {
 
-    @BoundObject(
-            selectFrom = @Choices(
-                    alternatives = {
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS32", type = Elf32ProgramHeader.class),
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS64", type = Elf64ProgramHeader.class)
-                    }
-            )
-    )
-    private ElfProgramHeader programHeader;
+    @Bound
+    private Offset offset;
+
+    @Bound
+    private WordField info;
+
+    @Bound
+    private WordField addend;
+
+    public Offset getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Offset offset) {
+        this.offset = offset;
+    }
+
+    public WordField getInfo() {
+        return info;
+    }
+
+    public void setInfo(WordField info) {
+        this.info = info;
+    }
+
+    public WordField getAddend() {
+        return addend;
+    }
+
+    public void setAddend(WordField addend) {
+        this.addend = addend;
+    }
 }

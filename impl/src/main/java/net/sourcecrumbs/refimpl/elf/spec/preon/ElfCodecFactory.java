@@ -35,10 +35,12 @@ import org.codehaus.preon.CodecFactory;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.buffer.ByteOrder;
+import org.codehaus.preon.codec.ObjectCodecFactory;
 
 import net.sourcecrumbs.refimpl.elf.spec.Address;
 import net.sourcecrumbs.refimpl.elf.spec.Offset;
 import net.sourcecrumbs.refimpl.elf.spec.WordField;
+import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
 
 /**
  * Codec factory for creating ElfCodecs

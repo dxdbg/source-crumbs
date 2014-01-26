@@ -36,6 +36,7 @@ import org.codehaus.preon.CodecDecorator;
 import org.codehaus.preon.CodecFactory;
 import org.codehaus.preon.Codecs;
 import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.DefaultCodecFactory;
 import org.codehaus.preon.buffer.ByteOrder;
 
 import net.sourcecrumbs.api.files.Binary;

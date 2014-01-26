@@ -26,55 +26,40 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
-
-import java.util.EnumSet;
+package net.sourcecrumbs.refimpl.elf.spec.sym;
 
 import static net.sourcecrumbs.refimpl.elf.spec.constants.DataTypeSizes.*;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
 
-import net.sourcecrumbs.refimpl.elf.spec.constants.SectionFlag;
-import net.sourcecrumbs.refimpl.elf.spec.constants.SectionType;
-
+import net.sourcecrumbs.refimpl.elf.spec.Address;
+import net.sourcecrumbs.refimpl.elf.spec.WordField;
 
 /**
- * Header for section in an ELF file
+ * Symbol for 32-bit ELF files
  *
  * @author mcnulty
  */
-public class ElfSectionHeader {
+public class Elf32Symbol extends ElfSymbol {
 
     @BoundNumber(size = ElfWord)
     private int nameIndex;
 
-    @BoundNumber(size = ElfWord)
-    private SectionType type;
-
     @Bound
-    private WordField flagsField;
-
-    @Bound
-    private Address address;
-
-    @Bound
-    private Offset offset;
+    private Address value;
 
     @Bound
     private WordField size;
 
-    @BoundNumber(size = ElfWord)
-    private int link;
+    @BoundNumber(size = UnsignedChar)
+    private byte info;
 
-    @BoundNumber(size = ElfWord)
-    private int info;
+    @BoundNumber(size = UnsignedChar)
+    private byte other;
 
-    @Bound
-    private WordField addressAlign;
-
-    @Bound
-    private WordField entrySize;
+    @BoundNumber(size = ElfHalf)
+    private short sectionIndex;
 
     public int getNameIndex() {
         return nameIndex;
@@ -84,36 +69,12 @@ public class ElfSectionHeader {
         this.nameIndex = nameIndex;
     }
 
-    public SectionType getType() {
-        return type;
+    public Address getValue() {
+        return value;
     }
 
-    public void setType(SectionType type) {
-        this.type = type;
-    }
-
-    public WordField getFlagsField() {
-        return flagsField;
-    }
-
-    public void setFlagsField(WordField flagsField) {
-        this.flagsField = flagsField;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Offset getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Offset offset) {
-        this.offset = offset;
+    public void setValue(Address value) {
+        this.value = value;
     }
 
     public WordField getSize() {
@@ -124,44 +85,27 @@ public class ElfSectionHeader {
         this.size = size;
     }
 
-    public int getLink() {
-        return link;
-    }
-
-    public void setLink(int link) {
-        this.link = link;
-    }
-
-    public int getInfo() {
+    public byte getInfo() {
         return info;
     }
 
-    public void setInfo(int info) {
+    public void setInfo(byte info) {
         this.info = info;
     }
 
-    public WordField getAddressAlign() {
-        return addressAlign;
+    public byte getOther() {
+        return other;
     }
 
-    public void setAddressAlign(WordField addressAlign) {
-        this.addressAlign = addressAlign;
+    public void setOther(byte other) {
+        this.other = other;
     }
 
-    public WordField getEntrySize() {
-        return entrySize;
+    public short getSectionIndex() {
+        return sectionIndex;
     }
 
-    public void setEntrySize(WordField entrySize) {
-        this.entrySize = entrySize;
-    }
-
-    public EnumSet<SectionFlag> getFlags() {
-        return SectionFlag.setFromBitValue(flagsField.getValue());
-    }
-
-    public void setFlags(EnumSet<SectionFlag> flags) {
-        long newValue = SectionFlag.toBitValue(flags);
-        flagsField = new WordField(newValue);
+    public void setSectionIndex(short sectionIndex) {
+        this.sectionIndex = sectionIndex;
     }
 }

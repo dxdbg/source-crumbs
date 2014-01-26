@@ -26,26 +26,39 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.rel;
 
-import org.codehaus.preon.annotation.BoundObject;
-import org.codehaus.preon.annotation.Choices;
-import org.codehaus.preon.annotation.Choices.Choice;
+import org.codehaus.preon.annotation.Bound;
+
+import net.sourcecrumbs.refimpl.elf.spec.Offset;
+import net.sourcecrumbs.refimpl.elf.spec.WordField;
 
 /**
- * A segment in an ELF file
+ * The element in a relocation table
  *
  * @author mcnulty
  */
-public class ElfSegment {
+public class Relocation {
 
-    @BoundObject(
-            selectFrom = @Choices(
-                    alternatives = {
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS32", type = Elf32ProgramHeader.class),
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS64", type = Elf64ProgramHeader.class)
-                    }
-            )
-    )
-    private ElfProgramHeader programHeader;
+    @Bound
+    private Offset offset;
+
+    @Bound
+    private WordField info;
+
+    public Offset getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Offset offset) {
+        this.offset = offset;
+    }
+
+    public WordField getInfo() {
+        return info;
+    }
+
+    public void setInfo(WordField info) {
+        this.info = info;
+    }
 }

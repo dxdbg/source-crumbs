@@ -62,6 +62,6 @@ public class SandboxTest extends BaseNativeFileTest {
 
     @Override
     protected URL getFileUrl() throws MalformedURLException {
-        return new URL("http://mcnulty.github.io/native-file-tests/files/linux/v2.6.32/basic-64bit-dynamic");
+        return new URL("http://mcnulty.github.io/native-file-tests/files/linux/gcc/4.8.2/basic-64bit-dynamic");
     }
 }

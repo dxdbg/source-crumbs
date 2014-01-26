@@ -28,84 +28,50 @@
 
 package net.sourcecrumbs.refimpl.elf.spec;
 
-import java.util.EnumSet;
-
 import static net.sourcecrumbs.refimpl.elf.spec.constants.DataTypeSizes.*;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
 
-import net.sourcecrumbs.refimpl.elf.spec.constants.SectionFlag;
-import net.sourcecrumbs.refimpl.elf.spec.constants.SectionType;
-
+import net.sourcecrumbs.refimpl.elf.spec.constants.SegmentType;
 
 /**
- * Header for section in an ELF file
+ * Program header for a 64-bit ELF file
  *
  * @author mcnulty
  */
-public class ElfSectionHeader {
+public class Elf64ProgramHeader extends ElfProgramHeader {
 
     @BoundNumber(size = ElfWord)
-    private int nameIndex;
+    private SegmentType type;
 
     @BoundNumber(size = ElfWord)
-    private SectionType type;
-
-    @Bound
-    private WordField flagsField;
-
-    @Bound
-    private Address address;
+    private int flagsField;
 
     @Bound
     private Offset offset;
 
     @Bound
-    private WordField size;
-
-    @BoundNumber(size = ElfWord)
-    private int link;
-
-    @BoundNumber(size = ElfWord)
-    private int info;
+    private Address virtualAddress;
 
     @Bound
-    private WordField addressAlign;
+    private Address physicalAddress;
 
     @Bound
-    private WordField entrySize;
+    private WordField fileSize;
 
-    public int getNameIndex() {
-        return nameIndex;
-    }
+    @Bound
+    private WordField memorySize;
 
-    public void setNameIndex(int nameIndex) {
-        this.nameIndex = nameIndex;
-    }
+    @Bound
+    private WordField alignment;
 
-    public SectionType getType() {
+    public SegmentType getType() {
         return type;
     }
 
-    public void setType(SectionType type) {
+    public void setType(SegmentType type) {
         this.type = type;
-    }
-
-    public WordField getFlagsField() {
-        return flagsField;
-    }
-
-    public void setFlagsField(WordField flagsField) {
-        this.flagsField = flagsField;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public Offset getOffset() {
@@ -116,52 +82,50 @@ public class ElfSectionHeader {
         this.offset = offset;
     }
 
-    public WordField getSize() {
-        return size;
+    public Address getVirtualAddress() {
+        return virtualAddress;
     }
 
-    public void setSize(WordField size) {
-        this.size = size;
+    public void setVirtualAddress(Address virtualAddress) {
+        this.virtualAddress = virtualAddress;
     }
 
-    public int getLink() {
-        return link;
+    public Address getPhysicalAddress() {
+        return physicalAddress;
     }
 
-    public void setLink(int link) {
-        this.link = link;
+    public void setPhysicalAddress(Address physicalAddress) {
+        this.physicalAddress = physicalAddress;
     }
 
-    public int getInfo() {
-        return info;
+    public WordField getFileSize() {
+        return fileSize;
     }
 
-    public void setInfo(int info) {
-        this.info = info;
+    public void setFileSize(WordField fileSize) {
+        this.fileSize = fileSize;
     }
 
-    public WordField getAddressAlign() {
-        return addressAlign;
+    public WordField getMemorySize() {
+        return memorySize;
     }
 
-    public void setAddressAlign(WordField addressAlign) {
-        this.addressAlign = addressAlign;
+    public void setMemorySize(WordField memorySize) {
+        this.memorySize = memorySize;
     }
 
-    public WordField getEntrySize() {
-        return entrySize;
+    public int getFlagsField() {
+        return flagsField;
     }
 
-    public void setEntrySize(WordField entrySize) {
-        this.entrySize = entrySize;
+    public void setFlagsField(int flagsField) {
+        this.flagsField = flagsField;
     }
 
-    public EnumSet<SectionFlag> getFlags() {
-        return SectionFlag.setFromBitValue(flagsField.getValue());
+    public WordField getAlignment() {
+        return alignment;
     }
 
-    public void setFlags(EnumSet<SectionFlag> flags) {
-        long newValue = SectionFlag.toBitValue(flags);
-        flagsField = new WordField(newValue);
-    }
-}
+    public void setAlignment(WordField alignment) {
+        this.alignment = alignment;
+    }}

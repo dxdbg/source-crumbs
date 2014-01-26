@@ -26,26 +26,28 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec;
+package net.sourcecrumbs.refimpl.elf.spec.constants;
 
-import org.codehaus.preon.annotation.BoundObject;
-import org.codehaus.preon.annotation.Choices;
-import org.codehaus.preon.annotation.Choices.Choice;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 /**
- * A segment in an ELF file
+ * An ELF symbols binding
  *
  * @author mcnulty
  */
-public class ElfSegment {
+public enum SymbolBinding {
 
-    @BoundObject(
-            selectFrom = @Choices(
-                    alternatives = {
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS32", type = Elf32ProgramHeader.class),
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS64", type = Elf64ProgramHeader.class)
-                    }
-            )
-    )
-    private ElfProgramHeader programHeader;
+    @BoundEnumOption(1)
+    STB_GLOBAL,
+
+    @BoundEnumOption(2)
+    STB_WEAK,
+
+    @BoundEnumOption(13)
+    STB_LOPROC,
+
+    @BoundEnumOption(15)
+    STB_HIPROC,
+
+    UNKNOWN;
 }

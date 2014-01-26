@@ -59,6 +59,13 @@ public class ElfSection {
     /** Section header index for an undefined section reference */
     public static final int SHN_UNDEF = 0;
 
+    public static final int SHN_LORESERVE = 0xff00;
+    public static final int SHN_LOPROC = 0xff00;
+    public static final int SHN_HIPROC = 0xff1f;
+    public static final int SHN_ABS = 0xfff1;
+    public static final int SHN_COMMON = 0xfff2;
+    public static final int SHN_HIRESERVE = 0xffff;
+
     @Bound
     private ElfSectionHeader sectionHeader;
 

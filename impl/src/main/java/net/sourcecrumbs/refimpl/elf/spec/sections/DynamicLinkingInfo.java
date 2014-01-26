@@ -28,6 +28,16 @@
 
 package net.sourcecrumbs.refimpl.elf.spec.sections;
 
+import static net.sourcecrumbs.refimpl.elf.spec.constants.DataTypeSizes.*;
+
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.If;
+
+import net.sourcecrumbs.refimpl.elf.spec.Address;
+import net.sourcecrumbs.refimpl.elf.spec.constants.DynamicTag;
+
 /**
  * Dynamic linking information containing in an ELF section
  *
@@ -35,4 +45,43 @@ package net.sourcecrumbs.refimpl.elf.spec.sections;
  */
 public class DynamicLinkingInfo implements SectionContent {
 
+    @If("outer.sectionHeader.size.entrySize.value != 0")
+    @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.size.entrySize.value")
+    private DynamicEntry[] entries;
+
+    public DynamicEntry[] getEntries() {
+        return entries;
+    }
+
+    public void setEntries(DynamicEntry[] entries) {
+        this.entries = entries;
+    }
+
+    /**
+     * An entry in a dynamic linking section
+     */
+    public static class DynamicEntry {
+
+        @BoundNumber(size= ElfWord)
+        private DynamicTag tag;
+
+        @Bound
+        private Address value;
+
+        public DynamicTag getTag() {
+            return tag;
+        }
+
+        public void setTag(DynamicTag tag) {
+            this.tag = tag;
+        }
+
+        public Address getValue() {
+            return value;
+        }
+
+        public void setValue(Address value) {
+            this.value = value;
+        }
+    }
 }
