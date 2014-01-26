@@ -47,9 +47,9 @@ import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
 @ImportStatic(ElfClass.class)
 public class SymbolTable implements SectionContent {
 
-    @If("outer.sectionHeader.size.entrySize.value != 0")
+    @If("outer.sectionHeader.entrySize.value > 0")
     @BoundList(
-            size = "outer.sectionHeader.size.value / outer.sectionHeader.size.entrySize.value",
+            size = "outer.sectionHeader.size.value / outer.sectionHeader.entrySize.value",
             selectFrom = @Choices(
                     alternatives = {
                             @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS32", type = Elf32Symbol.class),

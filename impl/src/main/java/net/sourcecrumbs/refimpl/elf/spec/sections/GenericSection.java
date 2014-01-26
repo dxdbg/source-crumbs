@@ -39,4 +39,12 @@ public class GenericSection implements SectionContent {
 
     @BoundList(size = "outer.sectionHeader.size.value", type=Byte.class)
     protected byte[] data;
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
 }

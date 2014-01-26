@@ -49,7 +49,7 @@ public class ElfFile {
     @Bound
     private ElfHeader header;
 
-    @If("header.numProgramHeaders > 0 && header.programHeaderSize != 0")
+    @If("header.numProgramHeaders > 0 && header.programHeaderSize > 0")
     @BoundList(type = ElfSegment.class, size = "header.numProgramHeaders")
     @AbsoluteOffset(value = "header.programHeaderOffset.value * 8", adjustBitStream = true)
     private ElfSegment[] segments;
@@ -71,9 +71,7 @@ public class ElfFile {
                 StringTable table = (StringTable)shStrTable.getSectionContent();
                 for (ElfSection section : sections) {
                     String name = table.getString(section.getSectionHeader().getNameIndex());
-                    if (!name.isEmpty()) {
-                        sectionsByName.put(name, section);
-                    }
+                    sectionsByName.put(name, section);
                 }
             }
         }

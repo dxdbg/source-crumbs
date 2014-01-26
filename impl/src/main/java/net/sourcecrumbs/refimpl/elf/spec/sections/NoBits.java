@@ -33,6 +33,6 @@ package net.sourcecrumbs.refimpl.elf.spec.sections;
  *
  * @author mcnulty
  */
-public class NoBits implements SectionContent {
+public class NoBits extends GenericSection {
 
 }

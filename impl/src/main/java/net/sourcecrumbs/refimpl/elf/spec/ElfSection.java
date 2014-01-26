@@ -86,7 +86,6 @@ public class ElfSection {
             )
     )
     @AbsoluteOffset(value = "sectionHeader.offset.value * 8", adjustBitStream = false)
-    @LazyLoading
     private SectionContent sectionContent;
 
     public ElfSectionHeader getSectionHeader() {

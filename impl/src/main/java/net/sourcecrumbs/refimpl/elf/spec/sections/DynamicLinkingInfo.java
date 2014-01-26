@@ -45,8 +45,8 @@ import net.sourcecrumbs.refimpl.elf.spec.constants.DynamicTag;
  */
 public class DynamicLinkingInfo implements SectionContent {
 
-    @If("outer.sectionHeader.size.entrySize.value != 0")
-    @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.size.entrySize.value")
+    @If("outer.sectionHeader.entrySize.value > 0")
+    @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.entrySize.value")
     private DynamicEntry[] entries;
 
     public DynamicEntry[] getEntries() {

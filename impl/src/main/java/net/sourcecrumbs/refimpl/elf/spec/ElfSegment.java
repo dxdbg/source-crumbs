@@ -31,19 +31,23 @@ package net.sourcecrumbs.refimpl.elf.spec;
 import org.codehaus.preon.annotation.BoundObject;
 import org.codehaus.preon.annotation.Choices;
 import org.codehaus.preon.annotation.Choices.Choice;
+import org.codehaus.preon.el.ImportStatic;
+
+import net.sourcecrumbs.refimpl.elf.spec.constants.ElfClass;
 
 /**
  * A segment in an ELF file
  *
  * @author mcnulty
  */
+@ImportStatic(ElfClass.class)
 public class ElfSegment {
 
     @BoundObject(
             selectFrom = @Choices(
                     alternatives = {
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS32", type = Elf32ProgramHeader.class),
-                            @Choice(condition = "outer.outer.header.ident.elfClass == ElfClass.ELFCLASS64", type = Elf64ProgramHeader.class)
+                            @Choice(condition = "outer.header.ident.elfClass == ElfClass.ELFCLASS32", type = Elf32ProgramHeader.class),
+                            @Choice(condition = "outer.header.ident.elfClass == ElfClass.ELFCLASS64", type = Elf64ProgramHeader.class)
                     }
             )
     )

@@ -40,7 +40,7 @@ import net.sourcecrumbs.refimpl.elf.spec.rel.AddendRelocation;
  */
 public class AddendRelocationTable implements SectionContent {
 
-    @If("outer.sectionHeader.size.entrySize.value != 0")
-    @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.size.entrySize.value")
+    @If("outer.sectionHeader.entrySize.value > 0")
+    @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.entrySize.value")
     private AddendRelocation[] relocations;
 }

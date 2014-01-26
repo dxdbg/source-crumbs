@@ -39,9 +39,9 @@ public class StringTable extends GenericSection {
 
     public String getString(int index) {
         if (index >= 0 && index <= data.length) {
-            int size = index;
-            for (; data[size] != '\0'; size++);
-            return new String(data, index, size, StandardCharsets.US_ASCII);
+            int end = index;
+            for (; data[end] != 0x00 ; end++);
+            return new String(data, index, end-index, StandardCharsets.US_ASCII);
         }
 
         return "";

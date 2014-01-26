@@ -28,8 +28,11 @@
 
 package net.sourcecrumbs.refimpl.elf.spec.sections;
 
+import java.util.List;
+
 import static net.sourcecrumbs.refimpl.elf.spec.constants.DataTypeSizes.*;
 
+import org.codehaus.preon.annotation.BoundBuffer;
 import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.BoundNumber;
 
@@ -40,14 +43,14 @@ import org.codehaus.preon.annotation.BoundNumber;
  */
 public class Note implements SectionContent {
 
-    @BoundList
-    private NoteEntry[] entries;
+    @BoundList(type=NoteEntry.class)
+    private List<NoteEntry> entries;
 
-    public NoteEntry[] getEntries() {
+    public List<NoteEntry> getEntries() {
         return entries;
     }
 
-    public void setEntries(NoteEntry[] entries) {
+    public void setEntries(List<NoteEntry> entries) {
         this.entries = entries;
     }
 
@@ -65,12 +68,17 @@ public class Note implements SectionContent {
         @BoundNumber(size = ElfWord)
         private int type;
 
-        // Limbo doesn't have a mod operator...
-        @BoundList(size="8*(((nameSize + 1) / 4) + ((nameSize+1) - 4*((nameSize+1)/4)))")
+        @BoundList(size="nameSize")
         private byte[] name;
 
-        @BoundList(size="8*(((descriptorSize + 1) / 4) + ((descriptorSize+1) - 4*((descriptorSize+1)/4)))")
+        @BoundList(size="nameSize - ((nameSize)/4)*4)")
+        private byte[] namePadding;
+
+        @BoundList(size="descriptorSize")
         private byte[] descriptor;
+
+        @BoundList(size="descriptorSize - ((descriptorSize)/4)*4)")
+        private byte[] descriptorPadding;
 
         public int getNameSize() {
             return nameSize;
