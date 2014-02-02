@@ -26,28 +26,12 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec.sections;
-
-import java.util.List;
-
-
-import org.codehaus.preon.annotation.BoundList;
+package net.sourcecrumbs.refimpl.elf.spec.segments;
 
 /**
- * Note information in an ELF section
+ * Marker interface for the content of a Segment
  *
  * @author mcnulty
  */
-public class Note implements SectionContent {
-
-    @BoundList(type=NoteEntry.class)
-    private List<NoteEntry> entries;
-
-    public List<NoteEntry> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(List<NoteEntry> entries) {
-        this.entries = entries;
-    }
+public interface SegmentContent {
 }

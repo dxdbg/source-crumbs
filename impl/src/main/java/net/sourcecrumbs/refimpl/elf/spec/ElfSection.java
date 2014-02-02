@@ -79,7 +79,6 @@ public class ElfSection {
                             @Choice(condition = "sectionHeader.type == SectionType.SHT_RELA", type = AddendRelocationTable.class),
                             @Choice(condition = "sectionHeader.type == SectionType.SHT_HASH", type = SymbolHashTable.class),
                             @Choice(condition = "sectionHeader.type == SectionType.SHT_DYNAMIC", type = DynamicLinkingInfo.class),
-                            @Choice(condition = "sectionHeader.type == SectionType.SHT_NOTE", type = Note.class),
                             @Choice(condition = "sectionHeader.type == SectionType.SHT_NOBITS", type = NoBits.class),
                             @Choice(condition = "sectionHeader.type == SectionType.SHT_REL", type = RelocationTable.class)
                     }
@@ -87,6 +86,8 @@ public class ElfSection {
     )
     @AbsoluteOffset(value = "sectionHeader.offset.value * 8", adjustBitStream = false)
     private SectionContent sectionContent;
+
+    private String name;
 
     public ElfSectionHeader getSectionHeader() {
         return sectionHeader;
@@ -102,5 +103,13 @@ public class ElfSection {
 
     public void setSectionContent(SectionContent sectionContent) {
         this.sectionContent = sectionContent;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

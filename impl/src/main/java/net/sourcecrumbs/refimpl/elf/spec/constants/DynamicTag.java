@@ -112,6 +112,30 @@ public enum DynamicTag {
     @BoundEnumOption(24)
     DT_BIND_NOW,
 
+    @BoundEnumOption(25)
+    DT_INIT_ARRAY,
+
+    @BoundEnumOption(26)
+    DT_FINI_ARRAY,
+
+    @BoundEnumOption(27)
+    DT_INIT_ARRAYSZ,
+
+    @BoundEnumOption(28)
+    DT_FINI_ARRAYSZ,
+
+    @BoundEnumOption(29)
+    DT_RUNPATH,
+
+    @BoundEnumOption(30)
+    DT_FLAGS,
+
+    @BoundEnumOption(32)
+    DT_PREINIT_ARRAY,
+
+    @BoundEnumOption(33)
+    DT_PREINIT_ARRAYSZ,
+
     @BoundEnumOption(0x70000000)
     DT_LOPROC,
 

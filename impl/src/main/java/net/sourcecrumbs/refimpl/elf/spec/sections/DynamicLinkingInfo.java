@@ -28,15 +28,12 @@
 
 package net.sourcecrumbs.refimpl.elf.spec.sections;
 
-import static net.sourcecrumbs.refimpl.elf.spec.constants.DataTypeSizes.*;
+import java.util.List;
 
-import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
-import org.codehaus.preon.annotation.BoundNumber;
 import org.codehaus.preon.annotation.If;
 
-import net.sourcecrumbs.refimpl.elf.spec.Address;
-import net.sourcecrumbs.refimpl.elf.spec.constants.DynamicTag;
+import net.sourcecrumbs.refimpl.elf.spec.segments.SegmentContent;
 
 /**
  * Dynamic linking information containing in an ELF section
@@ -46,42 +43,14 @@ import net.sourcecrumbs.refimpl.elf.spec.constants.DynamicTag;
 public class DynamicLinkingInfo implements SectionContent {
 
     @If("outer.sectionHeader.entrySize.value > 0")
-    @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.entrySize.value")
-    private DynamicEntry[] entries;
+    @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.entrySize.value", type=DynamicEntry.class)
+    private List<DynamicEntry> entries;
 
-    public DynamicEntry[] getEntries() {
+    public List<DynamicEntry> getEntries() {
         return entries;
     }
 
-    public void setEntries(DynamicEntry[] entries) {
+    public void setEntries(List<DynamicEntry> entries) {
         this.entries = entries;
-    }
-
-    /**
-     * An entry in a dynamic linking section
-     */
-    public static class DynamicEntry {
-
-        @BoundNumber(size= ElfWord)
-        private DynamicTag tag;
-
-        @Bound
-        private Address value;
-
-        public DynamicTag getTag() {
-            return tag;
-        }
-
-        public void setTag(DynamicTag tag) {
-            this.tag = tag;
-        }
-
-        public Address getValue() {
-            return value;
-        }
-
-        public void setValue(Address value) {
-            this.value = value;
-        }
     }
 }

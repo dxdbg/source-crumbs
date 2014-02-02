@@ -46,6 +46,8 @@ public abstract class ElfSymbol {
     /** The name index for an undefined symbol */
     public static final int STN_UNDEF = 0;
 
+    protected String name;
+
     public abstract int getNameIndex();
 
     public abstract void setNameIndex(int nameIndex);
@@ -70,8 +72,16 @@ public abstract class ElfSymbol {
 
     public abstract void setSectionIndex(short sectionIndex);
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public SymbolBinding getSymbolBinding() {
-        return EnumUtils.getBoundEnumOptionIndex(SymbolBinding.class).get(getInfo() >> 4);
+        return EnumUtils.getBoundEnumOptionIndex(SymbolBinding.class).get((long)(getInfo() >> 4));
     }
 
     public void setSymbolBinding(SymbolBinding binding) throws IllegalArgumentException {
@@ -84,7 +94,7 @@ public abstract class ElfSymbol {
     }
 
     public SymbolType getSymbolType() {
-        return EnumUtils.getBoundEnumOptionIndex(SymbolType.class).get(getInfo() & 0xf);
+        return EnumUtils.getBoundEnumOptionIndex(SymbolType.class).get((long)(getInfo() & 0xf));
     }
 
     public void setSymbolType(SymbolType symbolType) throws IllegalArgumentException {

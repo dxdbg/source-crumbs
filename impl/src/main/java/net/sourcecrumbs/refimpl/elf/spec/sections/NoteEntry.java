@@ -28,26 +28,76 @@
 
 package net.sourcecrumbs.refimpl.elf.spec.sections;
 
-import java.util.List;
-
+import static net.sourcecrumbs.refimpl.elf.spec.constants.DataTypeSizes.*;
 
 import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
 
 /**
- * Note information in an ELF section
+ * An entry in a Note section
  *
  * @author mcnulty
  */
-public class Note implements SectionContent {
+public class NoteEntry {
 
-    @BoundList(type=NoteEntry.class)
-    private List<NoteEntry> entries;
+    @BoundNumber(size = ElfWord)
+    private int nameSize;
 
-    public List<NoteEntry> getEntries() {
-        return entries;
+    @BoundNumber(size = ElfWord)
+    private int descriptorSize;
+
+    @BoundNumber(size = ElfWord)
+    private int type;
+
+    @BoundList(size="nameSize")
+    private byte[] name;
+
+    @BoundList(size="nameSize - ((nameSize)/4)*4)")
+    private byte[] namePadding;
+
+    @BoundList(size="descriptorSize")
+    private byte[] descriptor;
+
+    @BoundList(size="descriptorSize - ((descriptorSize)/4)*4)")
+    private byte[] descriptorPadding;
+
+    public int getNameSize() {
+        return nameSize;
     }
 
-    public void setEntries(List<NoteEntry> entries) {
-        this.entries = entries;
+    public void setNameSize(int nameSize) {
+        this.nameSize = nameSize;
+    }
+
+    public int getDescriptorSize() {
+        return descriptorSize;
+    }
+
+    public void setDescriptorSize(int descriptorSize) {
+        this.descriptorSize = descriptorSize;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public byte[] getName() {
+        return name;
+    }
+
+    public void setName(byte[] name) {
+        this.name = name;
+    }
+
+    public byte[] getDescriptor() {
+        return descriptor;
+    }
+
+    public void setDescriptor(byte[] descriptor) {
+        this.descriptor = descriptor;
     }
 }

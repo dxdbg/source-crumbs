@@ -26,28 +26,20 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec.sections;
+package net.sourcecrumbs.refimpl.elf.spec.segments;
 
-import java.util.List;
-
-
-import org.codehaus.preon.annotation.BoundList;
+import java.nio.charset.StandardCharsets;
 
 /**
- * Note information in an ELF section
+ * Holds information about the Interpreter used for dynamic linking and loading
  *
  * @author mcnulty
  */
-public class Note implements SectionContent {
+public class InterpreterSegment extends GenericSegment implements SegmentContent {
 
-    @BoundList(type=NoteEntry.class)
-    private List<NoteEntry> entries;
-
-    public List<NoteEntry> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(List<NoteEntry> entries) {
-        this.entries = entries;
+    public String getInterpreterPath() {
+        int end = 0;
+        for (; data[end] != 0x00; ++end);
+        return new String(data, 0, end, StandardCharsets.US_ASCII);
     }
 }

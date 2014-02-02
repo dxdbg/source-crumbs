@@ -28,26 +28,43 @@
 
 package net.sourcecrumbs.refimpl.elf.spec.sections;
 
-import java.util.List;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.util.EnumUtils;
 
-
-import org.codehaus.preon.annotation.BoundList;
+import net.sourcecrumbs.refimpl.elf.spec.Address;
+import net.sourcecrumbs.refimpl.elf.spec.WordField;
+import net.sourcecrumbs.refimpl.elf.spec.constants.DynamicTag;
 
 /**
- * Note information in an ELF section
+ * An entry in a .dynamic section or PT_DYNAMIC segment
  *
  * @author mcnulty
  */
-public class Note implements SectionContent {
+public class DynamicEntry {
 
-    @BoundList(type=NoteEntry.class)
-    private List<NoteEntry> entries;
+    @Bound
+    private WordField tagValue;
 
-    public List<NoteEntry> getEntries() {
-        return entries;
+    @Bound
+    private Address value;
+
+    public WordField getTagValue() {
+        return tagValue;
     }
 
-    public void setEntries(List<NoteEntry> entries) {
-        this.entries = entries;
+    public void setTagValue(WordField tagValue) {
+        this.tagValue = tagValue;
+    }
+
+    public DynamicTag getTag() {
+        return EnumUtils.getBoundEnumOptionIndex(DynamicTag.class).get(tagValue.getValue());
+    }
+
+    public Address getValue() {
+        return value;
+    }
+
+    public void setValue(Address value) {
+        this.value = value;
     }
 }

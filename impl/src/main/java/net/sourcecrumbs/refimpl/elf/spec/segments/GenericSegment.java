@@ -26,28 +26,25 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec.sections;
-
-import java.util.List;
-
+package net.sourcecrumbs.refimpl.elf.spec.segments;
 
 import org.codehaus.preon.annotation.BoundList;
 
 /**
- * Note information in an ELF section
+ * A generic segment that just returns the bytes from the segment
  *
  * @author mcnulty
  */
-public class Note implements SectionContent {
+public class GenericSegment implements SegmentContent {
 
-    @BoundList(type=NoteEntry.class)
-    private List<NoteEntry> entries;
+    @BoundList(size = "outer.programHeader.fileSize.value", type=byte.class)
+    protected byte[] data;
 
-    public List<NoteEntry> getEntries() {
-        return entries;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setEntries(List<NoteEntry> entries) {
-        this.entries = entries;
+    public void setData(byte[] data) {
+        this.data = data;
     }
 }

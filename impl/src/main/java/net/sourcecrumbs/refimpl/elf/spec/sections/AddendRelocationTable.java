@@ -43,4 +43,12 @@ public class AddendRelocationTable implements SectionContent {
     @If("outer.sectionHeader.entrySize.value > 0")
     @BoundList(size = "outer.sectionHeader.size.value / outer.sectionHeader.entrySize.value")
     private AddendRelocation[] relocations;
+
+    public AddendRelocation[] getRelocations() {
+        return relocations;
+    }
+
+    public void setRelocations(AddendRelocation[] relocations) {
+        this.relocations = relocations;
+    }
 }

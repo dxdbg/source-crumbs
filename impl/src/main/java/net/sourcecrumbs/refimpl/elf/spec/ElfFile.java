@@ -36,8 +36,12 @@ import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.If;
 import org.codehaus.preon.annotation.Init;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 import net.sourcecrumbs.refimpl.elf.spec.preon.AbsoluteOffset;
 import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
+import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
+import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
 
 /**
  * Top level data structure representing an ELF file
@@ -64,14 +68,32 @@ public class ElfFile {
     @Init
     public void initialize() {
 
-        // Initialize the mapping from section name to sections
+        // Populate name fields
         if (header.getSectionNameStrIndex() < sections.length && header.getSectionNameStrIndex() >= 0) {
-            ElfSection shStrTable = sections[header.getSectionNameStrIndex()];
-            if (shStrTable.getSectionContent() instanceof StringTable) {
-                StringTable table = (StringTable)shStrTable.getSectionContent();
+            ElfSection shStrTableSection = sections[header.getSectionNameStrIndex()];
+            if (shStrTableSection.getSectionContent() instanceof StringTable) {
+                StringTable shStrTable = (StringTable)shStrTableSection.getSectionContent();
                 for (ElfSection section : sections) {
-                    String name = table.getString(section.getSectionHeader().getNameIndex());
+
+                    // Set the section name
+                    String name = shStrTable.getString(section.getSectionHeader().getNameIndex());
                     sectionsByName.put(name, section);
+                    section.setName(name);
+
+                    if (section.getSectionContent() instanceof SymbolTable) {
+                        SymbolTable symbolTable = (SymbolTable)section.getSectionContent();
+                        ElfSection associatedStrTableSection = sections[section.getSectionHeader().getLink()];
+                        if (associatedStrTableSection.getSectionContent() instanceof StringTable) {
+                            StringTable associatedStrTable = (StringTable) associatedStrTableSection.getSectionContent();
+                            for (ElfSymbol symbol : symbolTable.getSymbols()) {
+                                if (symbol.getNameIndex() != 0) {
+                                    symbol.setName(associatedStrTable.getString(symbol.getNameIndex()));
+                                }else{
+                                    symbol.setName("");
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -83,5 +105,25 @@ public class ElfFile {
 
     public void setHeader(ElfHeader header) {
         this.header = header;
+    }
+
+    public ElfSegment[] getSegments() {
+        return segments;
+    }
+
+    public void setSegments(ElfSegment[] segments) {
+        this.segments = segments;
+    }
+
+    public ElfSection[] getSections() {
+        return sections;
+    }
+
+    public void setSections(ElfSection[] sections) {
+        this.sections = sections;
+    }
+
+    public ElfSection getSection(String name) {
+        return sectionsByName.get(name);
     }
 }

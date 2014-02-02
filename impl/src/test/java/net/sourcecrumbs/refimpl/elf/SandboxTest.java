@@ -28,16 +28,23 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.refimpl.BaseNativeFileTest;
+import net.sourcecrumbs.refimpl.elf.spec.ElfSegment;
 import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
+import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
+import net.sourcecrumbs.refimpl.elf.spec.segments.InterpreterSegment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -49,6 +56,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class SandboxTest extends BaseNativeFileTest {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     public void loadExec() throws Exception {
         ElfReader reader = new ElfReader();
@@ -58,6 +67,17 @@ public class SandboxTest extends BaseNativeFileTest {
 
         ElfExecutable elfExec = (ElfExecutable) exec;
         assertEquals(MachineType.EM_X86_64, elfExec.getElfFile().getHeader().getMachineType());
+
+        ((SymbolTable)elfExec.getElfFile().getSection(".dynsym").getSectionContent()).getSymbols()[1].getSymbolType();
+        for (ElfSegment segment : elfExec.getElfFile().getSegments()) {
+            if (segment.getSegmentContent() instanceof InterpreterSegment) {
+                ((InterpreterSegment) segment.getSegmentContent()).getInterpreterPath();
+            }
+        }
+
+        OutputStream jsonOutputStream = Files.newOutputStream(Paths.get("/home/mcnulty/code/native-file-tests/files/linux/gcc/4.8.2/basic-64bit-dynamic.json"));
+
+        objectMapper.writer(new DefaultPrettyPrinter()).writeValue(jsonOutputStream, elfExec.getElfFile());
     }
 
     @Override

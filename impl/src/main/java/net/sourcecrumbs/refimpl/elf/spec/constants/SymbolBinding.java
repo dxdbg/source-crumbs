@@ -37,6 +37,9 @@ import org.codehaus.preon.annotation.BoundEnumOption;
  */
 public enum SymbolBinding {
 
+    @BoundEnumOption(0)
+    STB_LOCAL,
+
     @BoundEnumOption(1)
     STB_GLOBAL,
 
