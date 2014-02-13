@@ -33,6 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -41,6 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.refimpl.BaseNativeFileTest;
+import net.sourcecrumbs.refimpl.dwarf.elf.DwarfSectionPostProcessor;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSegment;
 import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
@@ -60,7 +63,9 @@ public class SandboxTest extends BaseNativeFileTest {
 
     @Test
     public void loadExec() throws Exception {
-        ElfReader reader = new ElfReader();
+        List<ElfSectionPostProcessor> postProcessors = new ArrayList<>();
+        postProcessors.add(new DwarfSectionPostProcessor());
+        ElfReader reader = new ElfReader(postProcessors);
 
         Executable exec = reader.openExecutable(filePath);
         assertTrue(exec instanceof ElfExecutable);
@@ -75,7 +80,7 @@ public class SandboxTest extends BaseNativeFileTest {
             }
         }
 
-        OutputStream jsonOutputStream = Files.newOutputStream(Paths.get("/home/mcnulty/code/native-file-tests/files/linux/gcc/4.8.2/basic-64bit-dynamic.json"));
+        OutputStream jsonOutputStream = Files.newOutputStream(Paths.get("basic-64bit-dynamic.json"));
 
         objectMapper.writer(new DefaultPrettyPrinter()).writeValue(jsonOutputStream, elfExec.getElfFile());
     }

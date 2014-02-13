@@ -30,6 +30,8 @@ package net.sourcecrumbs.refimpl.elf;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecDecorator;
@@ -48,6 +50,7 @@ import net.sourcecrumbs.api.files.ObjectFile;
 import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 import net.sourcecrumbs.refimpl.elf.spec.ElfIdent;
+import net.sourcecrumbs.refimpl.elf.spec.ElfSection;
 import net.sourcecrumbs.refimpl.elf.spec.constants.FileType;
 import net.sourcecrumbs.refimpl.elf.spec.preon.AbsoluteOffsetCodecDecorator;
 import net.sourcecrumbs.refimpl.elf.spec.preon.ElfCodecFactory;
@@ -61,9 +64,27 @@ public class ElfReader implements BinaryReader {
 
     private static final AbsoluteOffsetCodecDecorator codecDecorator = new AbsoluteOffsetCodecDecorator();
 
+    private final List<ElfSectionPostProcessor> postProcessors = new ArrayList<>();
+
+    /**
+     * Constructors.
+     *
+     * @param postProcessors the section post processors
+     */
+    public ElfReader(List<ElfSectionPostProcessor> postProcessors) {
+        this.postProcessors.addAll(postProcessors);
+    }
+
     @Override
     public Binary open(Path path) throws IOException, UnknownFormatException {
         ElfFile elfFile = loadElfFile(path);
+
+        // Run the post-processors over the constructed file
+        for (ElfSectionPostProcessor postProcessor : postProcessors) {
+            for (ElfSection section : elfFile.getSections()) {
+                postProcessor.process(section);
+            }
+        }
 
         switch (elfFile.getHeader().getFileType()) {
             case ET_EXEC:
