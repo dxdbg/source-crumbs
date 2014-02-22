@@ -25,65 +25,88 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
+package net.sourcecrumbs.refimpl;
 
-package net.sourcecrumbs.refimpl.elf;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.refimpl.BaseNativeFileTest;
 import net.sourcecrumbs.refimpl.dwarf.elf.DwarfSectionPostProcessor;
-import net.sourcecrumbs.refimpl.elf.spec.ElfSegment;
-import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
-import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
-import net.sourcecrumbs.refimpl.elf.spec.segments.InterpreterSegment;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import net.sourcecrumbs.refimpl.elf.ElfReader;
+import net.sourcecrumbs.refimpl.elf.ElfSectionPostProcessor;
 
 /**
- * Throw-away test used to experiment with the library
+ * A test that validates reading in all files from the native-file-tests repository doesn't result in an exception
  *
  * @author mcnulty
  */
-@Ignore
-public class SandboxTest extends BaseNativeFileTest {
+@RunWith(Parameterized.class)
+public class FileReadTest extends BaseNativeFileTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Test
-    public void loadExec() throws Exception {
+    private static URL nativeFileTestsBaseUrl;
+    private static URL indexUrl;
+    static {
+        try {
+            nativeFileTestsBaseUrl = new URL("http://mcnulty.github.io/native-file-tests/");
+            indexUrl = new URL(nativeFileTestsBaseUrl, "index.json");
+        }catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static ElfReader reader;
+    static {
         List<ElfSectionPostProcessor> postProcessors = new ArrayList<>();
         postProcessors.add(new DwarfSectionPostProcessor());
-        ElfReader reader = new ElfReader(postProcessors);
+        reader = new ElfReader(postProcessors);
+    }
 
-        Executable exec = reader.openExecutable(filePath);
-        assertTrue(exec instanceof ElfExecutable);
+    private final URL fileUrl;
 
-        ElfExecutable elfExec = (ElfExecutable) exec;
-        assertEquals(MachineType.EM_X86_64, elfExec.getElfFile().getHeader().getMachineType());
-
-        ((SymbolTable)elfExec.getElfFile().getSection(".dynsym").getSectionContent()).getSymbols()[1].getSymbolType();
-        for (ElfSegment segment : elfExec.getElfFile().getSegments()) {
-            if (segment.getSegmentContent() instanceof InterpreterSegment) {
-                ((InterpreterSegment) segment.getSegmentContent()).getInterpreterPath();
+    @Parameters
+    public static Collection<Object[]> getUrls() throws IOException {
+        try (InputStream indexStream = indexUrl.openStream()) {
+            NativeFileTestsIndex index = objectMapper.readValue(indexStream, NativeFileTestsIndex.class);
+            List<Object[]> urls = new ArrayList<>();
+            for (String file : index.getFiles()) {
+                urls.add(new URL[]{ new URL(nativeFileTestsBaseUrl, file) });
             }
+            return urls;
         }
+    }
 
-        objectMapper.writer(new DefaultPrettyPrinter()).writeValue(System.out, elfExec.getElfFile());
+    /**
+     * Constructor.
+     *
+     * @param fileUrl the file
+     */
+    public FileReadTest(URL fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    @Test
+    public void readFile() throws Exception {
+
+        // Validate that this call does not cause any exceptions
+        System.out.println(fileUrl);
+        reader.open(filePath);
     }
 
     @Override
     protected URL getFileUrl() throws MalformedURLException {
-        return new URL("http://mcnulty.github.io/native-file-tests/files/linux/gcc/4.8.2/basic-64bit-dynamic");
+        return fileUrl;
     }
 }
