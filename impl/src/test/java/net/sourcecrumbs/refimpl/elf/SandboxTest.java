@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.refimpl.BaseNativeFileTest;
-import net.sourcecrumbs.refimpl.dwarf.elf.DwarfSectionPostProcessor;
+import net.sourcecrumbs.refimpl.dwarf.v4.DwarfV4SectionPostProcessor;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSegment;
 import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
@@ -63,7 +63,7 @@ public class SandboxTest extends BaseNativeFileTest {
     @Test
     public void loadExec() throws Exception {
         List<ElfSectionPostProcessor> postProcessors = new ArrayList<>();
-        postProcessors.add(new DwarfSectionPostProcessor());
+        postProcessors.add(new DwarfV4SectionPostProcessor());
         ElfReader reader = new ElfReader(postProcessors);
 
         Executable exec = reader.openExecutable(filePath);

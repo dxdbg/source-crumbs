@@ -26,21 +26,13 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf.elf;
-
-import net.sourcecrumbs.api.files.UnknownFormatException;
-import net.sourcecrumbs.refimpl.elf.ElfSectionPostProcessor;
-import net.sourcecrumbs.refimpl.elf.spec.ElfSection;
+package net.sourcecrumbs.refimpl.dwarf.v4.entries;
 
 /**
- * Post-processor for ELF sections that injects DWARF debugging information
+ * Represents a Debugging Information Entry in DWARF data
  *
  * @author mcnulty
  */
-public class DwarfSectionPostProcessor implements ElfSectionPostProcessor {
+public class DebuggingInformationEntry {
 
-    @Override
-    public void process(ElfSection section) throws UnknownFormatException {
-        // TODO parse DWARF sections here
-    }
 }
