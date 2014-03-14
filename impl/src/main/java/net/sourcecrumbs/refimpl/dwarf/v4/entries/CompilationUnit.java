@@ -43,6 +43,6 @@ public class CompilationUnit {
 
     // The length of individual DIEs is not available during parsing because it depends on the attribute encodings
     // represented in the .debug_abbrev section -- the DIEs are initialized once the .debug_abbrev data is available
-    @BoundList(size = "header.unitLength.length", type=byte.class)
+    @BoundList(size = "header.unitLength.length - 2 - (header.unitLength.offsetLength/8) - 1", type=byte.class)
     private byte[] compilationUnitContent;
 }

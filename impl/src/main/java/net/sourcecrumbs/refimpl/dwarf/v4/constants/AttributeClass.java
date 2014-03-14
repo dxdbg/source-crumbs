@@ -26,16 +26,24 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf.v4.preon;
+package net.sourcecrumbs.refimpl.dwarf.v4.constants;
 
 /**
- * An interface that provides a way to link elements in a list together
+ * Enumeration for attribute classes in attribute encodings
  *
  * @author mcnulty
  */
-public interface LinkedElement {
+public enum AttributeClass {
 
-    LinkedElement getPreviousElement();
-
-    void setPreviousElement(LinkedElement previousElement);
+    address,
+    block,
+    constant,
+    exprloc,
+    flag,
+    lineptr,
+    loclistptr,
+    macptr,
+    rangelistptr,
+    reference,
+    string;
 }

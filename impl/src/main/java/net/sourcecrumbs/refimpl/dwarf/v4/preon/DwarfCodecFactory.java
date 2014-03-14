@@ -32,9 +32,12 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
 import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.DefaultCodecFactory;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.binding.BindingDecorator;
 import org.codehaus.preon.codec.CompoundCodecFactory;
 
 import net.sourcecrumbs.refimpl.dwarf.v4.types.LEB128;
@@ -46,7 +49,13 @@ import net.sourcecrumbs.refimpl.dwarf.v4.types.LEB128;
  */
 public class DwarfCodecFactory implements CodecFactory {
 
-    private CodecFactory actualFactory = new CompoundCodecFactory();
+    private final DefaultCodecFactory actualFactory;
+    private final CodecDecorator[] codecDecorators;
+
+    public DwarfCodecFactory(CodecDecorator[] codecDecorators) {
+        this.actualFactory = new DefaultCodecFactory();
+        this.codecDecorators = codecDecorators;
+    }
 
     @Override
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
@@ -54,7 +63,7 @@ public class DwarfCodecFactory implements CodecFactory {
             if (LEB128.class.equals(type)) {
                 return (Codec<T>) createLEB128Codec(metadata);
             }else if (List.class.equals(type)) {
-                return (Codec<T>) createTerminatedListCodec(metadata, context);
+                return (Codec<T>) createTerminatedListCodec(metadata);
             }
         }
 
@@ -70,10 +79,11 @@ public class DwarfCodecFactory implements CodecFactory {
         return null;
     }
 
-    private ElementTerminatedListCodec<?> createTerminatedListCodec(AnnotatedElement metadata, ResolverContext context) {
+    private ElementTerminatedListCodec<?> createTerminatedListCodec(AnnotatedElement metadata) {
         if (metadata != null && metadata.isAnnotationPresent(ElementTerminatedList.class)) {
             ElementTerminatedList annotation = metadata.getAnnotation(ElementTerminatedList.class);
-            return new ElementTerminatedListCodec<>(actualFactory.create(metadata, annotation.elementType(), context));
+            return new ElementTerminatedListCodec<>(actualFactory.create(metadata, annotation.elementType(),
+                    new CodecFactory[] {this}, codecDecorators, new BindingDecorator[0]));
         }
 
         return null;

@@ -46,32 +46,49 @@ import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 
 /**
- * A codec to decode/encode a ElementTerminatedList
+ * A codec to decode/encode a tree stored in prefix order as a list
  *
  * @author mcnulty
  */
-public class ElementTerminatedListCodec<T extends ListTerminator> implements Codec<List<T>> {
+public class ListTreeNodeCodec<T extends ListTreeNode> implements Codec<T> {
 
     private final Codec<T> elementCodec;
 
-    public ElementTerminatedListCodec(Codec<T> elementCodec) {
+    public ListTreeNodeCodec(Codec<T> elementCodec) {
         this.elementCodec = elementCodec;
     }
 
     @Override
-    public List<T> decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException {
-        List<T> output = new LinkedList<>();
-        T element;
-        do {
-            element = elementCodec.decode(buffer, resolver, builder);
-            output.add(element);
-        }while(!element.terminatesList());
+    public T decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException {
+        // To build the tree, track the previous node.
+        // - If the previous node does not have children, the previous node is the sibling of the current node (i.e.,
+        //   they share a parent
+        // - If the previous node does have children, the previous node is the parent of the current node
 
-        return output;
+        // The root of the tree, this will be returned
+        T root = elementCodec.decode(buffer, resolver, builder);
+        root.setParent(null);
+
+        T previous = root;
+        while (!previous.terminatesList()) {
+            T current = elementCodec.decode(buffer, resolver, builder);
+
+            // The list terminator is not actually an element so don't add it to the list
+            if (!current.terminatesList()) {
+                if (!previous.hasChildren()) {
+                    current.setParent(previous.getParent());
+                }else{
+                    current.setParent(previous);
+                }
+            }
+            previous = current;
+        }
+
+        return root;
     }
 
     @Override
-    public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
+    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
         // TODO
     }
 
@@ -136,6 +153,6 @@ public class ElementTerminatedListCodec<T extends ListTerminator> implements Cod
 
     @Override
     public Class<?> getType() {
-        return List.class;
+        return ListTreeNode.class;
     }
 }

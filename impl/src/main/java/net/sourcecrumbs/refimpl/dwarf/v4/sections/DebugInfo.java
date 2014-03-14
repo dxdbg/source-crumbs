@@ -44,6 +44,7 @@ public class DebugInfo implements SectionContent {
 
     public static final String SECTION_NAME = ".debug_info";
 
+    // This assumes that the data used to decode this section is limited to just this section
     @BoundList(type = CompilationUnit.class)
     private List<CompilationUnit> compilationUnits;
 }

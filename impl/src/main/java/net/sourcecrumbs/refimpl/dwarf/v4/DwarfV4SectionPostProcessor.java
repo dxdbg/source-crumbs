@@ -28,9 +28,21 @@
 
 package net.sourcecrumbs.refimpl.dwarf.v4;
 
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.Codecs;
+import org.codehaus.preon.DecodingException;
+
 import net.sourcecrumbs.api.files.UnknownFormatException;
+import net.sourcecrumbs.refimpl.dwarf.v4.preon.DwarfCodecFactory;
+import net.sourcecrumbs.refimpl.dwarf.v4.preon.ListTreeNodeCodecDecorator;
+import net.sourcecrumbs.refimpl.dwarf.v4.sections.DebugAbbrev;
+import net.sourcecrumbs.refimpl.dwarf.v4.sections.DebugInfo;
 import net.sourcecrumbs.refimpl.elf.ElfSectionPostProcessor;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSection;
+import net.sourcecrumbs.refimpl.elf.spec.sections.GenericSection;
+import net.sourcecrumbs.refimpl.elf.spec.sections.SectionContent;
 
 /**
  * Post-processor for ELF sections that injects DWARF version 4 debugging information objects
@@ -39,7 +51,44 @@ import net.sourcecrumbs.refimpl.elf.spec.ElfSection;
  */
 public class DwarfV4SectionPostProcessor implements ElfSectionPostProcessor {
 
+    private final DwarfCodecFactory dwarfCodecFactory;
+    private final CodecDecorator[] codecDecorators;
+
+    public DwarfV4SectionPostProcessor() {
+        this.codecDecorators = new CodecDecorator[]{ new ListTreeNodeCodecDecorator() };
+        this.dwarfCodecFactory = new DwarfCodecFactory(codecDecorators);
+    }
+
     @Override
     public void process(ElfSection section) throws UnknownFormatException {
+        SectionContent sectionContent = section.getSectionContent();
+        if (sectionContent instanceof GenericSection) {
+
+            Class<? extends SectionContent> sectionClass;
+            switch (section.getName()) {
+                case DebugInfo.SECTION_NAME:
+                    sectionClass = DebugInfo.class;
+                    break;
+                case DebugAbbrev.SECTION_NAME:
+                    sectionClass = DebugAbbrev.class;
+                    break;
+                default:
+                    sectionClass = null;
+                    break;
+            }
+            if (sectionClass != null) {
+                // Replace the content in the section with the DWARF data objects
+                byte[] data = ((GenericSection) sectionContent).getData();
+
+                try {
+                    Codec<? extends SectionContent> codec = Codecs.create(sectionClass,
+                            new CodecFactory[] { dwarfCodecFactory }, codecDecorators);
+                    SectionContent newContent = Codecs.decode(codec, data);
+                    section.setSectionContent(newContent);
+                }catch (DecodingException e) {
+                    throw new UnknownFormatException(e);
+                }
+            }
+        }
     }
 }

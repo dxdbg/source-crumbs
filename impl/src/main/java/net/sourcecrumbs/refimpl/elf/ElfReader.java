@@ -79,13 +79,6 @@ public class ElfReader implements BinaryReader {
     public Binary open(Path path) throws IOException, UnknownFormatException {
         ElfFile elfFile = loadElfFile(path);
 
-        // Run the post-processors over the constructed file
-        for (ElfSectionPostProcessor postProcessor : postProcessors) {
-            for (ElfSection section : elfFile.getSections()) {
-                postProcessor.process(section);
-            }
-        }
-
         switch (elfFile.getHeader().getFileType()) {
             case ET_EXEC:
                 return new ElfExecutable(elfFile);
@@ -179,7 +172,16 @@ public class ElfReader implements BinaryReader {
             Codec<ElfFile> fileCodec = Codecs.create(ElfFile.class,
                     new CodecFactory[]{elfCodecFactory},
                     new CodecDecorator[]{codecDecorator});
-            return Codecs.decode(fileCodec, path.toFile());
+            ElfFile elfFile = Codecs.decode(fileCodec, path.toFile());
+
+            // Run the post-processors over the constructed file
+            for (ElfSectionPostProcessor postProcessor : postProcessors) {
+                for (ElfSection section : elfFile.getSections()) {
+                    postProcessor.process(section);
+                }
+            }
+
+            return elfFile;
         }catch (DecodingException e) {
             throw new UnknownFormatException(e);
         }

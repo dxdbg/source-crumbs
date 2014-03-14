@@ -28,9 +28,7 @@
 
 package net.sourcecrumbs.refimpl.dwarf.v4.entries;
 
-import java.util.List;
-
-import net.sourcecrumbs.refimpl.dwarf.v4.preon.ElementTerminatedList;
+import org.codehaus.preon.annotation.Bound;
 
 /**
  * An abbreviation table from the .debug_abbrev section that may be referenced by multiple compilation units
@@ -39,6 +37,6 @@ import net.sourcecrumbs.refimpl.dwarf.v4.preon.ElementTerminatedList;
  */
 public class AbbreviationTable {
 
-    @ElementTerminatedList(elementType = AbbreviationDeclaration.class)
-    private List<AbbreviationDeclaration> abbreviationDeclarations;
+    @Bound
+    private AbbreviationDeclaration root;
 }

@@ -28,11 +28,18 @@
 
 package net.sourcecrumbs.refimpl.dwarf.v4.preon;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Annotation used to indicate that a field is a list that is terminated by a specific element
  *
  * @author mcnulty
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
 public @interface ElementTerminatedList {
 
     /**

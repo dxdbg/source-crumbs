@@ -38,15 +38,14 @@ import org.codehaus.preon.el.ImportStatic;
  *
  * @author mcnulty
  */
-@ImportStatic(InitialLength.class)
 public class InitialLength {
 
-    private static final int X64_LENGTH_SENTINEL = 0xffffffff;
+    private static final int X64_LENGTH_SENTINEL = -1;
 
     @BoundNumber(size = "32")
     private int x32length;
 
-    @If("x32length == InitialLength.X64_LENGTH_SENTINEL")
+    @If("x32length == (0 - 1)") // Dirty hack to get around Limbo's lack of unary - operator
     @BoundNumber(size = "64")
     private long x64length;
 

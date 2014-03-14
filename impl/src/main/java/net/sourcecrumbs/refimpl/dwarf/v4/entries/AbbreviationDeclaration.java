@@ -28,17 +28,19 @@
 
 package net.sourcecrumbs.refimpl.dwarf.v4.entries;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundNumber;
 import org.codehaus.preon.annotation.If;
+import org.codehaus.preon.util.EnumUtils;
 
+import net.sourcecrumbs.refimpl.dwarf.v4.constants.AbbreviationTag;
 import net.sourcecrumbs.refimpl.dwarf.v4.constants.ChildrenPresent;
 import net.sourcecrumbs.refimpl.dwarf.v4.preon.ElementTerminatedList;
 import net.sourcecrumbs.refimpl.dwarf.v4.preon.LEBSigned;
-import net.sourcecrumbs.refimpl.dwarf.v4.preon.LinkedElement;
-import net.sourcecrumbs.refimpl.dwarf.v4.preon.ListTerminator;
+import net.sourcecrumbs.refimpl.dwarf.v4.preon.ListTreeNode;
 import net.sourcecrumbs.refimpl.dwarf.v4.types.LEB128;
 
 /**
@@ -46,49 +48,62 @@ import net.sourcecrumbs.refimpl.dwarf.v4.types.LEB128;
  *
  * @author mcnulty
  */
-public class AbbreviationDeclaration implements ListTerminator, LinkedElement {
+public class AbbreviationDeclaration implements ListTreeNode {
 
     @Bound
     @LEBSigned(false)
     private LEB128 code;
 
-    @If("! code.value == 0")
+    @If("code.value > 0 || code.value < 0")
     @Bound
     @LEBSigned(false)
-    private LEB128 tag;
+    private LEB128 tagValue;
 
-    @If("! code.value == 0")
+    @If("code.value > 0 || code.value < 0")
     @BoundNumber(size = "8")
     private ChildrenPresent childrenPresent;
 
-    @If("! code.value == 0")
+    @If("code.value > 0 || code.value < 0")
+    @Bound
     @ElementTerminatedList(elementType=AttributeSpecification.class)
     private List<AttributeSpecification> specifications;
 
-    private AbbreviationDeclaration previousDecl = null;
+    private AbbreviationDeclaration parent;
+
+    private List<AbbreviationDeclaration> children = new LinkedList<>();
+
+    @Override
+    public AbbreviationDeclaration getParent() {
+        return parent;
+    }
+
+    @Override
+    public void setParent(ListTreeNode parent) {
+        if (parent instanceof AbbreviationDeclaration) {
+            this.parent = (AbbreviationDeclaration)parent;
+            this.parent.children.add(this);
+        }
+    }
+
+    @Override
+    public boolean hasChildren() {
+        return childrenPresent != null && childrenPresent == ChildrenPresent.DW_CHILDREN_yes;
+    }
 
     @Override
     public boolean terminatesList() {
-        // Case 1: the abbreviation code is 0 and the previous declaration was the root in the declaration tree
-        // TODO this is more complex that originally expected
-        if (previousDecl != null) {
-            return (code.getValue() == 0 && previousDecl.getPreviousElement() == null)
-                    || (code.getValue() == 0 && previousDecl.code.getValue() == 0);
-        }else{
-            // If the previousDecl wasn't set, return true prematurely with the intent to stop processing sooner
-            return true;
-        }
+        return code.getValue() == 0;
     }
 
-    @Override
-    public LinkedElement getPreviousElement() {
-        return previousDecl;
+    public long getCode() {
+        return code.getValue();
     }
 
-    @Override
-    public void setPreviousElement(LinkedElement previousElement) {
-        if (previousElement instanceof AbbreviationDeclaration) {
-            this.previousDecl = (AbbreviationDeclaration)previousElement;
-        }
+    public AbbreviationTag getTag() {
+        return EnumUtils.getBoundEnumOptionIndex(AbbreviationTag.class).get(tagValue.getValue());
+    }
+
+    public List<AbbreviationDeclaration> getChildren() {
+        return children;
     }
 }

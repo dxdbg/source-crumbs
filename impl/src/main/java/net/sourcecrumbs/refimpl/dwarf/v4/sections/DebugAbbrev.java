@@ -33,16 +33,18 @@ import java.util.List;
 import org.codehaus.preon.annotation.BoundList;
 
 import net.sourcecrumbs.refimpl.dwarf.v4.entries.AbbreviationTable;
+import net.sourcecrumbs.refimpl.elf.spec.sections.SectionContent;
 
 /**
  * Represents a .debug_abbrev section in an ELF file
  *
  * @author mcnulty
  */
-public class DebugAbbrev {
+public class DebugAbbrev implements SectionContent {
 
     public static final String SECTION_NAME = ".debug_abbrev";
 
+    // This assumes that the data used to decode this section is limited to just this section
     @BoundList(type = AbbreviationTable.class)
     private List<AbbreviationTable> abbreviationTables;
 }

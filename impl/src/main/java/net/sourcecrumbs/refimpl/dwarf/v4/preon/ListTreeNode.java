@@ -26,42 +26,18 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf.v4.entries;
-
-import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.util.EnumUtils;
-
-import net.sourcecrumbs.refimpl.dwarf.v4.constants.AttributeForm;
-import net.sourcecrumbs.refimpl.dwarf.v4.constants.AttributeName;
-import net.sourcecrumbs.refimpl.dwarf.v4.preon.LEBSigned;
-import net.sourcecrumbs.refimpl.dwarf.v4.preon.ListTerminator;
-import net.sourcecrumbs.refimpl.dwarf.v4.types.LEB128;
+package net.sourcecrumbs.refimpl.dwarf.v4.preon;
 
 /**
- * Describes an attribute contained in a DIE
+ * Interface for a tree node represented as an element of a list
  *
  * @author mcnulty
  */
-public class AttributeSpecification implements ListTerminator {
+public interface ListTreeNode extends ListTerminator {
 
-    @Bound
-    @LEBSigned(false)
-    private LEB128 nameValue;
+    ListTreeNode getParent();
 
-    @Bound
-    @LEBSigned(false)
-    private LEB128 formValue;
+    void setParent(ListTreeNode parent);
 
-    @Override
-    public boolean terminatesList() {
-        return nameValue.getValue() == 0 && formValue.getValue() == 0;
-    }
-
-    public AttributeName getName() {
-        return EnumUtils.getBoundEnumOptionIndex(AttributeName.class).get(nameValue.getValue());
-    }
-
-    public AttributeForm getForm() {
-        return EnumUtils.getBoundEnumOptionIndex(AttributeForm.class).get(formValue.getValue());
-    }
+    boolean hasChildren();
 }

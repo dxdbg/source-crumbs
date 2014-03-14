@@ -26,42 +26,26 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf.v4.entries;
+package net.sourcecrumbs.refimpl.dwarf.v4.preon;
 
-import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.util.EnumUtils;
+import java.lang.reflect.AnnotatedElement;
 
-import net.sourcecrumbs.refimpl.dwarf.v4.constants.AttributeForm;
-import net.sourcecrumbs.refimpl.dwarf.v4.constants.AttributeName;
-import net.sourcecrumbs.refimpl.dwarf.v4.preon.LEBSigned;
-import net.sourcecrumbs.refimpl.dwarf.v4.preon.ListTerminator;
-import net.sourcecrumbs.refimpl.dwarf.v4.types.LEB128;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
+import org.codehaus.preon.ResolverContext;
 
 /**
- * Describes an attribute contained in a DIE
+ * Provides a codec decorator to construct a tree stored in prefix order as a list
  *
  * @author mcnulty
  */
-public class AttributeSpecification implements ListTerminator {
-
-    @Bound
-    @LEBSigned(false)
-    private LEB128 nameValue;
-
-    @Bound
-    @LEBSigned(false)
-    private LEB128 formValue;
+public class ListTreeNodeCodecDecorator implements CodecDecorator {
 
     @Override
-    public boolean terminatesList() {
-        return nameValue.getValue() == 0 && formValue.getValue() == 0;
-    }
-
-    public AttributeName getName() {
-        return EnumUtils.getBoundEnumOptionIndex(AttributeName.class).get(nameValue.getValue());
-    }
-
-    public AttributeForm getForm() {
-        return EnumUtils.getBoundEnumOptionIndex(AttributeForm.class).get(formValue.getValue());
+    public <T> Codec<T> decorate(Codec<T> codec, AnnotatedElement metadata, Class<T> type, ResolverContext context) {
+        if (ListTreeNode.class.isAssignableFrom(type)) {
+            return new ListTreeNodeCodec(codec);
+        }
+        return codec;
     }
 }
