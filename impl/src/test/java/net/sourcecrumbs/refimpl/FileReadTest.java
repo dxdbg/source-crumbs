@@ -42,7 +42,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.sourcecrumbs.refimpl.dwarf.v4.DwarfV4SectionPostProcessor;
+import net.sourcecrumbs.refimpl.dwarf.DwarfSectionPostProcessor;
 import net.sourcecrumbs.refimpl.elf.ElfReader;
 import net.sourcecrumbs.refimpl.elf.ElfSectionPostProcessor;
 
@@ -70,7 +70,7 @@ public class FileReadTest extends BaseNativeFileTest {
     private static ElfReader reader;
     static {
         List<ElfSectionPostProcessor> postProcessors = new ArrayList<>();
-        postProcessors.add(new DwarfV4SectionPostProcessor());
+        postProcessors.add(new DwarfSectionPostProcessor());
         reader = new ElfReader(postProcessors);
     }
 

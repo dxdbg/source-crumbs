@@ -26,42 +26,53 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
-
-import org.junit.Test;
-
-import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
-
-import static junit.framework.Assert.assertEquals;
+package net.sourcecrumbs.refimpl.dwarf.constants;
 
 /**
- * Unit test for LEB128 decoding and encoding
+ * Enumeration for standard opcodes in a line number program
  *
  * @author mcnulty
  */
-public class LEB128Test {
+public enum StandardOpcode {
 
-    @Test
-    public void unsignedDecode() {
+    DW_LNS_extended(StandardOpcodeValues.DW_LNS_extended),
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, false).getValue());
-        assertEquals(127, new LEB128(new byte[]{ 127 }, false).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)0x80, 1 }, false).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)0x81, 1 }, false).getValue());
-        assertEquals(130, new LEB128(new byte[]{ (byte)0x82, 1 }, false).getValue());
-        assertEquals(12857, new LEB128(new byte[]{ (byte)(0x80 + 57), 100 }, false).getValue());
+    DW_LNS_copy(StandardOpcodeValues.DW_LNS_copy),
+
+    DW_LNS_advance_pc(StandardOpcodeValues.DW_LNS_advance_pc),
+
+    DW_LNS_advance_line(StandardOpcodeValues.DW_LNS_advance_line),
+
+    DW_LNS_set_file(StandardOpcodeValues.DW_LNS_set_file),
+
+    DW_LNS_set_column(StandardOpcodeValues.DW_LNS_set_column),
+
+    DW_LNS_negate_stmt(StandardOpcodeValues.DW_LNS_negate_stmt),
+
+    DW_LNS_set_basic_block(StandardOpcodeValues.DW_LNS_set_basic_block),
+
+    DW_LNS_const_add_pc(StandardOpcodeValues.DW_LNS_const_add_pc),
+
+    DW_LNS_fixed_advance_pc(StandardOpcodeValues.DW_LNS_fixed_advance_pc),
+
+    DW_LNS_set_prologue_end(StandardOpcodeValues.DW_LNS_set_prologue_end),
+
+    DW_LNS_set_epilogue_begin(StandardOpcodeValues.DW_LNS_set_epilogue_begin),
+
+    DW_LNS_set_isa(StandardOpcodeValues.DW_LNS_set_isa);
+
+    private final byte value;
+
+    private StandardOpcode(byte value) {
+        this.value = value;
     }
 
-    @Test
-    public void signedDecode() {
-
-        assertEquals(2, new LEB128(new byte[]{ 2 }, true).getValue());
-        assertEquals(-2, new LEB128(new byte[]{ 0x7e }, true).getValue());
-        assertEquals(127, new LEB128(new byte[]{ (byte)(127+0x80), 0 }, true).getValue());
-        assertEquals(-127, new LEB128(new byte[]{ (byte)(1+0x80), 0x7f }, true).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)(0x80), 1 }, true).getValue());
-        assertEquals(-128, new LEB128(new byte[]{ (byte)(0x80), 0x7f }, true).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)(1+0x80), 1 }, true).getValue());
-        assertEquals(-129, new LEB128(new byte[]{ (byte)(0x7f+0x80), 0x7e }, true).getValue());
+    public static StandardOpcode getOpcode(byte value) {
+        for (StandardOpcode opcode : StandardOpcode.values()) {
+            if (opcode.value == value) {
+                return opcode;
+            }
+        }
+        return null;
     }
 }

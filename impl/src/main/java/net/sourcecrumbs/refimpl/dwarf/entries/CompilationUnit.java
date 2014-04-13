@@ -26,42 +26,23 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
+package net.sourcecrumbs.refimpl.dwarf.entries;
 
-import org.junit.Test;
-
-import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
-
-import static junit.framework.Assert.assertEquals;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundList;
 
 /**
- * Unit test for LEB128 decoding and encoding
+ * Represents a compilation unit in a DWARF file--includes the header and its associated DIEs
  *
  * @author mcnulty
  */
-public class LEB128Test {
+public class CompilationUnit {
 
-    @Test
-    public void unsignedDecode() {
+    @Bound
+    private CompilationUnitHeader header;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, false).getValue());
-        assertEquals(127, new LEB128(new byte[]{ 127 }, false).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)0x80, 1 }, false).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)0x81, 1 }, false).getValue());
-        assertEquals(130, new LEB128(new byte[]{ (byte)0x82, 1 }, false).getValue());
-        assertEquals(12857, new LEB128(new byte[]{ (byte)(0x80 + 57), 100 }, false).getValue());
-    }
-
-    @Test
-    public void signedDecode() {
-
-        assertEquals(2, new LEB128(new byte[]{ 2 }, true).getValue());
-        assertEquals(-2, new LEB128(new byte[]{ 0x7e }, true).getValue());
-        assertEquals(127, new LEB128(new byte[]{ (byte)(127+0x80), 0 }, true).getValue());
-        assertEquals(-127, new LEB128(new byte[]{ (byte)(1+0x80), 0x7f }, true).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)(0x80), 1 }, true).getValue());
-        assertEquals(-128, new LEB128(new byte[]{ (byte)(0x80), 0x7f }, true).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)(1+0x80), 1 }, true).getValue());
-        assertEquals(-129, new LEB128(new byte[]{ (byte)(0x7f+0x80), 0x7e }, true).getValue());
-    }
+    // The length of individual DIEs is not available during parsing because it depends on the attribute encodings
+    // represented in the .debug_abbrev section -- the DIEs are initialized once the .debug_abbrev data is available
+    @BoundList(size = "header.unitLength.length - 2 - (header.unitLength.offsetLength/8) - 1", type=byte.class)
+    private byte[] compilationUnitContent;
 }

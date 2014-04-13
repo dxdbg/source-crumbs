@@ -26,42 +26,41 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
+package net.sourcecrumbs.refimpl.dwarf.constants;
 
-import org.junit.Test;
-
-import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
-
-import static junit.framework.Assert.assertEquals;
+import org.codehaus.preon.annotation.BoundEnumOption;
 
 /**
- * Unit test for LEB128 decoding and encoding
+ * Enumeration for extended opcodes in a line number program
  *
  * @author mcnulty
  */
-public class LEB128Test {
+public enum ExtendedOpcode {
 
-    @Test
-    public void unsignedDecode() {
+    DW_LNE_end_sequence((byte)0x01),
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, false).getValue());
-        assertEquals(127, new LEB128(new byte[]{ 127 }, false).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)0x80, 1 }, false).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)0x81, 1 }, false).getValue());
-        assertEquals(130, new LEB128(new byte[]{ (byte)0x82, 1 }, false).getValue());
-        assertEquals(12857, new LEB128(new byte[]{ (byte)(0x80 + 57), 100 }, false).getValue());
+    DW_LNE_set_address((byte)0x02),
+
+    DW_LNE_define_file((byte)0x03),
+
+    DW_LNE_set_discriminator((byte)0x04),
+
+    DW_LNE_lo_user((byte)0x80),
+
+    DW_LNE_hi_user((byte)0xff);
+
+    private final byte value;
+
+    private ExtendedOpcode(byte value) {
+        this.value = value;
     }
 
-    @Test
-    public void signedDecode() {
-
-        assertEquals(2, new LEB128(new byte[]{ 2 }, true).getValue());
-        assertEquals(-2, new LEB128(new byte[]{ 0x7e }, true).getValue());
-        assertEquals(127, new LEB128(new byte[]{ (byte)(127+0x80), 0 }, true).getValue());
-        assertEquals(-127, new LEB128(new byte[]{ (byte)(1+0x80), 0x7f }, true).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)(0x80), 1 }, true).getValue());
-        assertEquals(-128, new LEB128(new byte[]{ (byte)(0x80), 0x7f }, true).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)(1+0x80), 1 }, true).getValue());
-        assertEquals(-129, new LEB128(new byte[]{ (byte)(0x7f+0x80), 0x7e }, true).getValue());
+    public static ExtendedOpcode getOpcode(byte value) {
+        for (ExtendedOpcode opcode : ExtendedOpcode.values()) {
+            if (opcode.value == value) {
+                return opcode;
+            }
+        }
+        return null;
     }
 }

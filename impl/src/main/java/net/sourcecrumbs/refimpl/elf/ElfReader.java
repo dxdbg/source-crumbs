@@ -143,31 +143,7 @@ public class ElfReader implements BinaryReader {
             Codec<ElfIdent> identCodec = Codecs.create(ElfIdent.class);
             ElfIdent ident = Codecs.decode(identCodec, path.toFile());
 
-            int classLength;
-            switch (ident.getElfClass()) {
-                case ELFCLASS32:
-                    classLength = 32;
-                    break;
-                case ELFCLASS64:
-                    classLength = 64;
-                    break;
-                default:
-                    throw new UnknownFormatException("Unknown ELF class " + ident.getElfClass());
-            }
-
-            ByteOrder byteOrder;
-            switch (ident.getDataEncoding()) {
-                case ELFDATA2MSB:
-                    byteOrder = ByteOrder.BigEndian;
-                    break;
-                case ELFDATA2LSB:
-                    byteOrder = ByteOrder.LittleEndian;
-                    break;
-                default:
-                    throw new UnknownFormatException("Unknown ELF data encoding " + ident.getDataEncoding());
-            }
-
-            ElfCodecFactory elfCodecFactory = new ElfCodecFactory(classLength, byteOrder);
+            ElfCodecFactory elfCodecFactory = new ElfCodecFactory(ident);
 
             Codec<ElfFile> fileCodec = Codecs.create(ElfFile.class,
                     new CodecFactory[]{elfCodecFactory},
@@ -177,7 +153,7 @@ public class ElfReader implements BinaryReader {
             // Run the post-processors over the constructed file
             for (ElfSectionPostProcessor postProcessor : postProcessors) {
                 for (ElfSection section : elfFile.getSections()) {
-                    postProcessor.process(section);
+                    postProcessor.process(ident, section);
                 }
             }
 

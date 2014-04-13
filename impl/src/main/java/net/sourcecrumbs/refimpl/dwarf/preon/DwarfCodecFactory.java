@@ -26,69 +26,63 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf.spec.preon;
+package net.sourcecrumbs.refimpl.dwarf.preon;
 
 import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
 import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.DefaultCodecFactory;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.buffer.ByteOrder;
-import org.codehaus.preon.codec.ObjectCodecFactory;
+import org.codehaus.preon.binding.BindingDecorator;
 
-import net.sourcecrumbs.api.files.UnknownFormatException;
-import net.sourcecrumbs.refimpl.elf.spec.Address;
-import net.sourcecrumbs.refimpl.elf.spec.ElfIdent;
-import net.sourcecrumbs.refimpl.elf.spec.Offset;
-import net.sourcecrumbs.refimpl.elf.spec.WordField;
-import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
+import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
 
 /**
- * Codec factory for creating ElfCodecs
+ * Codec factory used to create custom codecs used to parse DWARF data structures
  *
  * @author mcnulty
  */
-public class ElfCodecFactory implements CodecFactory {
+public class DwarfCodecFactory implements CodecFactory {
 
-    private final int classLength;
+    private final DefaultCodecFactory actualFactory;
+    private final CodecDecorator[] codecDecorators;
 
-    private final ByteOrder classByteOrder;
-
-    public ElfCodecFactory(ElfIdent ident) throws UnknownFormatException {
-        switch (ident.getElfClass()) {
-            case ELFCLASS32:
-                classLength = 32;
-                break;
-            case ELFCLASS64:
-                classLength = 64;
-                break;
-            default:
-                throw new UnknownFormatException("Unknown ELF class " + ident.getElfClass());
-        }
-
-        switch (ident.getDataEncoding()) {
-            case ELFDATA2MSB:
-                classByteOrder = ByteOrder.BigEndian;
-                break;
-            case ELFDATA2LSB:
-                classByteOrder = ByteOrder.LittleEndian;
-                break;
-            default:
-                throw new UnknownFormatException("Unknown ELF data encoding " + ident.getDataEncoding());
-        }
+    public DwarfCodecFactory(CodecDecorator[] codecDecorators) {
+        this.actualFactory = new DefaultCodecFactory();
+        this.codecDecorators = codecDecorators;
     }
 
     @Override
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
         if (metadata == null || metadata.isAnnotationPresent(Bound.class)) {
-            if (Address.class.equals(type)) {
-                return (Codec<T>) new AddressCodec(classLength, classByteOrder);
-            }else if (Offset.class.equals(type)) {
-                return (Codec<T>) new OffsetCodec(classLength, classByteOrder);
-            }else if (WordField.class.equals(type)) {
-                return (Codec<T>) new WordFieldCodec(classLength, classByteOrder);
+            if (LEB128.class.equals(type)) {
+                return (Codec<T>) createLEB128Codec(metadata);
+            }else if (List.class.equals(type)) {
+                return (Codec<T>) createTerminatedListCodec(metadata);
             }
+        }
+
+        return null;
+    }
+
+    private LEB128Codec createLEB128Codec(AnnotatedElement metadata) {
+        if (metadata != null && metadata.isAnnotationPresent(LEBSigned.class)) {
+            return new LEB128Codec(metadata.getAnnotation(LEBSigned.class).value());
+        }
+
+        // return null to force explicit specification of whether the LEB value is unsigned or signed
+        return null;
+    }
+
+    private ElementTerminatedListCodec<?> createTerminatedListCodec(AnnotatedElement metadata) {
+        if (metadata != null && metadata.isAnnotationPresent(ElementTerminatedList.class)) {
+            ElementTerminatedList annotation = metadata.getAnnotation(ElementTerminatedList.class);
+            return new ElementTerminatedListCodec<>(actualFactory.create(metadata, annotation.elementType(),
+                    new CodecFactory[] {this}, codecDecorators, new BindingDecorator[0]));
         }
 
         return null;

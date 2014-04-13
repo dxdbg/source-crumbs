@@ -26,42 +26,40 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
+package net.sourcecrumbs.refimpl.dwarf.types;
 
-import org.junit.Test;
-
-import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
-
-import static junit.framework.Assert.assertEquals;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.If;
+import org.codehaus.preon.annotation.Init;
 
 /**
- * Unit test for LEB128 decoding and encoding
+ * Represents an initial length field in a DWARF file
  *
  * @author mcnulty
  */
-public class LEB128Test {
+public class InitialLength {
 
-    @Test
-    public void unsignedDecode() {
+    private static final int X64_LENGTH_SENTINEL = -1;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, false).getValue());
-        assertEquals(127, new LEB128(new byte[]{ 127 }, false).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)0x80, 1 }, false).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)0x81, 1 }, false).getValue());
-        assertEquals(130, new LEB128(new byte[]{ (byte)0x82, 1 }, false).getValue());
-        assertEquals(12857, new LEB128(new byte[]{ (byte)(0x80 + 57), 100 }, false).getValue());
-    }
+    @BoundNumber(size = "32")
+    private int x32length;
 
-    @Test
-    public void signedDecode() {
+    @If("x32length == (0 - 1)") // Dirty hack to get around Limbo's lack of unary - operator
+    @BoundNumber(size = "64")
+    private long x64length;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, true).getValue());
-        assertEquals(-2, new LEB128(new byte[]{ 0x7e }, true).getValue());
-        assertEquals(127, new LEB128(new byte[]{ (byte)(127+0x80), 0 }, true).getValue());
-        assertEquals(-127, new LEB128(new byte[]{ (byte)(1+0x80), 0x7f }, true).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)(0x80), 1 }, true).getValue());
-        assertEquals(-128, new LEB128(new byte[]{ (byte)(0x80), 0x7f }, true).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)(1+0x80), 1 }, true).getValue());
-        assertEquals(-129, new LEB128(new byte[]{ (byte)(0x7f+0x80), 0x7e }, true).getValue());
+    private long length;
+
+    private int offsetLength;
+
+    @Init
+    public void init() {
+        if (x32length == X64_LENGTH_SENTINEL) {
+            length = x64length;
+            offsetLength = 64;
+        }else{
+            length = x32length;
+            offsetLength = 32;
+        }
     }
 }

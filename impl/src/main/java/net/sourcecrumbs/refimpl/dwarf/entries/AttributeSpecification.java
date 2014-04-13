@@ -26,42 +26,42 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
+package net.sourcecrumbs.refimpl.dwarf.entries;
 
-import org.junit.Test;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.util.EnumUtils;
 
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeForm;
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
+import net.sourcecrumbs.refimpl.dwarf.preon.LEBSigned;
+import net.sourcecrumbs.refimpl.dwarf.preon.ListTerminator;
 import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
 
-import static junit.framework.Assert.assertEquals;
-
 /**
- * Unit test for LEB128 decoding and encoding
+ * Describes an attribute contained in a DIE
  *
  * @author mcnulty
  */
-public class LEB128Test {
+public class AttributeSpecification implements ListTerminator {
 
-    @Test
-    public void unsignedDecode() {
+    @Bound
+    @LEBSigned(false)
+    private LEB128 nameValue;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, false).getValue());
-        assertEquals(127, new LEB128(new byte[]{ 127 }, false).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)0x80, 1 }, false).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)0x81, 1 }, false).getValue());
-        assertEquals(130, new LEB128(new byte[]{ (byte)0x82, 1 }, false).getValue());
-        assertEquals(12857, new LEB128(new byte[]{ (byte)(0x80 + 57), 100 }, false).getValue());
+    @Bound
+    @LEBSigned(false)
+    private LEB128 formValue;
+
+    @Override
+    public boolean terminatesList() {
+        return nameValue.getValue() == 0 && formValue.getValue() == 0;
     }
 
-    @Test
-    public void signedDecode() {
+    public AttributeName getName() {
+        return EnumUtils.getBoundEnumOptionIndex(AttributeName.class).get(nameValue.getValue());
+    }
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, true).getValue());
-        assertEquals(-2, new LEB128(new byte[]{ 0x7e }, true).getValue());
-        assertEquals(127, new LEB128(new byte[]{ (byte)(127+0x80), 0 }, true).getValue());
-        assertEquals(-127, new LEB128(new byte[]{ (byte)(1+0x80), 0x7f }, true).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)(0x80), 1 }, true).getValue());
-        assertEquals(-128, new LEB128(new byte[]{ (byte)(0x80), 0x7f }, true).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)(1+0x80), 1 }, true).getValue());
-        assertEquals(-129, new LEB128(new byte[]{ (byte)(0x7f+0x80), 0x7e }, true).getValue());
+    public AttributeForm getForm() {
+        return EnumUtils.getBoundEnumOptionIndex(AttributeForm.class).get(formValue.getValue());
     }
 }

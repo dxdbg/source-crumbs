@@ -26,42 +26,28 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
+package net.sourcecrumbs.refimpl.dwarf.types;
 
-import org.junit.Test;
+import org.codehaus.preon.annotation.BoundString;
 
-import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
-
-import static junit.framework.Assert.assertEquals;
+import net.sourcecrumbs.refimpl.dwarf.preon.ListTerminator;
 
 /**
- * Unit test for LEB128 decoding and encoding
+ * Wrapper around a String that allows a List to be terminated by an empty string
  *
  * @author mcnulty
  */
-public class LEB128Test {
+public class ListString implements ListTerminator {
 
-    @Test
-    public void unsignedDecode() {
+    @BoundString
+    private String value;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, false).getValue());
-        assertEquals(127, new LEB128(new byte[]{ 127 }, false).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)0x80, 1 }, false).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)0x81, 1 }, false).getValue());
-        assertEquals(130, new LEB128(new byte[]{ (byte)0x82, 1 }, false).getValue());
-        assertEquals(12857, new LEB128(new byte[]{ (byte)(0x80 + 57), 100 }, false).getValue());
+    @Override
+    public boolean terminatesList() {
+        return value == null || value.isEmpty();
     }
 
-    @Test
-    public void signedDecode() {
-
-        assertEquals(2, new LEB128(new byte[]{ 2 }, true).getValue());
-        assertEquals(-2, new LEB128(new byte[]{ 0x7e }, true).getValue());
-        assertEquals(127, new LEB128(new byte[]{ (byte)(127+0x80), 0 }, true).getValue());
-        assertEquals(-127, new LEB128(new byte[]{ (byte)(1+0x80), 0x7f }, true).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)(0x80), 1 }, true).getValue());
-        assertEquals(-128, new LEB128(new byte[]{ (byte)(0x80), 0x7f }, true).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)(1+0x80), 1 }, true).getValue());
-        assertEquals(-129, new LEB128(new byte[]{ (byte)(0x7f+0x80), 0x7e }, true).getValue());
+    public String getValue() {
+        return value;
     }
 }

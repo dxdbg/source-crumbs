@@ -26,42 +26,36 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
-
-import org.junit.Test;
-
-import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
-
-import static junit.framework.Assert.assertEquals;
+package net.sourcecrumbs.refimpl.dwarf.constants;
 
 /**
- * Unit test for LEB128 decoding and encoding
- *
  * @author mcnulty
  */
-public class LEB128Test {
+public class StandardOpcodeValues {
 
-    @Test
-    public void unsignedDecode() {
+    public static byte DW_LNS_extended = 0x00;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, false).getValue());
-        assertEquals(127, new LEB128(new byte[]{ 127 }, false).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)0x80, 1 }, false).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)0x81, 1 }, false).getValue());
-        assertEquals(130, new LEB128(new byte[]{ (byte)0x82, 1 }, false).getValue());
-        assertEquals(12857, new LEB128(new byte[]{ (byte)(0x80 + 57), 100 }, false).getValue());
-    }
+    public static byte DW_LNS_copy = 0x01;
 
-    @Test
-    public void signedDecode() {
+    public static byte DW_LNS_advance_pc = 0x02;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, true).getValue());
-        assertEquals(-2, new LEB128(new byte[]{ 0x7e }, true).getValue());
-        assertEquals(127, new LEB128(new byte[]{ (byte)(127+0x80), 0 }, true).getValue());
-        assertEquals(-127, new LEB128(new byte[]{ (byte)(1+0x80), 0x7f }, true).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)(0x80), 1 }, true).getValue());
-        assertEquals(-128, new LEB128(new byte[]{ (byte)(0x80), 0x7f }, true).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)(1+0x80), 1 }, true).getValue());
-        assertEquals(-129, new LEB128(new byte[]{ (byte)(0x7f+0x80), 0x7e }, true).getValue());
-    }
+    public static byte DW_LNS_advance_line = 0x03;
+
+    public static byte DW_LNS_set_file = 0x04;
+
+    public static byte DW_LNS_set_column = 0x05;
+
+    public static byte DW_LNS_negate_stmt = 0x06;
+
+    public static byte DW_LNS_set_basic_block = 0x07;
+
+    public static byte DW_LNS_const_add_pc = 0x08;
+
+    public static byte DW_LNS_fixed_advance_pc = 0x09;
+
+    public static byte DW_LNS_set_prologue_end = 0x0a;
+
+    public static byte DW_LNS_set_epilogue_begin = 0x0b;
+
+    public static byte DW_LNS_set_isa = 0x0c;
 }

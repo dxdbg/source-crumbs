@@ -26,42 +26,62 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
+package net.sourcecrumbs.refimpl.dwarf.entries.lnp;
 
-import org.junit.Test;
+import java.util.List;
 
-import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
+import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.If;
 
-import static junit.framework.Assert.assertEquals;
+import net.sourcecrumbs.refimpl.dwarf.preon.ElementTerminatedList;
+import net.sourcecrumbs.refimpl.dwarf.types.ListString;
+import net.sourcecrumbs.refimpl.dwarf.types.InitialLength;
 
 /**
- * Unit test for LEB128 decoding and encoding
+ * Header for a line number program
  *
  * @author mcnulty
  */
-public class LEB128Test {
+public class LineNumberProgramHeader {
 
-    @Test
-    public void unsignedDecode() {
+    @Bound
+    private InitialLength unitLength;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, false).getValue());
-        assertEquals(127, new LEB128(new byte[]{ 127 }, false).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)0x80, 1 }, false).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)0x81, 1 }, false).getValue());
-        assertEquals(130, new LEB128(new byte[]{ (byte)0x82, 1 }, false).getValue());
-        assertEquals(12857, new LEB128(new byte[]{ (byte)(0x80 + 57), 100 }, false).getValue());
-    }
+    @BoundNumber(size = "16")
+    private short version;
 
-    @Test
-    public void signedDecode() {
+    @BoundNumber(size = "unitLength.offsetLength")
+    private long headerLength;
 
-        assertEquals(2, new LEB128(new byte[]{ 2 }, true).getValue());
-        assertEquals(-2, new LEB128(new byte[]{ 0x7e }, true).getValue());
-        assertEquals(127, new LEB128(new byte[]{ (byte)(127+0x80), 0 }, true).getValue());
-        assertEquals(-127, new LEB128(new byte[]{ (byte)(1+0x80), 0x7f }, true).getValue());
-        assertEquals(128, new LEB128(new byte[]{ (byte)(0x80), 1 }, true).getValue());
-        assertEquals(-128, new LEB128(new byte[]{ (byte)(0x80), 0x7f }, true).getValue());
-        assertEquals(129, new LEB128(new byte[]{ (byte)(1+0x80), 1 }, true).getValue());
-        assertEquals(-129, new LEB128(new byte[]{ (byte)(0x7f+0x80), 0x7e }, true).getValue());
-    }
+    @BoundNumber(size = "8")
+    private byte minimumInstructionLength;
+
+    @If("version > 2")
+    @BoundNumber(size = "8")
+    private byte maximumOperationsPerInstruction;
+
+    @BoundNumber(size = "8")
+    private byte defaultIsStmt;
+
+    @BoundNumber(size = "8")
+    private byte lineBase;
+
+    @BoundNumber(size = "8")
+    private byte lineRange;
+
+    @BoundNumber(size = "8")
+    private short opcodeBase;
+
+    @BoundList(size = "opcodeBase - 1", type=byte.class)
+    private byte[] standardOpcodeLengths;
+
+    @ElementTerminatedList(elementType = ListString.class)
+    @Bound
+    private List<ListString> includeDirectories;
+
+    @ElementTerminatedList(elementType = FileEntry.class)
+    @Bound
+    private List<FileEntry> files;
 }
