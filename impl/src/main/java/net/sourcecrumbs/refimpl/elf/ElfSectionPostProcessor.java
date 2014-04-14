@@ -29,6 +29,7 @@
 package net.sourcecrumbs.refimpl.elf;
 
 import net.sourcecrumbs.api.files.UnknownFormatException;
+import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 import net.sourcecrumbs.refimpl.elf.spec.ElfIdent;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSection;
 
@@ -43,12 +44,18 @@ public interface ElfSectionPostProcessor {
     /**
      * Post-process the specified ElfSection
      *
-     * TODO the ElfIdent should be provided at construction time to those post-processors that need it.
-     *
-     * @param header the ElfIdent object
      * @param section the section
      *
      * @throws UnknownFormatException when the specified section doesn't match an expected format
      */
-    void process(ElfIdent header, ElfSection section) throws UnknownFormatException;
+    void process(ElfSection section) throws UnknownFormatException;
+
+    /**
+     * Called when post-processing has been completed for all sections
+     *
+     * @param elfFile the final ElfFile
+     *
+     * @throws UnknownFormatException when any further processing encounters an unknown format
+     */
+    void completeProcessing(ElfFile elfFile) throws UnknownFormatException;
 }

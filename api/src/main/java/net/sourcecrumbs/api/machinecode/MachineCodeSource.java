@@ -36,7 +36,7 @@ package net.sourcecrumbs.api.machinecode;
 public interface MachineCodeSource {
 
     /**
-     * @return the mapping used to associate source lines with machine code and vice versa
+     * @return the mapping used to associate source lines with machine code and vice versa or null if no mapping is available
      */
     MachineCodeMapping getMachineCodeMapping();
 }

@@ -32,6 +32,8 @@ import java.util.List;
 
 import org.codehaus.preon.annotation.BoundList;
 
+import net.sourcecrumbs.api.files.UnknownFormatException;
+import net.sourcecrumbs.refimpl.dwarf.entries.AbbreviationTable;
 import net.sourcecrumbs.refimpl.dwarf.entries.CompilationUnit;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SectionContent;
 
@@ -47,4 +49,21 @@ public class DebugInfo implements SectionContent {
     // This assumes that the data used to decode this section is limited to just this section
     @BoundList(type = CompilationUnit.class)
     private List<CompilationUnit> compilationUnits;
+
+    /**
+     * Initializes the DIEs, given information available in the DebugAbbrev section
+     *
+     * @param debugAbbrev the DebugAbbrev section
+     *
+     * @throws UnknownFormatException when the data is not in the expected format
+     */
+    public void initializeDIEs(DebugAbbrev debugAbbrev) throws UnknownFormatException {
+        for (CompilationUnit compilationUnit : compilationUnits) {
+            for (AbbreviationTable abbrevTable : debugAbbrev.getAbbreviationTables()) {
+                if (abbrevTable.getSectionOffset() == compilationUnit.getHeader().getDebugAbbrevOffset()) {
+                    // TODO initialize DIEs
+                }
+            }
+        }
+    }
 }

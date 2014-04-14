@@ -30,8 +30,6 @@ package net.sourcecrumbs.refimpl.elf;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,7 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.refimpl.BaseNativeFileTest;
-import net.sourcecrumbs.refimpl.dwarf.DwarfSectionPostProcessor;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSegment;
 import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
@@ -62,9 +59,7 @@ public class SandboxTest extends BaseNativeFileTest {
 
     @Test
     public void loadExec() throws Exception {
-        List<ElfSectionPostProcessor> postProcessors = new ArrayList<>();
-        postProcessors.add(new DwarfSectionPostProcessor());
-        ElfReader reader = new ElfReader(postProcessors);
+        ElfReader reader = new ElfReader();
 
         Executable exec = reader.openExecutable(filePath);
         assertTrue(exec instanceof ElfExecutable);

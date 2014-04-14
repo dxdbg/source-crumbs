@@ -69,9 +69,7 @@ public class FileReadTest extends BaseNativeFileTest {
 
     private static ElfReader reader;
     static {
-        List<ElfSectionPostProcessor> postProcessors = new ArrayList<>();
-        postProcessors.add(new DwarfSectionPostProcessor());
-        reader = new ElfReader(postProcessors);
+        reader = new ElfReader();
     }
 
     private final URL fileUrl;

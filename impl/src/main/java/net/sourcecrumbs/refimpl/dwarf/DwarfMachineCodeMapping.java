@@ -26,61 +26,61 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf.entries;
+package net.sourcecrumbs.refimpl.dwarf;
 
-import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.annotation.BoundNumber;
+import java.util.List;
 
-import net.sourcecrumbs.refimpl.dwarf.types.InitialLength;
+import net.sourcecrumbs.api.Range;
+import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
+import net.sourcecrumbs.api.machinecode.SourceLine;
+import net.sourcecrumbs.api.machinecode.SourceLineRange;
+import net.sourcecrumbs.refimpl.dwarf.sections.DebugInfo;
+import net.sourcecrumbs.refimpl.dwarf.sections.DebugLine;
 
 /**
- * Header for a compilation unit in a DWARF file
+ * Implementation of MachineCodeMapping, backed by DWARF
  *
  * @author mcnulty
  */
-public class CompilationUnitHeader {
+public class DwarfMachineCodeMapping implements MachineCodeMapping {
 
-    @Bound
-    private InitialLength unitLength;
+    private final DebugInfo debugInfo;
+    private final DebugLine debugLine;
 
-    @BoundNumber(size = "16")
-    private short version;
+    public DwarfMachineCodeMapping(DebugInfo debugInfo, DebugLine debugLine) {
+        this.debugInfo = debugInfo;
+        this.debugLine = debugLine;
 
-    @BoundNumber(size = "unitLength.offsetLength")
-    private long debugAbbrevOffset;
-
-    @BoundNumber(size = "8")
-    private byte addressSize;
-
-    public long getUnitLength() {
-        return unitLength.getLength();
+        // TODO build all the line number matrices
     }
 
-    public void setUnitLength(long unitLength) {
-        this.unitLength.setLength(unitLength);
+    @Override
+    public List<Range<Long>> getMachineCodeRanges(SourceLine sourceLine) {
+        return null;
     }
 
-    public short getVersion() {
-        return version;
+    @Override
+    public List<SourceLineRange> getSourceLinesRanges(long machineCodeAddress) {
+        return null;
     }
 
-    public void setVersion(short version) {
-        this.version = version;
+    @Override
+    public long getNextStatementAddress(SourceLine sourceLine, boolean descend) {
+        return 0;
     }
 
-    public long getDebugAbbrevOffset() {
-        return debugAbbrevOffset;
+    @Override
+    public long getNextStatementAddress(long address, boolean descend) {
+        return 0;
     }
 
-    public void setDebugAbbrevOffset(long debugAbbrevOffset) {
-        this.debugAbbrevOffset = debugAbbrevOffset;
+    @Override
+    public long getStatementAddress(long address) {
+        return 0;
     }
 
-    public byte getAddressSize() {
-        return addressSize;
-    }
-
-    public void setAddressSize(byte addressSize) {
-        this.addressSize = addressSize;
+    @Override
+    public long getStatementAddress(SourceLine sourceLine) {
+        return 0;
     }
 }

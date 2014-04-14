@@ -48,6 +48,7 @@ import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.api.files.Library;
 import net.sourcecrumbs.api.files.ObjectFile;
 import net.sourcecrumbs.api.files.UnknownFormatException;
+import net.sourcecrumbs.refimpl.dwarf.DwarfSectionPostProcessor;
 import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 import net.sourcecrumbs.refimpl.elf.spec.ElfIdent;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSection;
@@ -63,17 +64,6 @@ import net.sourcecrumbs.refimpl.elf.spec.preon.ElfCodecFactory;
 public class ElfReader implements BinaryReader {
 
     private static final AbsoluteOffsetCodecDecorator codecDecorator = new AbsoluteOffsetCodecDecorator();
-
-    private final List<ElfSectionPostProcessor> postProcessors = new ArrayList<>();
-
-    /**
-     * Constructors.
-     *
-     * @param postProcessors the section post processors
-     */
-    public ElfReader(List<ElfSectionPostProcessor> postProcessors) {
-        this.postProcessors.addAll(postProcessors);
-    }
 
     @Override
     public Binary open(Path path) throws IOException, UnknownFormatException {
@@ -150,12 +140,12 @@ public class ElfReader implements BinaryReader {
                     new CodecDecorator[]{codecDecorator});
             ElfFile elfFile = Codecs.decode(fileCodec, path.toFile());
 
-            // Run the post-processors over the constructed file
-            for (ElfSectionPostProcessor postProcessor : postProcessors) {
-                for (ElfSection section : elfFile.getSections()) {
-                    postProcessor.process(ident, section);
-                }
+            // Run the DWARF post-processor over the constructed file
+            DwarfSectionPostProcessor dwarfSectionPostProcessor = new DwarfSectionPostProcessor(ident);
+            for (ElfSection section : elfFile.getSections()) {
+                dwarfSectionPostProcessor.process(section);
             }
+            dwarfSectionPostProcessor.completeProcessing(elfFile);
 
             return elfFile;
         }catch (DecodingException e) {

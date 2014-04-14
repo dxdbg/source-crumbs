@@ -36,8 +36,11 @@ import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.If;
 import org.codehaus.preon.annotation.Init;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
+import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
+import net.sourcecrumbs.api.machinecode.MachineCodeSource;
+import net.sourcecrumbs.refimpl.dwarf.DwarfMachineCodeMapping;
+import net.sourcecrumbs.refimpl.dwarf.sections.DebugInfo;
+import net.sourcecrumbs.refimpl.dwarf.sections.DebugLine;
 import net.sourcecrumbs.refimpl.elf.spec.preon.AbsoluteOffset;
 import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
@@ -48,7 +51,7 @@ import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
  *
  * @author mcnulty
  */
-public class ElfFile {
+public class ElfFile implements MachineCodeSource {
 
     @Bound
     private ElfHeader header;
@@ -125,5 +128,17 @@ public class ElfFile {
 
     public ElfSection getSection(String name) {
         return sectionsByName.get(name);
+    }
+
+    @Override
+    public MachineCodeMapping getMachineCodeMapping() {
+        ElfSection debugInfoSection = getSection(DebugInfo.SECTION_NAME);
+        ElfSection debugLineSection = getSection(DebugLine.SECTION_NAME);
+        if (debugInfoSection != null && debugInfoSection.getSectionContent() instanceof DebugInfo &&
+            debugLineSection != null && debugLineSection.getSectionContent() instanceof DebugLine) {
+            return new DwarfMachineCodeMapping((DebugInfo)debugInfoSection.getSectionContent(),
+                    (DebugLine)debugLineSection.getSectionContent());
+        }
+        return null;
     }
 }

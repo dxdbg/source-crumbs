@@ -30,13 +30,27 @@ package net.sourcecrumbs.refimpl.dwarf.entries;
 
 import org.codehaus.preon.annotation.Bound;
 
+import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
+
 /**
  * An abbreviation table from the .debug_abbrev section that may be referenced by multiple compilation units
  *
  * @author mcnulty
  */
-public class AbbreviationTable {
+public class AbbreviationTable implements SectionOffset {
 
     @Bound
     private AbbreviationDeclaration root;
+
+    private long sectionOffset;
+
+    @Override
+    public long getSectionOffset() {
+        return sectionOffset;
+    }
+
+    @Override
+    public void setSectionOffset(long sectionOffset) {
+        this.sectionOffset = sectionOffset;
+    }
 }

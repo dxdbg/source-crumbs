@@ -77,4 +77,22 @@ public interface MachineCodeMapping {
      * @return the machine code address or 0 if no address could be determined
      */
     long getNextStatementAddress(long address, boolean descend);
+
+    /**
+     * Gets the statement address corresponding to the specified address
+     *
+     * @param address the current address
+     *
+     * @return the address that corresponds to the statement
+     */
+    long getStatementAddress(long address);
+
+    /**
+     * Gets the statement address corresponding to the specified line
+     *
+     * @param sourceLine the source line
+     *
+     * @return the address that corresponds to the statement
+     */
+    long getStatementAddress(SourceLine sourceLine);
 }

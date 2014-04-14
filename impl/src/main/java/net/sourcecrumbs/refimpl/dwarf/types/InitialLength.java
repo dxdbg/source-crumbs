@@ -62,4 +62,20 @@ public class InitialLength {
             offsetLength = 32;
         }
     }
+
+    public long getLength() {
+        return length;
+    }
+
+    public void setLength(long length) {
+        this.length = length;
+    }
+
+    public int getOffsetLength() {
+        return offsetLength;
+    }
+
+    public void setOffsetLength(int offsetLength) {
+        this.offsetLength = offsetLength;
+    }
 }

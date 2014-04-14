@@ -26,61 +26,16 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf.entries;
-
-import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.annotation.BoundNumber;
-
-import net.sourcecrumbs.refimpl.dwarf.types.InitialLength;
+package net.sourcecrumbs.refimpl.dwarf.preon;
 
 /**
- * Header for a compilation unit in a DWARF file
+ * Interface an entry in a DWARF section that is pointed to by its offset
  *
  * @author mcnulty
  */
-public class CompilationUnitHeader {
+public interface SectionOffset {
 
-    @Bound
-    private InitialLength unitLength;
+    long getSectionOffset();
 
-    @BoundNumber(size = "16")
-    private short version;
-
-    @BoundNumber(size = "unitLength.offsetLength")
-    private long debugAbbrevOffset;
-
-    @BoundNumber(size = "8")
-    private byte addressSize;
-
-    public long getUnitLength() {
-        return unitLength.getLength();
-    }
-
-    public void setUnitLength(long unitLength) {
-        this.unitLength.setLength(unitLength);
-    }
-
-    public short getVersion() {
-        return version;
-    }
-
-    public void setVersion(short version) {
-        this.version = version;
-    }
-
-    public long getDebugAbbrevOffset() {
-        return debugAbbrevOffset;
-    }
-
-    public void setDebugAbbrevOffset(long debugAbbrevOffset) {
-        this.debugAbbrevOffset = debugAbbrevOffset;
-    }
-
-    public byte getAddressSize() {
-        return addressSize;
-    }
-
-    public void setAddressSize(byte addressSize) {
-        this.addressSize = addressSize;
-    }
+    void setSectionOffset(long sectionOffset);
 }

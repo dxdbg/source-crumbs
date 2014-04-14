@@ -26,61 +26,26 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf.entries;
+package net.sourcecrumbs.refimpl.dwarf.preon;
 
-import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.annotation.BoundNumber;
+import java.lang.reflect.AnnotatedElement;
 
-import net.sourcecrumbs.refimpl.dwarf.types.InitialLength;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDecorator;
+import org.codehaus.preon.ResolverContext;
 
 /**
- * Header for a compilation unit in a DWARF file
+ * CodecDecorator for SectionOffsetCodec
  *
  * @author mcnulty
  */
-public class CompilationUnitHeader {
+public class SectionOffsetCodecDecorator implements CodecDecorator {
 
-    @Bound
-    private InitialLength unitLength;
-
-    @BoundNumber(size = "16")
-    private short version;
-
-    @BoundNumber(size = "unitLength.offsetLength")
-    private long debugAbbrevOffset;
-
-    @BoundNumber(size = "8")
-    private byte addressSize;
-
-    public long getUnitLength() {
-        return unitLength.getLength();
-    }
-
-    public void setUnitLength(long unitLength) {
-        this.unitLength.setLength(unitLength);
-    }
-
-    public short getVersion() {
-        return version;
-    }
-
-    public void setVersion(short version) {
-        this.version = version;
-    }
-
-    public long getDebugAbbrevOffset() {
-        return debugAbbrevOffset;
-    }
-
-    public void setDebugAbbrevOffset(long debugAbbrevOffset) {
-        this.debugAbbrevOffset = debugAbbrevOffset;
-    }
-
-    public byte getAddressSize() {
-        return addressSize;
-    }
-
-    public void setAddressSize(byte addressSize) {
-        this.addressSize = addressSize;
+    @Override
+    public <T> Codec<T> decorate(Codec<T> codec, AnnotatedElement metadata, Class<T> type, ResolverContext context) {
+        if (SectionOffset.class.isAssignableFrom(type)) {
+            return new SectionOffsetCodec(codec);
+        }
+        return codec;
     }
 }

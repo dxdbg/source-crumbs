@@ -37,11 +37,13 @@ import org.codehaus.preon.DecodingException;
 import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.refimpl.dwarf.preon.DwarfCodecFactory;
 import net.sourcecrumbs.refimpl.dwarf.preon.ListTreeNodeCodecDecorator;
+import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffsetCodecDecorator;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugAbbrev;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugInfo;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugLine;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugStr;
 import net.sourcecrumbs.refimpl.elf.ElfSectionPostProcessor;
+import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 import net.sourcecrumbs.refimpl.elf.spec.ElfIdent;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSection;
 import net.sourcecrumbs.refimpl.elf.spec.preon.ElfCodecFactory;
@@ -57,23 +59,16 @@ public class DwarfSectionPostProcessor implements ElfSectionPostProcessor {
 
     private final DwarfCodecFactory dwarfCodecFactory;
     private final CodecDecorator[] codecDecorators;
-    private ElfCodecFactory elfCodecFactory = null;
+    private final ElfCodecFactory elfCodecFactory;
 
-    public DwarfSectionPostProcessor() {
-        this.codecDecorators = new CodecDecorator[]{ new ListTreeNodeCodecDecorator() };
+    public DwarfSectionPostProcessor(ElfIdent elfIdent) throws UnknownFormatException {
+        this.codecDecorators = new CodecDecorator[]{ new ListTreeNodeCodecDecorator(), new SectionOffsetCodecDecorator() };
         this.dwarfCodecFactory = new DwarfCodecFactory(codecDecorators);
+        this.elfCodecFactory = new ElfCodecFactory(elfIdent);
     }
 
     @Override
-    public void process(ElfIdent elfIdent, ElfSection section) throws UnknownFormatException {
-        if (elfCodecFactory == null) {
-            synchronized (this) {
-                if (elfCodecFactory == null) {
-                    elfCodecFactory = new ElfCodecFactory(elfIdent);
-                }
-            }
-        }
-
+    public void process(ElfSection section) throws UnknownFormatException {
         SectionContent sectionContent = section.getSectionContent();
         if (sectionContent instanceof GenericSection) {
 
@@ -113,6 +108,18 @@ public class DwarfSectionPostProcessor implements ElfSectionPostProcessor {
                     throw new UnknownFormatException(e);
                 }
             }
+        }
+    }
+
+    @Override
+    public void completeProcessing(ElfFile elfFile) throws UnknownFormatException {
+        // initialize the DIEs, now that all information is known
+        ElfSection debugInfoSection = elfFile.getSection(DebugInfo.SECTION_NAME);
+        ElfSection debugAbbrevSection = elfFile.getSection(DebugAbbrev.SECTION_NAME);
+        if (debugInfoSection != null && debugInfoSection.getSectionContent() instanceof DebugInfo &&
+            debugAbbrevSection != null && debugAbbrevSection.getSectionContent() instanceof DebugAbbrev)
+        {
+            ((DebugInfo)debugInfoSection.getSectionContent()).initializeDIEs(((DebugAbbrev)debugAbbrevSection.getSectionContent()));
         }
     }
 }

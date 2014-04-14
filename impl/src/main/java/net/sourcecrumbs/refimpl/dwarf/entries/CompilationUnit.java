@@ -31,12 +31,15 @@ package net.sourcecrumbs.refimpl.dwarf.entries;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
 
+import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
+import net.sourcecrumbs.refimpl.dwarf.sections.DebugAbbrev;
+
 /**
  * Represents a compilation unit in a DWARF file--includes the header and its associated DIEs
  *
  * @author mcnulty
  */
-public class CompilationUnit {
+public class CompilationUnit implements SectionOffset {
 
     @Bound
     private CompilationUnitHeader header;
@@ -45,4 +48,24 @@ public class CompilationUnit {
     // represented in the .debug_abbrev section -- the DIEs are initialized once the .debug_abbrev data is available
     @BoundList(size = "header.unitLength.length - 2 - (header.unitLength.offsetLength/8) - 1", type=byte.class)
     private byte[] compilationUnitContent;
+
+    private long sectionOffset;
+
+    @Override
+    public long getSectionOffset() {
+        return sectionOffset;
+    }
+
+    @Override
+    public void setSectionOffset(long sectionOffset) {
+        this.sectionOffset = sectionOffset;
+    }
+
+    public CompilationUnitHeader getHeader() {
+        return header;
+    }
+
+    public void setHeader(CompilationUnitHeader header) {
+        this.header = header;
+    }
 }

@@ -34,12 +34,14 @@ import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.Slice;
 
+import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
+
 /**
  * The line number information for a specific compilation unit
  *
  * @author mcnulty
  */
-public class LineNumberProgram {
+public class LineNumberProgram implements SectionOffset {
 
     @Bound
     private LineNumberProgramHeader header;
@@ -47,4 +49,16 @@ public class LineNumberProgram {
     @BoundList(type = LineNumberInstruction.class)
     @Slice(size = "(header.unitLength.length - 2 - (header.unitLength.offsetLength/8) - header.headerLength)*8")
     private List<LineNumberInstruction> instructions;
+
+    private long sectionOffset;
+
+    @Override
+    public long getSectionOffset() {
+        return sectionOffset;
+    }
+
+    @Override
+    public void setSectionOffset(long sectionOffset) {
+        this.sectionOffset = sectionOffset;
+    }
 }

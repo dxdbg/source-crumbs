@@ -47,4 +47,12 @@ public class DebugAbbrev implements SectionContent {
     // This assumes that the data used to decode this section is limited to just this section
     @BoundList(type = AbbreviationTable.class)
     private List<AbbreviationTable> abbreviationTables;
+
+    public List<AbbreviationTable> getAbbreviationTables() {
+        return abbreviationTables;
+    }
+
+    public void setAbbreviationTables(List<AbbreviationTable> abbreviationTables) {
+        this.abbreviationTables = abbreviationTables;
+    }
 }
