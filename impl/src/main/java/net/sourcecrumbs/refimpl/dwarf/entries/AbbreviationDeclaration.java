@@ -28,7 +28,6 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.codehaus.preon.annotation.Bound;
@@ -40,7 +39,7 @@ import net.sourcecrumbs.refimpl.dwarf.constants.AbbreviationTag;
 import net.sourcecrumbs.refimpl.dwarf.constants.ChildrenPresent;
 import net.sourcecrumbs.refimpl.dwarf.preon.ElementTerminatedList;
 import net.sourcecrumbs.refimpl.dwarf.preon.LEBSigned;
-import net.sourcecrumbs.refimpl.dwarf.preon.ListTreeNode;
+import net.sourcecrumbs.refimpl.dwarf.preon.ListTerminator;
 import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
 
 /**
@@ -48,7 +47,7 @@ import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
  *
  * @author mcnulty
  */
-public class AbbreviationDeclaration implements ListTreeNode {
+public class AbbreviationDeclaration implements ListTerminator {
 
     @Bound
     @LEBSigned(false)
@@ -68,24 +67,6 @@ public class AbbreviationDeclaration implements ListTreeNode {
     @ElementTerminatedList(elementType=AttributeSpecification.class)
     private List<AttributeSpecification> specifications;
 
-    private AbbreviationDeclaration parent;
-
-    private List<AbbreviationDeclaration> children = new LinkedList<>();
-
-    @Override
-    public AbbreviationDeclaration getParent() {
-        return parent;
-    }
-
-    @Override
-    public void setParent(ListTreeNode parent) {
-        if (parent instanceof AbbreviationDeclaration) {
-            this.parent = (AbbreviationDeclaration)parent;
-            this.parent.children.add(this);
-        }
-    }
-
-    @Override
     public boolean hasChildren() {
         return childrenPresent != null && childrenPresent == ChildrenPresent.DW_CHILDREN_yes;
     }
@@ -101,10 +82,6 @@ public class AbbreviationDeclaration implements ListTreeNode {
 
     public AbbreviationTag getTag() {
         return EnumUtils.getBoundEnumOptionIndex(AbbreviationTag.class).get(tagValue.getValue());
-    }
-
-    public List<AbbreviationDeclaration> getChildren() {
-        return children;
     }
 
     public List<AttributeSpecification> getSpecifications() {

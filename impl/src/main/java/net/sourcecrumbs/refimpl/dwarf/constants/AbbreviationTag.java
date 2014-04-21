@@ -37,6 +37,9 @@ import org.codehaus.preon.annotation.BoundEnumOption;
  */
 public enum AbbreviationTag {
 
+    @BoundEnumOption(0x00)
+    DW_TAG_null,
+
     @BoundEnumOption(0x01)
     DW_TAG_array_type,
 

@@ -29,13 +29,13 @@
 package net.sourcecrumbs.refimpl.dwarf.entries;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.Init;
 
+import net.sourcecrumbs.refimpl.dwarf.preon.ElementTerminatedList;
 import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
 
 /**
@@ -46,7 +46,8 @@ import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
 public class AbbreviationTable implements SectionOffset {
 
     @Bound
-    private AbbreviationDeclaration root;
+    @ElementTerminatedList(elementType = AbbreviationDeclaration.class)
+    private List<AbbreviationDeclaration> decls;
 
     private long sectionOffset;
 
@@ -54,14 +55,8 @@ public class AbbreviationTable implements SectionOffset {
 
     @Init
     public void init() {
-        Queue<AbbreviationDeclaration> searchQueue = new LinkedList<>();
-        searchQueue.add(root);
-        while(!searchQueue.isEmpty()) {
-            AbbreviationDeclaration current = searchQueue.remove();
-            abbreviationsByCode.put(current.getCode(), current);
-            for (AbbreviationDeclaration child : current.getChildren()) {
-                searchQueue.add(child);
-            }
+        for (AbbreviationDeclaration decl : decls) {
+            abbreviationsByCode.put(decl.getCode(), decl);
         }
     }
 
@@ -77,13 +72,5 @@ public class AbbreviationTable implements SectionOffset {
     @Override
     public void setSectionOffset(long sectionOffset) {
         this.sectionOffset = sectionOffset;
-    }
-
-    public AbbreviationDeclaration getRoot() {
-        return root;
-    }
-
-    public void setRoot(AbbreviationDeclaration root) {
-        this.root = root;
     }
 }

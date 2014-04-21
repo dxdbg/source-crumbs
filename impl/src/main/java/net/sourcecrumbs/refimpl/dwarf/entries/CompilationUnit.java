@@ -30,6 +30,7 @@ package net.sourcecrumbs.refimpl.dwarf.entries;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.LinkedList;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
@@ -54,7 +55,7 @@ public class CompilationUnit implements SectionOffset {
 
     private long sectionOffset;
 
-    private DIE die;
+    private DIE rootDIE;
 
     @Override
     public long getSectionOffset() {
@@ -79,14 +80,33 @@ public class CompilationUnit implements SectionOffset {
         buffer.order(byteOrder);
 
         // the offset from the first byte of the CompilationUnitHeader to the first DIE
-        long offset = header.getUnitLength() - 2 - (header.getOffsetLength()/8) - 1;
-        die = new DIE(abbrevTable, ByteBuffer.wrap(compilationUnitContent), offset, header.is32bitDWARF(), header.getAddressSize());
+        long rootOffset = header.getUnitLength() - 2 - (header.getOffsetLength()/8) - 1;
+        rootDIE = new DIE(abbrevTable, buffer, rootOffset, header.is32bitDWARF(), header.getAddressSize(), null);
+
+        // Parse chain of siblings -- it is terminated by a DIE with an abbreviation code of 0
+        LinkedList<DIE> parents = new LinkedList<>();
+        parents.push(rootDIE);
+        while(!parents.isEmpty()) {
+            DIE currentParent = parents.pop();
+
+            DIE currentChild;
+            do {
+                long childOffset = rootOffset + buffer.position();
+                currentChild = new DIE(abbrevTable, buffer, childOffset, header.is32bitDWARF(), header.getAddressSize(), currentParent);
+            }while(currentChild.getAbbreviationCode() != 0 && !currentChild.getChildrenPresent());
+
+            if (currentChild.getAbbreviationCode() != 0 && currentChild.getChildrenPresent()) {
+                // Start a new chain of siblings
+                parents.push(currentParent);
+                parents.push(currentChild);
+            }
+        }
 
         // All the data is now retrievable via the DIEs
         compilationUnitContent = null;
     }
 
-    public DIE getDIE() {
-        return die;
+    public DIE getRootDIE() {
+        return rootDIE;
     }
 }
