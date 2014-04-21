@@ -28,6 +28,7 @@
 
 package net.sourcecrumbs.refimpl.dwarf.sections;
 
+import java.nio.ByteOrder;
 import java.util.List;
 
 import org.codehaus.preon.annotation.BoundList;
@@ -51,17 +52,18 @@ public class DebugInfo implements SectionContent {
     private List<CompilationUnit> compilationUnits;
 
     /**
-     * Initializes the DIEs, given information available in the DebugAbbrev section
+     * Build the DIEs, given information available in the DebugAbbrev section
      *
      * @param debugAbbrev the DebugAbbrev section
+     * @param byteOrder the byte order of the target machine
      *
      * @throws UnknownFormatException when the data is not in the expected format
      */
-    public void initializeDIEs(DebugAbbrev debugAbbrev) throws UnknownFormatException {
+    public void buildDIEs(DebugAbbrev debugAbbrev, ByteOrder byteOrder) throws UnknownFormatException {
         for (CompilationUnit compilationUnit : compilationUnits) {
             for (AbbreviationTable abbrevTable : debugAbbrev.getAbbreviationTables()) {
                 if (abbrevTable.getSectionOffset() == compilationUnit.getHeader().getDebugAbbrevOffset()) {
-                    // TODO initialize DIEs
+                    compilationUnit.buildDIEs(abbrevTable, byteOrder);
                 }
             }
         }

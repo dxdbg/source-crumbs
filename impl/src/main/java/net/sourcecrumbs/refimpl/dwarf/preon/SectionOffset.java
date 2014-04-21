@@ -29,7 +29,7 @@
 package net.sourcecrumbs.refimpl.dwarf.preon;
 
 /**
- * Interface an entry in a DWARF section that is pointed to by its offset
+ * Interface for an entry in a DWARF section that is pointed to by its offset
  *
  * @author mcnulty
  */

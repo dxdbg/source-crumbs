@@ -35,6 +35,7 @@ package net.sourcecrumbs.refimpl.dwarf.constants;
  */
 public enum AttributeClass {
 
+    novalue,
     address,
     block,
     constant,

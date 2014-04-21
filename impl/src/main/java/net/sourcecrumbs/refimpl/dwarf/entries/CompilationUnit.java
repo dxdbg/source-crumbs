@@ -28,11 +28,14 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
 
+import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
-import net.sourcecrumbs.refimpl.dwarf.sections.DebugAbbrev;
 
 /**
  * Represents a compilation unit in a DWARF file--includes the header and its associated DIEs
@@ -51,6 +54,8 @@ public class CompilationUnit implements SectionOffset {
 
     private long sectionOffset;
 
+    private DIE die;
+
     @Override
     public long getSectionOffset() {
         return sectionOffset;
@@ -67,5 +72,21 @@ public class CompilationUnit implements SectionOffset {
 
     public void setHeader(CompilationUnitHeader header) {
         this.header = header;
+    }
+
+    public void buildDIEs(AbbreviationTable abbrevTable, ByteOrder byteOrder) throws UnknownFormatException {
+        ByteBuffer buffer = ByteBuffer.wrap(compilationUnitContent);
+        buffer.order(byteOrder);
+
+        // the offset from the first byte of the CompilationUnitHeader to the first DIE
+        long offset = header.getUnitLength() - 2 - (header.getOffsetLength()/8) - 1;
+        die = new DIE(abbrevTable, ByteBuffer.wrap(compilationUnitContent), offset, header.is32bitDWARF(), header.getAddressSize());
+
+        // All the data is now retrievable via the DIEs
+        compilationUnitContent = null;
+    }
+
+    public DIE getDIE() {
+        return die;
     }
 }

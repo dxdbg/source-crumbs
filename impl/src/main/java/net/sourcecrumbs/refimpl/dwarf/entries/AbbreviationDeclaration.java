@@ -95,8 +95,8 @@ public class AbbreviationDeclaration implements ListTreeNode {
         return code.getValue() == 0;
     }
 
-    public long getCode() {
-        return code.getValue();
+    public int getCode() {
+        return (int)code.getValue();
     }
 
     public AbbreviationTag getTag() {
@@ -105,5 +105,9 @@ public class AbbreviationDeclaration implements ListTreeNode {
 
     public List<AbbreviationDeclaration> getChildren() {
         return children;
+    }
+
+    public List<AttributeSpecification> getSpecifications() {
+        return specifications;
     }
 }

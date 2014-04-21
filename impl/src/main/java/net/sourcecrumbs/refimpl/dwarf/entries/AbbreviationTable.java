@@ -28,7 +28,13 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+
 import org.codehaus.preon.annotation.Bound;
+import org.codehaus.preon.annotation.Init;
 
 import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
 
@@ -44,6 +50,25 @@ public class AbbreviationTable implements SectionOffset {
 
     private long sectionOffset;
 
+    private Map<Integer, AbbreviationDeclaration> abbreviationsByCode = new HashMap<>();
+
+    @Init
+    public void init() {
+        Queue<AbbreviationDeclaration> searchQueue = new LinkedList<>();
+        searchQueue.add(root);
+        while(!searchQueue.isEmpty()) {
+            AbbreviationDeclaration current = searchQueue.remove();
+            abbreviationsByCode.put(current.getCode(), current);
+            for (AbbreviationDeclaration child : current.getChildren()) {
+                searchQueue.add(child);
+            }
+        }
+    }
+
+    public AbbreviationDeclaration getByCode(Integer code) {
+        return abbreviationsByCode.get(code);
+    }
+
     @Override
     public long getSectionOffset() {
         return sectionOffset;
@@ -52,5 +77,13 @@ public class AbbreviationTable implements SectionOffset {
     @Override
     public void setSectionOffset(long sectionOffset) {
         this.sectionOffset = sectionOffset;
+    }
+
+    public AbbreviationDeclaration getRoot() {
+        return root;
+    }
+
+    public void setRoot(AbbreviationDeclaration root) {
+        this.root = root;
     }
 }

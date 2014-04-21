@@ -29,20 +29,18 @@
 package net.sourcecrumbs.refimpl.elf.spec.preon;
 
 import java.lang.reflect.AnnotatedElement;
+import java.nio.ByteOrder;
 
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecFactory;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.buffer.ByteOrder;
-import org.codehaus.preon.codec.ObjectCodecFactory;
 
 import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.refimpl.elf.spec.Address;
 import net.sourcecrumbs.refimpl.elf.spec.ElfIdent;
 import net.sourcecrumbs.refimpl.elf.spec.Offset;
 import net.sourcecrumbs.refimpl.elf.spec.WordField;
-import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
 
 /**
  * Codec factory for creating ElfCodecs
@@ -55,27 +53,15 @@ public class ElfCodecFactory implements CodecFactory {
 
     private final ByteOrder classByteOrder;
 
-    public ElfCodecFactory(ElfIdent ident) throws UnknownFormatException {
-        switch (ident.getElfClass()) {
-            case ELFCLASS32:
-                classLength = 32;
-                break;
-            case ELFCLASS64:
-                classLength = 64;
-                break;
-            default:
-                throw new UnknownFormatException("Unknown ELF class " + ident.getElfClass());
-        }
+    private final org.codehaus.preon.buffer.ByteOrder preonOrder;
 
-        switch (ident.getDataEncoding()) {
-            case ELFDATA2MSB:
-                classByteOrder = ByteOrder.BigEndian;
-                break;
-            case ELFDATA2LSB:
-                classByteOrder = ByteOrder.LittleEndian;
-                break;
-            default:
-                throw new UnknownFormatException("Unknown ELF data encoding " + ident.getDataEncoding());
+    public ElfCodecFactory(ElfIdent ident) throws UnknownFormatException {
+        classLength = ident.getClassLength();
+        classByteOrder = ident.getByteOrder();
+        if (classByteOrder == ByteOrder.BIG_ENDIAN) {
+            preonOrder = org.codehaus.preon.buffer.ByteOrder.BigEndian;
+        }else{
+            preonOrder = org.codehaus.preon.buffer.ByteOrder.LittleEndian;
         }
     }
 
@@ -83,11 +69,11 @@ public class ElfCodecFactory implements CodecFactory {
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
         if (metadata == null || metadata.isAnnotationPresent(Bound.class)) {
             if (Address.class.equals(type)) {
-                return (Codec<T>) new AddressCodec(classLength, classByteOrder);
+                return (Codec<T>) new AddressCodec(classLength, preonOrder);
             }else if (Offset.class.equals(type)) {
-                return (Codec<T>) new OffsetCodec(classLength, classByteOrder);
+                return (Codec<T>) new OffsetCodec(classLength, preonOrder);
             }else if (WordField.class.equals(type)) {
-                return (Codec<T>) new WordFieldCodec(classLength, classByteOrder);
+                return (Codec<T>) new WordFieldCodec(classLength, preonOrder);
             }
         }
 

@@ -28,67 +28,33 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries;
 
-import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.annotation.BoundNumber;
-
-import net.sourcecrumbs.refimpl.dwarf.types.InitialLength;
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeForm;
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
 
 /**
- * Header for a compilation unit in a DWARF file
+ * Represents an attribute value in a DIE in a DWARF file
  *
  * @author mcnulty
  */
-public class CompilationUnitHeader {
+public class AttributeValue {
 
-    @Bound
-    private InitialLength unitLength;
+    private final AttributeName name;
 
-    @BoundNumber(size = "16")
-    private short version;
+    private final AttributeForm form;
 
-    @BoundNumber(size = "unitLength.offsetLength")
-    private long debugAbbrevOffset;
+    private final byte[] data;
 
-    @BoundNumber(size = "8")
-    private byte addressSize;
-
-    public long getUnitLength() {
-        return unitLength.getLength();
+    public AttributeValue(AttributeName name, AttributeForm form, byte[] data) {
+        this.name = name;
+        this.form = form;
+        this.data = data;
     }
 
-    public void setUnitLength(long unitLength) {
-        this.unitLength.setLength(unitLength);
+    public AttributeName getName() {
+        return name;
     }
 
-    public short getVersion() {
-        return version;
-    }
-
-    public void setVersion(short version) {
-        this.version = version;
-    }
-
-    public long getDebugAbbrevOffset() {
-        return debugAbbrevOffset;
-    }
-
-    public void setDebugAbbrevOffset(long debugAbbrevOffset) {
-        this.debugAbbrevOffset = debugAbbrevOffset;
-    }
-
-    public byte getAddressSize() {
-        return addressSize;
-    }
-
-    public void setAddressSize(byte addressSize) {
-        this.addressSize = addressSize;
-    }
-
-    public boolean is32bitDWARF() {
-        return unitLength.getOffsetLength() == 32;
-    }
-
-    public int getOffsetLength() {
-        return  unitLength.getOffsetLength();
+    public byte[] getData() {
+        return data;
     }
 }

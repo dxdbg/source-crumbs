@@ -28,13 +28,16 @@
 
 package net.sourcecrumbs.refimpl.elf.spec;
 
+
+import java.nio.ByteOrder;
+
 import static net.sourcecrumbs.refimpl.elf.spec.constants.DataTypeSizes.*;
 
 import org.codehaus.preon.annotation.BoundBuffer;
 import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.BoundNumber;
-import org.codehaus.preon.annotation.LazyLoading;
 
+import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.refimpl.elf.spec.constants.DataEncoding;
 import net.sourcecrumbs.refimpl.elf.spec.constants.ElfClass;
 
@@ -98,5 +101,27 @@ public class ElfIdent {
 
     public void setPadding(byte[] padding) {
         this.padding = padding;
+    }
+
+    public int getClassLength() throws UnknownFormatException {
+        switch (getElfClass()) {
+            case ELFCLASS32:
+                return 32;
+            case ELFCLASS64:
+                return 64;
+            default:
+                throw new UnknownFormatException("Unknown ELF class " + getElfClass());
+        }
+    }
+
+    public ByteOrder getByteOrder() throws UnknownFormatException {
+        switch (getDataEncoding()) {
+            case ELFDATA2MSB:
+                return ByteOrder.BIG_ENDIAN;
+            case ELFDATA2LSB:
+                return ByteOrder.LITTLE_ENDIAN;
+            default:
+                throw new UnknownFormatException("Unknown ELF data encoding " + getDataEncoding());
+        }
     }
 }

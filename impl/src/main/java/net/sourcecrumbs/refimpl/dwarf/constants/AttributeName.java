@@ -39,6 +39,9 @@ import static net.sourcecrumbs.refimpl.dwarf.constants.AttributeClass.*;
  */
 public enum AttributeName {
 
+    @BoundEnumOption(0x0)
+    DW_AT_null(novalue),
+
     @BoundEnumOption(0x01)
     DW_AT_sibling(reference),
 

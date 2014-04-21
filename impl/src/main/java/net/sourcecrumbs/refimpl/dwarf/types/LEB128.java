@@ -28,6 +28,8 @@
 
 package net.sourcecrumbs.refimpl.dwarf.types;
 
+import java.nio.ByteBuffer;
+
 import org.codehaus.preon.buffer.BitBuffer;
 
 /**
@@ -45,6 +47,8 @@ public class LEB128 {
 
     private final boolean signed;
 
+    private final int length;
+
     /**
      * Constructor.
      *
@@ -54,6 +58,7 @@ public class LEB128 {
     public LEB128(long value, boolean signed) {
         this.value = value;
         this.signed = signed;
+        this.length = -1;
     }
 
     /**
@@ -68,10 +73,13 @@ public class LEB128 {
         long result = 0;
         int shift = 0;
         byte currentByte;
+
+        int i = 0;
         while (true) {
             currentByte = stream.readAsByte(8);
             result |= ((0x7f & currentByte) << shift);
             shift += 7;
+            i++;
             if ((0x80 & currentByte) == 0) {
                 break;
             }
@@ -83,6 +91,33 @@ public class LEB128 {
 
         this.value = result;
         this.signed = signed;
+        this.length = i;
+    }
+
+    public LEB128(ByteBuffer buffer, boolean signed) {
+        // Based on algorithms in DWARFv4 spec
+        long result = 0;
+        int shift = 0;
+        byte currentByte;
+
+        int i = 0;
+        while (true) {
+            currentByte = buffer.get();
+            result |= ((0x7f & currentByte) << shift);
+            shift += 7;
+            i++;
+            if ((0x80 & currentByte) == 0) {
+                break;
+            }
+        }
+        if (signed && (shift < 64) && ((0x40 & currentByte) != 0)) {
+            // sign extend
+            result |= -(1 << shift);
+        }
+
+        this.value = result;
+        this.signed = signed;
+        this.length = i;
     }
 
     /**
@@ -103,10 +138,10 @@ public class LEB128 {
             currentByte = stream[i];
             result |= ((0x7f & currentByte) << shift);
             shift += 7;
+            i++;
             if ((0x80 & currentByte) == 0) {
                 break;
             }
-            i++;
         }
         if (signed && (shift < 64) && ((0x40 & currentByte) != 0)) {
             // sign extend
@@ -115,6 +150,7 @@ public class LEB128 {
 
         this.value = result;
         this.signed = signed;
+        this.length = i;
     }
 
     public long getValue() {
@@ -123,5 +159,9 @@ public class LEB128 {
 
     public boolean isSigned() {
         return signed;
+    }
+
+    public int getLength() {
+        return length;
     }
 }
