@@ -39,6 +39,9 @@ import org.codehaus.preon.el.ImportStatic;
 
 import net.sourcecrumbs.refimpl.dwarf.constants.ExtendedOpcode;
 import net.sourcecrumbs.refimpl.dwarf.constants.ExtendedOpcodeValues;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
 import net.sourcecrumbs.refimpl.dwarf.preon.LEBSigned;
 import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
 
@@ -59,12 +62,16 @@ public class ExtendedInstruction implements LineNumberOperation {
 
     private ExtendedOpcode opcode;
 
-    @If("opcodeValue == ExtendedOpcodeValues.DW_LNE_set_address || opcodeValue == ExtendedOpcodeValues.DW_LNE_define_file")
+    @If("opcodeValue == ExtendedOpcodeValues.DW_LNE_set_address || " +
+        "opcodeValue == ExtendedOpcodeValues.DW_LNE_define_file || " +
+        "opcodeValue == ExtendedOpcodeValues.DW_LNE_set_discriminator"
+    )
     @BoundObject(
             selectFrom = @Choices(
                     alternatives = {
                             @Choice(condition="opcodeValue == ExtendedOpcodeValues.DW_LNE_set_address", type=SetAddress.class),
                             @Choice(condition="opcodeValue == ExtendedOpcodeValues.DW_LNE_define_file", type=DefineFile.class),
+                            @Choice(condition="opcodeValue == ExtendedOpcodeValues.DW_LNE_set_discriminator", type=SetDiscriminator.class)
                     }
             )
     )
@@ -76,14 +83,20 @@ public class ExtendedInstruction implements LineNumberOperation {
         if (operation == null && opcode != null) {
             switch (opcode) {
                 case DW_LNE_end_sequence:
-                    operation = new EndSequence();
-                    break;
-                case DW_LNE_set_discriminator:
-                    operation = new SetDiscriminator();
+                    operation = EndSequence.INSTANCE;
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        if (operation != null) {
+            return operation.apply(header, state);
+        }
+
+        throw new IllegalStateException("Cannot apply instruction with opcode " + opcodeValue);
     }
 }

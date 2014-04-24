@@ -28,11 +28,24 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
+
 /**
- * Marker interface representing the semantics of a specific line number instruction
+ * Interface representing the semantics of a specific line number instruction
  *
  * @author mcnulty
  */
 public interface LineNumberOperation {
 
+    /**
+     * Applies this line number operation to the specified state
+     *
+     * @param header the header for the line number program
+     * @param state the curent state
+     *
+     * @return the row produced by this instruction
+     */
+    LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state);
 }

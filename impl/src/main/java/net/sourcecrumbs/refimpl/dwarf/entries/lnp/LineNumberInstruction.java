@@ -52,6 +52,9 @@ import net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands.SetEpilogueBegin;
 import net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands.SetFile;
 import net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands.SetIsa;
 import net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands.SetPrologueEnd;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands.SpecialOpcode;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
 
 /**
  * An instruction in a line number program
@@ -59,7 +62,7 @@ import net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands.SetPrologueEnd;
  * @author mcnulty
  */
 @ImportStatic(StandardOpcodeValues.class)
-public class LineNumberInstruction {
+public class LineNumberInstruction implements LineNumberOperation {
 
     @BoundNumber(size = "8")
     private short opcodeValue;
@@ -97,26 +100,39 @@ public class LineNumberInstruction {
         if (operation == null && opcode != null) {
             switch (opcode) {
                 case DW_LNS_copy:
-                    operation = new Copy();
+                    operation = Copy.INSTANCE;
                     break;
                 case DW_LNS_negate_stmt:
-                    operation = new NegateStatement();
+                    operation = NegateStatement.INSTANCE;
                     break;
                 case DW_LNS_set_basic_block:
-                    operation = new SetBasicBlock();
+                    operation = SetBasicBlock.INSTANCE;
                     break;
                 case DW_LNS_const_add_pc:
-                    operation = new ConstAddPc();
+                    operation = ConstAddPc.INSTANCE;
                     break;
                 case DW_LNS_set_epilogue_begin:
-                    operation = new SetEpilogueBegin();
+                    operation = SetEpilogueBegin.INSTANCE;
                     break;
                 case DW_LNS_set_prologue_end:
-                    operation = new SetPrologueEnd();
+                    operation = SetPrologueEnd.INSTANCE;
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        if (opcodeValue >= header.getOpcodeBase()) {
+            return SpecialOpcode.apply(opcodeValue, header, state);
+        }
+
+        if (operation != null) {
+            return operation.apply(header, state);
+        }
+
+        throw new IllegalStateException("Cannot apply instruction with opcode " + opcodeValue);
     }
 }

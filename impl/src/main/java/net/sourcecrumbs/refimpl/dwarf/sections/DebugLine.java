@@ -46,4 +46,14 @@ public class DebugLine implements SectionContent {
 
     @BoundList(type = LineNumberProgram.class)
     private List<LineNumberProgram> lineNumberPrograms;
+
+    public LineNumberProgram getLineNumberProgram(long offset) {
+        for (LineNumberProgram lineNumberProgram : lineNumberPrograms) {
+            if (lineNumberProgram.getSectionOffset() == offset) {
+                return lineNumberProgram;
+            }
+        }
+
+        return null;
+    }
 }

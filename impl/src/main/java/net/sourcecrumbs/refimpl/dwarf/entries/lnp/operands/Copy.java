@@ -28,11 +28,24 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
+
 /**
  * Line number operation that appends a row to the line number matrix using the current registers.
  *
  * @author mcnulty
  */
-public class Copy implements LineNumberOperation {
+public enum Copy implements LineNumberOperation {
 
+    INSTANCE;
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        LineNumberRow row = state.createRow();
+        state.setBasicBlockEntry(false);
+
+        return row;
+    }
 }

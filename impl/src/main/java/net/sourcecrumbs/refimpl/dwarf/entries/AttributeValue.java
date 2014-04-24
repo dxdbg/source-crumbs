@@ -28,6 +28,9 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeForm;
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
 
@@ -54,7 +57,49 @@ public class AttributeValue {
         return name;
     }
 
+    public AttributeForm getForm() {
+        return form;
+    }
+
     public byte[] getData() {
         return data;
+    }
+
+    public long getDataAsLong() {
+        return getDataAsLong(ByteOrder.nativeOrder());
+    }
+
+    public long getDataAsLong(ByteOrder targetOrder) {
+        long output = 0;
+        int length = (data.length < 8 ? data.length : 8);
+        if (targetOrder == ByteOrder.LITTLE_ENDIAN) {
+            for (int i = 0; i < length; ++i) {
+                output |= (data[i] << i*8);
+            }
+        }else{
+            for (int i = length-1; i >= 0; --i) {
+                output |= (data[i] << i*8);
+            }
+        }
+        return output;
+    }
+
+    public int getDataAsInt() {
+        return getDataAsInt(ByteOrder.nativeOrder());
+    }
+
+    public int getDataAsInt(ByteOrder targetOrder) {
+        int output = 0;
+        int length = (data.length < 4 ? data.length : 4);
+        if (targetOrder == ByteOrder.LITTLE_ENDIAN) {
+            for (int i = 0; i < length; ++i) {
+                output |= (data[i] << i*8);
+            }
+        }else{
+            for (int i = length-1; i >= 0; --i) {
+                output |= (data[i] << i*8);
+            }
+        }
+        return output;
     }
 }

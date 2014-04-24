@@ -28,12 +28,16 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries.lnp;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.Slice;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
 import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
 
 /**
@@ -44,11 +48,13 @@ import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
 public class LineNumberProgram implements SectionOffset {
 
     @Bound
-    private LineNumberProgramHeader header;
+    private LineNumberProgramHeader header = null;
 
     @BoundList(type = LineNumberInstruction.class)
     @Slice(size = "(header.unitLength.length - 2 - (header.unitLength.offsetLength/8) - header.headerLength)*8")
-    private List<LineNumberInstruction> instructions;
+    private List<LineNumberInstruction> instructions = null;
+
+    private Map<Long, LineNumberRow> lineNumberMatrix = new HashMap<>();
 
     private long sectionOffset;
 
@@ -60,5 +66,38 @@ public class LineNumberProgram implements SectionOffset {
     @Override
     public void setSectionOffset(long sectionOffset) {
         this.sectionOffset = sectionOffset;
+    }
+
+    private void buildLineNumberMatrix() {
+        LineNumberState state = new LineNumberState(header);
+        LineNumberRow previous = null;
+        for (LineNumberInstruction instruction : instructions) {
+            LineNumberRow row = instruction.apply(header, state);
+            if (row != null) {
+               lineNumberMatrix.put(row.getAddress(), row);
+                if (previous != null) {
+                    previous.setNext(row);
+                    row.setPrevious(previous);
+                }
+                previous = row;
+            }
+
+            // The current sequence has ended, reinitialize the context
+            if (state.isEndSequence()) {
+                state = new LineNumberState(header);
+            }
+        }
+    }
+
+    public LineNumberRow getLineNumberRow(long address) {
+        if (lineNumberMatrix.size() == 0) {
+            synchronized (this) {
+                if (lineNumberMatrix.size() == 0) {
+                    buildLineNumberMatrix();
+                }
+            }
+        }
+
+        return lineNumberMatrix.get(address);
     }
 }

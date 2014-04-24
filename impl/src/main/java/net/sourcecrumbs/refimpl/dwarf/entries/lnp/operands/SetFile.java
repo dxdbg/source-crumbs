@@ -30,6 +30,9 @@ package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
 import org.codehaus.preon.annotation.Bound;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
 import net.sourcecrumbs.refimpl.dwarf.preon.LEBSigned;
 import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
 
@@ -44,4 +47,10 @@ public class SetFile implements LineNumberOperation {
     @LEBSigned(false)
     private LEB128 fileValue;
 
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        state.setFile(fileValue.getValueAsInt());
+
+        return null;
+    }
 }

@@ -62,7 +62,7 @@ public class ElfExecutable extends Executable implements ELF {
 
     @Override
     public MachineCodeMapping getMachineCodeMapping() {
-        return null;
+        return elfFile.getMachineCodeMapping();
     }
 
     @Override

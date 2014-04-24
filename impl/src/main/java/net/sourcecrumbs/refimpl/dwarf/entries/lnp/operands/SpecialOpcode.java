@@ -33,18 +33,26 @@ import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
 import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
 
 /**
- * Line number operation that sets the epilogue begin register to true
+ * Helper for computing the effect of a special opcode
  *
  * @author mcnulty
  */
-public enum SetEpilogueBegin implements LineNumberOperation {
+public final class SpecialOpcode {
 
-    INSTANCE;
+    public static LineNumberRow apply(short opcodeValue, LineNumberProgramHeader header, LineNumberState state) {
+        if (header.getVersion() == 2) {
+            int adjustedOpcode = opcodeValue - header.getOpcodeBase();
+            int addressAdvance = adjustedOpcode / header.getLineRange();
+            int lineIncrement = header.getLineBase() + (adjustedOpcode % header.getLineRange());
 
-    @Override
-    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
-        state.setEpilogueBegin(true);
+            state.setLine(state.getLine() + lineIncrement);
+            state.setAddress(state.getAddress() + (addressAdvance*header.getMinimumInstructionLength()));
+            LineNumberRow row = state.createRow();
+            state.setBasicBlockEntry(false);
 
-        return null;
+            return row;
+        }else{
+            throw new UnsupportedOperationException("Line number program with version " + header.getVersion() + " is not supported");
+        }
     }
 }

@@ -28,6 +28,14 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
+import org.codehaus.preon.annotation.Bound;
+
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
+import net.sourcecrumbs.refimpl.dwarf.preon.LEBSigned;
+import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
+
 /**
  * A line number operation that sets the discriminator register
  *
@@ -35,4 +43,14 @@ package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
  */
 public class SetDiscriminator implements LineNumberOperation {
 
+    @Bound
+    @LEBSigned(false)
+    private LEB128 value;
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        state.setDiscriminator(value.getValueAsInt());
+
+        return null;
+    }
 }

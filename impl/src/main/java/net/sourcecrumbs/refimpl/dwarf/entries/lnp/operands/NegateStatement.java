@@ -28,11 +28,23 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
+
 /**
  * Line number operation that negates the is_stmt register
  *
  * @author mcnulty
  */
-public class NegateStatement implements LineNumberOperation {
+public enum NegateStatement implements LineNumberOperation {
 
+    INSTANCE;
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        state.setStatement(!state.isStatement());
+
+        return null;
+    }
 }

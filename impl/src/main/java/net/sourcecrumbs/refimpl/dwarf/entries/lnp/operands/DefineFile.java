@@ -31,11 +31,15 @@ package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundString;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.FileEntry;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
 import net.sourcecrumbs.refimpl.dwarf.preon.LEBSigned;
 import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
 
 /**
- * A line number operation that defines the current file for the line number program
+ * A line number operation that defines another possible file for the line number program
  *
  * @author mcnulty
  */
@@ -55,4 +59,17 @@ public class DefineFile implements LineNumberOperation {
     @Bound
     @LEBSigned(false)
     private LEB128 length;
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        // Append a new entry to the program header list of files
+        FileEntry fileEntry = new FileEntry();
+        fileEntry.setSourceFilePath(sourceFilePath);
+        fileEntry.setDirectoryIndex(directoryIndex);
+        fileEntry.setLastModificationTime(lastModificationTime);
+        fileEntry.setLength(length);
+        header.getFiles().add(fileEntry);
+
+        return null;
+    }
 }

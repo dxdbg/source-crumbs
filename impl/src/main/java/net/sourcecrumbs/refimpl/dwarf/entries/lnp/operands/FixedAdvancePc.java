@@ -30,6 +30,10 @@ package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
 import org.codehaus.preon.annotation.BoundNumber;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
+
 /**
  * Line number operation that advances the address register the operand contained
  *
@@ -39,4 +43,11 @@ public class FixedAdvancePc implements LineNumberOperation {
 
     @BoundNumber(size = "16")
     private short advance;
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        state.setAddress(state.getAddress() + advance);
+
+        return null;
+    }
 }

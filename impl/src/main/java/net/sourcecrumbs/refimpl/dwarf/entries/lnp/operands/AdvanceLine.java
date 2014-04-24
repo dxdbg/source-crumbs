@@ -30,6 +30,9 @@ package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
 import org.codehaus.preon.annotation.Bound;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
 import net.sourcecrumbs.refimpl.dwarf.preon.LEBSigned;
 import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
 
@@ -43,4 +46,12 @@ public class AdvanceLine implements LineNumberOperation {
     @Bound
     @LEBSigned(true)
     private LEB128 advance;
+
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        state.setLine(state.getLine() + advance.getValueAsInt());
+
+        return null;
+    }
 }

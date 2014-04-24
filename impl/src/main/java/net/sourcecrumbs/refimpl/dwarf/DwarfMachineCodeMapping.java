@@ -34,6 +34,11 @@ import net.sourcecrumbs.api.Range;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.machinecode.SourceLine;
 import net.sourcecrumbs.api.machinecode.SourceLineRange;
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
+import net.sourcecrumbs.refimpl.dwarf.entries.AttributeValue;
+import net.sourcecrumbs.refimpl.dwarf.entries.CompilationUnit;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgram;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugInfo;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugLine;
 
@@ -50,8 +55,6 @@ public class DwarfMachineCodeMapping implements MachineCodeMapping {
     public DwarfMachineCodeMapping(DebugInfo debugInfo, DebugLine debugLine) {
         this.debugInfo = debugInfo;
         this.debugLine = debugLine;
-
-        // TODO build all the line number matrices
     }
 
     @Override
@@ -69,8 +72,41 @@ public class DwarfMachineCodeMapping implements MachineCodeMapping {
         return 0;
     }
 
+    private LineNumberRow getLineNumberRow(long address) {
+        CompilationUnit compilationUnit = debugInfo.getCompilationUnit(address);
+        if (compilationUnit != null) {
+            for (AttributeValue value : compilationUnit.getRootDIE().getAttributeValues()) {
+                if (value.getName() == AttributeName.DW_AT_stmt_list) {
+                    long lnpOffset = value.getDataAsLong();
+                    LineNumberProgram lnp = debugLine.getLineNumberProgram(lnpOffset);
+                    if (lnp != null) {
+                        return lnp.getLineNumberRow(address);
+                    }
+                    break;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public long getNextStatementAddress(long address, boolean descend) {
+        // TODO implement the descend functionality
+        LineNumberRow row = getLineNumberRow(address);
+        if (row != null) {
+            LineNumberRow next;
+            do {
+                next = row.getNext();
+                if (next == null) {
+                    break;
+                }
+            }while(!next.isStatement());
+
+            if (next != null) {
+                return next.getAddress();
+            }
+        }
+
         return 0;
     }
 

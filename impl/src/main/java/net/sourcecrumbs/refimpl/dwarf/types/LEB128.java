@@ -157,6 +157,10 @@ public class LEB128 {
         return value;
     }
 
+    public int getValueAsInt() {
+        return (int)value;
+    }
+
     public boolean isSigned() {
         return signed;
     }

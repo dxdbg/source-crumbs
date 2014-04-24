@@ -26,25 +26,32 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
-
-import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
-import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
-import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
+package net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm;
 
 /**
- * Line number operation that sets the epilogue begin register to true
+ * Represents a row in a line number matrix
  *
  * @author mcnulty
  */
-public enum SetEpilogueBegin implements LineNumberOperation {
+public class LineNumberRow extends LineNumberRegisters {
 
-    INSTANCE;
+    private LineNumberRow previous = null;
 
-    @Override
-    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
-        state.setEpilogueBegin(true);
+    private LineNumberRow next = null;
 
-        return null;
+    public LineNumberRow getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(LineNumberRow previous) {
+        this.previous = previous;
+    }
+
+    public LineNumberRow getNext() {
+        return next;
+    }
+
+    public void setNext(LineNumberRow next) {
+        this.next = next;
     }
 }

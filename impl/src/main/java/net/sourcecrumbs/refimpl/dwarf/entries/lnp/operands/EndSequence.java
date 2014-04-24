@@ -28,11 +28,23 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
+
 /**
  * Line number instruction that terminates a line number program
  *
  * @author mcnulty
  */
-public class EndSequence implements LineNumberOperation {
+public enum EndSequence implements LineNumberOperation {
 
+    INSTANCE;
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        state.setEndSequence(true);
+
+        return state.createRow();
+    }
 }

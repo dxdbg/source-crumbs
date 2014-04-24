@@ -29,11 +29,23 @@
 package net.sourcecrumbs.refimpl.dwarf.entries.lnp.operands;
 
 
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.LineNumberProgramHeader;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberRow;
+import net.sourcecrumbs.refimpl.dwarf.entries.lnp.sm.LineNumberState;
+
 /**
  * Line number instruction that sets the basic block register to true
  *
  * @author mcnulty
  */
-public class SetBasicBlock implements LineNumberOperation {
+public enum SetBasicBlock implements LineNumberOperation {
 
+    INSTANCE;
+
+    @Override
+    public LineNumberRow apply(LineNumberProgramHeader header, LineNumberState state) {
+        state.setBasicBlockEntry(true);
+
+        return null;
+    }
 }

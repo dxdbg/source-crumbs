@@ -30,11 +30,15 @@ package net.sourcecrumbs.refimpl.dwarf.sections;
 
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.codehaus.preon.annotation.BoundList;
 
 import net.sourcecrumbs.api.files.UnknownFormatException;
+import net.sourcecrumbs.refimpl.dwarf.constants.AbbreviationTag;
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
 import net.sourcecrumbs.refimpl.dwarf.entries.AbbreviationTable;
+import net.sourcecrumbs.refimpl.dwarf.entries.AttributeValue;
 import net.sourcecrumbs.refimpl.dwarf.entries.CompilationUnit;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SectionContent;
 
@@ -51,6 +55,8 @@ public class DebugInfo implements SectionContent {
     @BoundList(type = CompilationUnit.class)
     private List<CompilationUnit> compilationUnits;
 
+    private TreeMap<Long, CompilationUnit> unitsByStartingAddress = new TreeMap<>();
+
     /**
      * Build the DIEs, given information available in the DebugAbbrev section
      *
@@ -66,6 +72,25 @@ public class DebugInfo implements SectionContent {
                     compilationUnit.buildDIEs(abbrevTable, byteOrder);
                 }
             }
+            if (compilationUnit.getRootDIE().getTag() == AbbreviationTag.DW_TAG_compile_unit) {
+                for (AttributeValue value : compilationUnit.getRootDIE().getAttributeValues()) {
+                    if (value.getName() == AttributeName.DW_AT_low_pc) {
+                        unitsByStartingAddress.put(value.getDataAsLong(byteOrder), compilationUnit);
+                        break;
+                    }
+                }
+            }
         }
+    }
+
+    /**
+     * Retrieves the compilation unit that contains an address
+     *
+     * @param containingAddress the containing address
+     *
+     * @return the compilation unit
+     */
+    public CompilationUnit getCompilationUnit(Long containingAddress) {
+        return unitsByStartingAddress.floorEntry(containingAddress).getValue();
     }
 }

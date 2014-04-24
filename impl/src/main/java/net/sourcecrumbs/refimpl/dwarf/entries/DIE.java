@@ -66,6 +66,7 @@ public class DIE {
      * @param is32bitDwarf true, if the DIE is contained in a 32-bit DWARF file
      * @param offset the offset from the start of the compilation unit header to this DIE
      * @param addressSize the size of an address for the parent CompilationUnit
+     * @param parent the parent of this DIE, can be null for the root DIE
      *
      * @throws UnknownFormatException when the underlying data is in an unexpected format
      */

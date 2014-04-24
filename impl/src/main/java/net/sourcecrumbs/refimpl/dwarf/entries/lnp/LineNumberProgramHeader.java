@@ -84,4 +84,100 @@ public class LineNumberProgramHeader {
     @ElementTerminatedList(elementType = FileEntry.class)
     @Bound
     private List<FileEntry> files;
+
+    public InitialLength getUnitLength() {
+        return unitLength;
+    }
+
+    public void setUnitLength(InitialLength unitLength) {
+        this.unitLength = unitLength;
+    }
+
+    public short getVersion() {
+        return version;
+    }
+
+    public void setVersion(short version) {
+        this.version = version;
+    }
+
+    public long getHeaderLength() {
+        return headerLength;
+    }
+
+    public void setHeaderLength(long headerLength) {
+        this.headerLength = headerLength;
+    }
+
+    public byte getMinimumInstructionLength() {
+        return minimumInstructionLength;
+    }
+
+    public void setMinimumInstructionLength(byte minimumInstructionLength) {
+        this.minimumInstructionLength = minimumInstructionLength;
+    }
+
+    public byte getMaximumOperationsPerInstruction() {
+        return maximumOperationsPerInstruction;
+    }
+
+    public void setMaximumOperationsPerInstruction(byte maximumOperationsPerInstruction) {
+        this.maximumOperationsPerInstruction = maximumOperationsPerInstruction;
+    }
+
+    public byte getDefaultIsStmt() {
+        return defaultIsStmt;
+    }
+
+    public void setDefaultIsStmt(byte defaultIsStmt) {
+        this.defaultIsStmt = defaultIsStmt;
+    }
+
+    public byte getLineBase() {
+        return lineBase;
+    }
+
+    public void setLineBase(byte lineBase) {
+        this.lineBase = lineBase;
+    }
+
+    public byte getLineRange() {
+        return lineRange;
+    }
+
+    public void setLineRange(byte lineRange) {
+        this.lineRange = lineRange;
+    }
+
+    public short getOpcodeBase() {
+        return opcodeBase;
+    }
+
+    public void setOpcodeBase(short opcodeBase) {
+        this.opcodeBase = opcodeBase;
+    }
+
+    public byte[] getStandardOpcodeLengths() {
+        return standardOpcodeLengths;
+    }
+
+    public void setStandardOpcodeLengths(byte[] standardOpcodeLengths) {
+        this.standardOpcodeLengths = standardOpcodeLengths;
+    }
+
+    public List<ListString> getIncludeDirectories() {
+        return includeDirectories;
+    }
+
+    public void setIncludeDirectories(List<ListString> includeDirectories) {
+        this.includeDirectories = includeDirectories;
+    }
+
+    public List<FileEntry> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileEntry> files) {
+        this.files = files;
+    }
 }
