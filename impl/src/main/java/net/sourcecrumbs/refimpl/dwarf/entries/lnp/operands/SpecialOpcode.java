@@ -49,6 +49,9 @@ public final class SpecialOpcode {
             state.setAddress(state.getAddress() + (addressAdvance*header.getMinimumInstructionLength()));
             LineNumberRow row = state.createRow();
             state.setBasicBlockEntry(false);
+            state.setPrologueEnd(false);
+            state.setEpilogueBegin(false);
+            state.setDiscriminator(0);
 
             return row;
         }else{

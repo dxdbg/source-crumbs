@@ -30,6 +30,7 @@ package net.sourcecrumbs.refimpl.elf;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,7 +77,7 @@ public class SandboxTest extends BaseNativeFileTest {
         }
 
         MachineCodeMapping mapping = exec.getMachineCodeMapping();
-        long nextAddress = 0x40053d;
+        long nextAddress = 0x4004e0;
         while (nextAddress != 0) {
             System.out.printf("0x%x", nextAddress);
             System.out.println();
@@ -86,6 +87,6 @@ public class SandboxTest extends BaseNativeFileTest {
 
     @Override
     protected URL getFileUrl() throws MalformedURLException {
-        return new URL("http://mcnulty.github.io/native-file-tests/files/linux/gcc/4.8.2/basic-64bit-dynamic");
+        return new URL("http://mcnulty.github.io/native-file-tests/files/linux/clang/3.2-11/basic-64bit-dynamic");
     }
 }
