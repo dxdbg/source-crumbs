@@ -47,4 +47,8 @@ public class NoSuchLineException extends Exception {
     public NoSuchLineException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public NoSuchLineException(Throwable cause) {
+        super(cause);
+    }
 }

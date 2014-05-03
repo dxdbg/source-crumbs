@@ -62,21 +62,19 @@ public interface MachineCodeMapping {
      * Gets the machine code address of the next statement following the given source line
      *
      * @param sourceLine the source line
-     * @param descend true, if the next statement calculation should descend into function/method calls
      *
      * @return the machine code address or 0 if no address could be determined
      */
-    long getNextStatementAddress(SourceLine sourceLine, boolean descend);
+    long getNextStatementAddress(SourceLine sourceLine);
 
     /**
      * Gets the machine code address of the next statement following the given machine code address
      *
      * @param address the machine code address
-     * @param descend true, if the next statement calculation should descend into function/method calls
      *
      * @return the machine code address or 0 if no address could be determined
      */
-    long getNextStatementAddress(long address, boolean descend);
+    long getNextStatementAddress(long address);
 
     /**
      * Gets the statement address corresponding to the specified address

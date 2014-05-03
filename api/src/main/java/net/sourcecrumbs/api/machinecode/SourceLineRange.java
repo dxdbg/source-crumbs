@@ -40,7 +40,7 @@ public class SourceLineRange {
 
     private TranslationUnit translationUnit;
 
-    private Range<Long> lineRange;
+    private Range<Integer> lineRange;
 
     public TranslationUnit getTranslationUnit() {
         return translationUnit;
@@ -50,11 +50,11 @@ public class SourceLineRange {
         this.translationUnit = translationUnit;
     }
 
-    public Range<Long> getLineRange() {
+    public Range<Integer> getLineRange() {
         return lineRange;
     }
 
-    public void setLineRange(Range<Long> lineRange) {
+    public void setLineRange(Range<Integer> lineRange) {
         this.lineRange = lineRange;
     }
 }

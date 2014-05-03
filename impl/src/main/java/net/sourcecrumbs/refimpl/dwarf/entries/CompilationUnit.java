@@ -30,12 +30,17 @@ package net.sourcecrumbs.refimpl.dwarf.entries;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
 
 import net.sourcecrumbs.api.files.UnknownFormatException;
+import net.sourcecrumbs.api.transunit.SourceLanguage;
+import net.sourcecrumbs.api.transunit.TranslationUnit;
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
 import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
 
 /**
@@ -43,7 +48,7 @@ import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
  *
  * @author mcnulty
  */
-public class CompilationUnit implements SectionOffset {
+public class CompilationUnit implements SectionOffset, TranslationUnit {
 
     @Bound
     private CompilationUnitHeader header;
@@ -56,6 +61,14 @@ public class CompilationUnit implements SectionOffset {
     private long sectionOffset;
 
     private DIE rootDIE;
+
+    // the following members are lazily initialized
+
+    private Path path = null;
+
+    private SourceLanguage sourceLanguage = null;
+
+    private Path compilationDir = null;
 
     @Override
     public long getSectionOffset() {
@@ -108,5 +121,63 @@ public class CompilationUnit implements SectionOffset {
 
     public DIE getRootDIE() {
         return rootDIE;
+    }
+
+    @Override
+    public String getName() {
+        Path localPath = getPath();
+        if (localPath != null) {
+            return localPath.toFile().getName();
+        }
+
+        return null;
+    }
+
+    @Override
+    public SourceLanguage getLanguage() {
+        if (sourceLanguage == null) {
+            synchronized (this) {
+                if (sourceLanguage == null) {
+
+                }
+            }
+        }
+
+        return sourceLanguage;
+    }
+
+    @Override
+    public Path getCompilationDirectory() {
+        if (compilationDir == null) {
+            synchronized (this) {
+                if (compilationDir == null) {
+                    for (AttributeValue value : rootDIE.getAttributeValues()) {
+                        if (value.getName() == AttributeName.DW_AT_comp_dir) {
+                            compilationDir = Paths.get(value.getDataAsString());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Path getPath() {
+        if (path == null) {
+            synchronized (this) {
+                if (path == null) {
+                    for (AttributeValue value : rootDIE.getAttributeValues()) {
+                        if (value.getName() == AttributeName.DW_AT_name) {
+                            path = Paths.get(value.getDataAsString());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return path;
     }
 }

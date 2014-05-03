@@ -29,6 +29,7 @@
 package net.sourcecrumbs.refimpl.dwarf.entries.lnp;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +55,11 @@ public class LineNumberProgram implements SectionOffset {
     @Slice(size = "(header.unitLength.length - 2 - (header.unitLength.offsetLength/8) - header.headerLength)*8")
     private List<LineNumberInstruction> instructions = null;
 
-    private Map<Long, LineNumberRow> lineNumberMatrix = new HashMap<>();
+    private boolean lineNumberMatrixBuilt = false;
+
+    private Map<Long, List<LineNumberRow>> lineNumberMatrixByAddr = new HashMap<>();
+
+    private Map<Integer, List<LineNumberRow>> lineNumberMatrixByLine = new HashMap<>();
 
     private long sectionOffset;
 
@@ -74,7 +79,20 @@ public class LineNumberProgram implements SectionOffset {
         for (LineNumberInstruction instruction : instructions) {
             LineNumberRow row = instruction.apply(header, state);
             if (row != null) {
-               lineNumberMatrix.put(row.getAddress(), row);
+                List<LineNumberRow> rowsByAddr = lineNumberMatrixByAddr.get(row.getAddress());
+                if (rowsByAddr == null) {
+                    rowsByAddr = new LinkedList<>();
+                    lineNumberMatrixByAddr.put(row.getAddress(), rowsByAddr);
+                }
+                rowsByAddr.add(row);
+
+                List<LineNumberRow> rowsByLine = lineNumberMatrixByLine.get(row.getLine());
+                if (rowsByLine == null) {
+                    rowsByLine = new LinkedList<>();
+                    lineNumberMatrixByLine.put(row.getLine(), rowsByLine);
+                }
+                rowsByLine.add(row);
+
                 if (previous != null) {
                     previous.setNext(row);
                     row.setPrevious(previous);
@@ -87,17 +105,30 @@ public class LineNumberProgram implements SectionOffset {
                 state = new LineNumberState(header);
             }
         }
+        lineNumberMatrixBuilt = true;
     }
 
-    public LineNumberRow getLineNumberRow(long address) {
-        if (lineNumberMatrix.size() == 0) {
+    public List<LineNumberRow> getLineNumberRowsByAddress(long address) {
+        if (!lineNumberMatrixBuilt) {
             synchronized (this) {
-                if (lineNumberMatrix.size() == 0) {
+                if (!lineNumberMatrixBuilt) {
                     buildLineNumberMatrix();
                 }
             }
         }
 
-        return lineNumberMatrix.get(address);
+        return lineNumberMatrixByAddr.get(address);
+    }
+
+    public List<LineNumberRow> getLineNumberRowsByLine(int line) {
+        if (!lineNumberMatrixBuilt) {
+            synchronized (this) {
+                if (!lineNumberMatrixBuilt) {
+                    buildLineNumberMatrix();
+                }
+            }
+        }
+
+        return lineNumberMatrixByLine.get(line);
     }
 }

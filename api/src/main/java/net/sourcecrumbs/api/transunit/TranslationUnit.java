@@ -28,11 +28,4 @@ public interface TranslationUnit
      * @return the complete path for the source file
      */
     Path getPath();
-
-    /**
-     * @param line the line
-     *
-     * @return the text at the source line
-     */
-    String getSourceLineText(long line);
 }

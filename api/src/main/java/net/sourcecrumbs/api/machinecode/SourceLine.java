@@ -28,7 +28,6 @@
 
 package net.sourcecrumbs.api.machinecode;
 
-import net.sourcecrumbs.api.transunit.NoSuchLineException;
 import net.sourcecrumbs.api.transunit.TranslationUnit;
 
 /**
@@ -40,7 +39,7 @@ public class SourceLine {
 
     private TranslationUnit translationUnit;
 
-    private long line;
+    private int line;
 
     public TranslationUnit getTranslationUnit() {
         return translationUnit;
@@ -50,15 +49,11 @@ public class SourceLine {
         this.translationUnit = translationUnit;
     }
 
-    public long getLine() {
+    public int getLine() {
         return line;
     }
 
-    public void setLine(long line) {
+    public void setLine(int line) {
         this.line = line;
-    }
-
-    public String getLineText() throws NoSuchLineException {
-        return translationUnit.getSourceLineText(line);
     }
 }

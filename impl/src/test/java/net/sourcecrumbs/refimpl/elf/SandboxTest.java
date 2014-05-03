@@ -81,7 +81,7 @@ public class SandboxTest extends BaseNativeFileTest {
         while (nextAddress != 0) {
             System.out.printf("0x%x", nextAddress);
             System.out.println();
-            nextAddress = mapping.getNextStatementAddress(nextAddress, false);
+            nextAddress = mapping.getNextStatementAddress(nextAddress);
         }
     }
 

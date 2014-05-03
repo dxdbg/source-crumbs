@@ -28,8 +28,9 @@
 
 package net.sourcecrumbs.refimpl.dwarf.entries;
 
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeForm;
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
@@ -101,5 +102,13 @@ public class AttributeValue {
             }
         }
         return output;
+    }
+
+    public String getDataAsString() {
+        return getDataAsString(StandardCharsets.UTF_8);
+    }
+
+    public String getDataAsString(Charset charset) {
+        return new String(data, charset);
     }
 }
