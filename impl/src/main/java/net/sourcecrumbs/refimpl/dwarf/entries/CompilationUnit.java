@@ -42,6 +42,7 @@ import net.sourcecrumbs.api.transunit.SourceLanguage;
 import net.sourcecrumbs.api.transunit.TranslationUnit;
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
 import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
+import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 
 /**
  * Represents a compilation unit in a DWARF file--includes the header and its associated DIEs
@@ -61,6 +62,8 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
     private long sectionOffset;
 
     private DIE rootDIE;
+
+    private StringTable stringTable;
 
     // the following members are lazily initialized
 
@@ -88,7 +91,7 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
         this.header = header;
     }
 
-    public void buildDIEs(AbbreviationTable abbrevTable, ByteOrder byteOrder) throws UnknownFormatException {
+    public void buildDIEs(AbbreviationTable abbrevTable, StringTable stringTable, ByteOrder byteOrder) throws UnknownFormatException {
         ByteBuffer buffer = ByteBuffer.wrap(compilationUnitContent);
         buffer.order(byteOrder);
 
@@ -116,6 +119,7 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
         }
 
         // All the data is now retrievable via the DIEs
+        this.stringTable = stringTable;
         compilationUnitContent = null;
     }
 
@@ -153,7 +157,7 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
                 if (compilationDir == null) {
                     for (AttributeValue value : rootDIE.getAttributeValues()) {
                         if (value.getName() == AttributeName.DW_AT_comp_dir) {
-                            compilationDir = Paths.get(value.getDataAsString());
+                            path = Paths.get(value.getDataAsString(stringTable));
                             break;
                         }
                     }
@@ -170,7 +174,7 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
                 if (path == null) {
                     for (AttributeValue value : rootDIE.getAttributeValues()) {
                         if (value.getName() == AttributeName.DW_AT_name) {
-                            path = Paths.get(value.getDataAsString());
+                            path = Paths.get(value.getDataAsString(stringTable));
                             break;
                         }
                     }

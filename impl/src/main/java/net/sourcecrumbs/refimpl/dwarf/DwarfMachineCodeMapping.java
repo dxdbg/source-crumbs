@@ -182,22 +182,29 @@ public class DwarfMachineCodeMapping implements MachineCodeMapping {
             });
 
             List<SourceLineRange> ranges = new LinkedList<>();
-            LineNumberRow start = null;
-            LineNumberRow last = null;
-            for (LineNumberRow row : rows) {
-                if (start == null) {
-                    start = row;
-                    last = row;
-                }else{
-                    if (row.getLine() != (last.getLine() + 1) && row.getLine() != last.getLine()) {
-                        SourceLineRange sourceLineRange = new SourceLineRange();
-                        sourceLineRange.setTranslationUnit(compilationUnit);
-                        sourceLineRange.setLineRange(new Range<Integer>(start.getLine(), last.getLine()));
-                        ranges.add(sourceLineRange);
+            if (rows.size() == 1) {
+                SourceLineRange sourceLineRange = new SourceLineRange();
+                sourceLineRange.setTranslationUnit(compilationUnit);
+                sourceLineRange.setLineRange(new Range<Integer>(rows.get(0).getLine(), rows.get(0).getLine()));
+                ranges.add(sourceLineRange);
+            }else {
+                LineNumberRow start = null;
+                LineNumberRow last = null;
+                for (LineNumberRow row : rows) {
+                    if (start == null) {
                         start = row;
                         last = row;
-                    }else{
-                        last = row;
+                    } else {
+                        if (row.getLine() != (last.getLine() + 1) && row.getLine() != last.getLine()) {
+                            SourceLineRange sourceLineRange = new SourceLineRange();
+                            sourceLineRange.setTranslationUnit(compilationUnit);
+                            sourceLineRange.setLineRange(new Range<Integer>(start.getLine(), last.getLine()));
+                            ranges.add(sourceLineRange);
+                            start = row;
+                            last = row;
+                        } else {
+                            last = row;
+                        }
                     }
                 }
             }

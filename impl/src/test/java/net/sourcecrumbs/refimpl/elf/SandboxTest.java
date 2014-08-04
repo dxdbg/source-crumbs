@@ -31,6 +31,7 @@ package net.sourcecrumbs.refimpl.elf;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,6 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
+import net.sourcecrumbs.api.machinecode.SourceLineRange;
 import net.sourcecrumbs.refimpl.BaseNativeFileTest;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSegment;
 import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
@@ -79,8 +81,17 @@ public class SandboxTest extends BaseNativeFileTest {
         MachineCodeMapping mapping = exec.getMachineCodeMapping();
         long nextAddress = 0x4004e0;
         while (nextAddress != 0) {
+
             System.out.printf("0x%x", nextAddress);
+
+            List<SourceLineRange> sourceLineRanges = mapping.getSourceLinesRanges(nextAddress);
+            for (SourceLineRange range : sourceLineRanges) {
+                System.out.printf(" [%d,%d] %s", range.getLineRange().getStart(), range.getLineRange().getEnd(),
+                        range.getTranslationUnit().getPath().toString());
+            }
+
             System.out.println();
+
             nextAddress = mapping.getNextStatementAddress(nextAddress);
         }
     }

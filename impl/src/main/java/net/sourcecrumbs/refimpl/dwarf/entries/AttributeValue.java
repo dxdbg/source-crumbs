@@ -34,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeForm;
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
+import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 
 /**
  * Represents an attribute value in a DIE in a DWARF file
@@ -106,6 +107,22 @@ public class AttributeValue {
 
     public String getDataAsString() {
         return getDataAsString(StandardCharsets.UTF_8);
+    }
+
+    public String getDataAsString(StringTable table) {
+        return getDataAsString(table, StandardCharsets.UTF_8);
+    }
+
+    public String getDataAsString(StringTable table, Charset charset) {
+        switch (form) {
+            case DW_FORM_string:
+                return getDataAsString(charset);
+            case DW_FORM_strp:
+                return table.getString(getDataAsInt(), charset);
+            default:
+                break;
+        }
+        return "";
     }
 
     public String getDataAsString(Charset charset) {

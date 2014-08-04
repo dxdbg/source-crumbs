@@ -116,10 +116,13 @@ public class DwarfSectionPostProcessor implements ElfSectionPostProcessor {
         // initialize the DIEs, now that all information is known
         ElfSection debugInfoSection = elfFile.getSection(DebugInfo.SECTION_NAME);
         ElfSection debugAbbrevSection = elfFile.getSection(DebugAbbrev.SECTION_NAME);
+        ElfSection debugStrSection = elfFile.getSection(DebugStr.SECTION_NAME);
         if (debugInfoSection != null && debugInfoSection.getSectionContent() instanceof DebugInfo &&
-            debugAbbrevSection != null && debugAbbrevSection.getSectionContent() instanceof DebugAbbrev)
+            debugAbbrevSection != null && debugAbbrevSection.getSectionContent() instanceof DebugAbbrev &&
+            debugStrSection != null && debugStrSection.getSectionContent() instanceof DebugStr)
         {
             ((DebugInfo)debugInfoSection.getSectionContent()).buildDIEs(((DebugAbbrev) debugAbbrevSection.getSectionContent()),
+                    ((DebugStr)debugStrSection.getSectionContent()),
                     elfFile.getHeader().getIdent().getByteOrder());
         }
     }

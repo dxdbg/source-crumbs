@@ -61,15 +61,16 @@ public class DebugInfo implements SectionContent {
      * Build the DIEs, given information available in the DebugAbbrev section
      *
      * @param debugAbbrev the DebugAbbrev section
+     * @param debugStr the DebugStr section
      * @param byteOrder the byte order of the target machine
      *
      * @throws UnknownFormatException when the data is not in the expected format
      */
-    public void buildDIEs(DebugAbbrev debugAbbrev, ByteOrder byteOrder) throws UnknownFormatException {
+    public void buildDIEs(DebugAbbrev debugAbbrev, DebugStr debugStr, ByteOrder byteOrder) throws UnknownFormatException {
         for (CompilationUnit compilationUnit : compilationUnits) {
             for (AbbreviationTable abbrevTable : debugAbbrev.getAbbreviationTables()) {
                 if (abbrevTable.getSectionOffset() == compilationUnit.getHeader().getDebugAbbrevOffset()) {
-                    compilationUnit.buildDIEs(abbrevTable, byteOrder);
+                    compilationUnit.buildDIEs(abbrevTable, debugStr, byteOrder);
                 }
             }
             if (compilationUnit.getRootDIE().getTag() == AbbreviationTag.DW_TAG_compile_unit) {

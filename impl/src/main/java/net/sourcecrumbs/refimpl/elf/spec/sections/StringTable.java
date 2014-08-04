@@ -28,6 +28,7 @@
 
 package net.sourcecrumbs.refimpl.elf.spec.sections;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -38,10 +39,14 @@ import java.nio.charset.StandardCharsets;
 public class StringTable extends GenericSection {
 
     public String getString(int index) {
+        return getString(index, StandardCharsets.US_ASCII);
+    }
+
+    public String getString(int index, Charset charset) {
         if (index >= 0 && index <= data.length) {
             int end = index;
             for (; data[end] != 0x00 ; end++);
-            return new String(data, index, end-index, StandardCharsets.US_ASCII);
+            return new String(data, index, end-index, charset);
         }
 
         return "";
