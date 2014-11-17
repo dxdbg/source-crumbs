@@ -26,82 +26,28 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.api.debug.symbols;
 
-import net.sourcecrumbs.api.debug.symbols.Function;
-import net.sourcecrumbs.api.files.ObjectFile;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.api.debug.symbols.Variable;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+import java.util.List;
+
+import net.sourcecrumbs.api.Range;
 
 /**
- * High-level abstraction of an ELF object file
+ * A Function represents a collection of executable code
  *
  * @author mcnulty
  */
-public class ElfObjectFile extends ObjectFile implements ELF {
+public interface Function
+{
+    String getName();
 
-    private final ElfFile elfFile;
+    Range<Long> getScope();
 
-    public ElfObjectFile(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
+    DebugType getReturnType();
 
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
+    List<Variable> getFormalParameters();
 
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
+    Iterable<Variable> getLocalVariables();
 
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Symbol getSymbol(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Variable> getGlobalVariables()
-    {
-        return null;
-    }
-
-    @Override
-    public Variable getGlobalVariable(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Iterable<Function> getFunctions()
-    {
-        return null;
-    }
-
-    @Override
-    public Function getFunction(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Function getContainingFunction(long pc)
-    {
-        return null;
-    }
+    List<Variable> getLocalVariablesByName(String name);
 }

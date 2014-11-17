@@ -26,82 +26,32 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
-
-import net.sourcecrumbs.api.debug.symbols.Function;
-import net.sourcecrumbs.api.files.ObjectFile;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.api.debug.symbols.Variable;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+package net.sourcecrumbs.api.debug.symbols;
 
 /**
- * High-level abstraction of an ELF object file
+ * Thrown when there is an error inspecting an execution context
  *
  * @author mcnulty
  */
-public class ElfObjectFile extends ObjectFile implements ELF {
+public class ContextInspectionException extends Exception
+{
 
-    private final ElfFile elfFile;
-
-    public ElfObjectFile(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
-
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
-
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Symbol getSymbol(String name)
+    public ContextInspectionException()
     {
-        return null;
     }
 
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Variable> getGlobalVariables()
+    public ContextInspectionException(String message)
     {
-        return null;
+        super(message);
     }
 
-    @Override
-    public Variable getGlobalVariable(String name)
+    public ContextInspectionException(String message, Throwable cause)
     {
-        return null;
+        super(message, cause);
     }
 
-    @Override
-    public Iterable<Function> getFunctions()
+    public ContextInspectionException(Throwable cause)
     {
-        return null;
-    }
-
-    @Override
-    public Function getFunction(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Function getContainingFunction(long pc)
-    {
-        return null;
+        super(cause);
     }
 }

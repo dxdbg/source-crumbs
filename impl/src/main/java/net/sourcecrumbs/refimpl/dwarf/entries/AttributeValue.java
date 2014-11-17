@@ -32,6 +32,8 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import com.google.common.primitives.UnsignedBytes;
+
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeForm;
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
 import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
@@ -95,11 +97,11 @@ public class AttributeValue {
         int length = (data.length < 4 ? data.length : 4);
         if (targetOrder == ByteOrder.LITTLE_ENDIAN) {
             for (int i = 0; i < length; ++i) {
-                output |= (data[i] << i*8);
+                output |= (UnsignedBytes.toInt(data[i]) << i*8);
             }
         }else{
             for (int i = length-1; i >= 0; --i) {
-                output |= (data[i] << i*8);
+                output |= (UnsignedBytes.toInt(data[i]) << i*8);
             }
         }
         return output;

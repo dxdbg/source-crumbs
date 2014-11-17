@@ -26,82 +26,22 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.api.debug.symbols;
 
-import net.sourcecrumbs.api.debug.symbols.Function;
-import net.sourcecrumbs.api.files.ObjectFile;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.api.debug.symbols.Variable;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+import net.libudi.api.Register;
 
 /**
- * High-level abstraction of an ELF object file
+ * A Location describes how to retrieve the data associated with a Variable given an execution context
  *
  * @author mcnulty
  */
-public class ElfObjectFile extends ObjectFile implements ELF {
+public interface Location
+{
+    boolean isRegister();
 
-    private final ElfFile elfFile;
+    Register getRegister();
 
-    public ElfObjectFile(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
+    boolean isMemory();
 
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
-
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Symbol getSymbol(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Variable> getGlobalVariables()
-    {
-        return null;
-    }
-
-    @Override
-    public Variable getGlobalVariable(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Iterable<Function> getFunctions()
-    {
-        return null;
-    }
-
-    @Override
-    public Function getFunction(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Function getContainingFunction(long pc)
-    {
-        return null;
-    }
+    long getMemoryAddress();
 }

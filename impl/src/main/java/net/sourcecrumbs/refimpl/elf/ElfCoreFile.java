@@ -28,10 +28,12 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
+import net.sourcecrumbs.api.debug.symbols.Function;
 import net.sourcecrumbs.api.files.CoreFile;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.symbols.Symbol;
 import net.sourcecrumbs.api.transunit.TranslationUnit;
+import net.sourcecrumbs.api.debug.symbols.Variable;
 import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 
 /**
@@ -58,6 +60,12 @@ public class ElfCoreFile extends CoreFile implements ELF {
     }
 
     @Override
+    public Symbol getSymbol(String name)
+    {
+        return null;
+    }
+
+    @Override
     public Iterable<TranslationUnit> getTranslationUnits() {
         return null;
     }
@@ -65,5 +73,35 @@ public class ElfCoreFile extends CoreFile implements ELF {
     @Override
     public ElfFile getElfFile() {
         return elfFile;
+    }
+
+    @Override
+    public Iterable<Variable> getGlobalVariables()
+    {
+        return null;
+    }
+
+    @Override
+    public Variable getGlobalVariable(String name)
+    {
+        return null;
+    }
+
+    @Override
+    public Iterable<Function> getFunctions()
+    {
+        return null;
+    }
+
+    @Override
+    public Function getFunction(String name)
+    {
+        return null;
+    }
+
+    @Override
+    public Function getContainingFunction(long pc)
+    {
+        return null;
     }
 }

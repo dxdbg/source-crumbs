@@ -11,5 +11,8 @@ public enum SourceLanguage
     CXX,
 
     /** C Source */
-    C;
+    C,
+
+    /** The language of the source is unknown */
+    UNKNOWN;
 }

@@ -1,5 +1,6 @@
 package net.sourcecrumbs.api.files;
 
+import net.sourcecrumbs.api.debug.symbols.DebugSymbolContainer;
 import net.sourcecrumbs.api.machinecode.MachineCodeSource;
 import net.sourcecrumbs.api.symbols.SymbolContainer;
 import net.sourcecrumbs.api.transunit.TranslationUnitContainer;
@@ -9,7 +10,7 @@ import net.sourcecrumbs.api.transunit.TranslationUnitContainer;
  *
  * @author dmcnulty
  */
-public interface Binary extends MachineCodeSource, SymbolContainer, TranslationUnitContainer
+public interface Binary extends MachineCodeSource, SymbolContainer, TranslationUnitContainer, DebugSymbolContainer
 {
     BinaryType getBinaryType();
 }

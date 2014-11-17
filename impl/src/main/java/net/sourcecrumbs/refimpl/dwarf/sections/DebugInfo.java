@@ -29,6 +29,7 @@
 package net.sourcecrumbs.refimpl.dwarf.sections;
 
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -93,5 +94,10 @@ public class DebugInfo implements SectionContent {
      */
     public CompilationUnit getCompilationUnit(Long containingAddress) {
         return unitsByStartingAddress.floorEntry(containingAddress).getValue();
+    }
+
+    public List<CompilationUnit> getCompilationUnits()
+    {
+        return new ArrayList<>(compilationUnits);
     }
 }

@@ -36,11 +36,13 @@ import java.util.LinkedList;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.util.EnumUtils;
 
 import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.api.transunit.SourceLanguage;
 import net.sourcecrumbs.api.transunit.TranslationUnit;
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
+import net.sourcecrumbs.refimpl.dwarf.constants.SourceLanguages;
 import net.sourcecrumbs.refimpl.dwarf.preon.SectionOffset;
 import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 
@@ -127,6 +129,11 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
         return rootDIE;
     }
 
+    public StringTable getStringTable()
+    {
+        return stringTable;
+    }
+
     @Override
     public String getName() {
         Path localPath = getPath();
@@ -142,7 +149,11 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
         if (sourceLanguage == null) {
             synchronized (this) {
                 if (sourceLanguage == null) {
-
+                    for (AttributeValue value : rootDIE.getAttributeValues()) {
+                        if (value.getName() == AttributeName.DW_AT_language) {
+                            sourceLanguage = EnumUtils.getBoundEnumOptionIndex(SourceLanguages.class).get(value.getDataAsLong()).getSourceLanguage();
+                        }
+                    }
                 }
             }
         }
@@ -157,14 +168,14 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
                 if (compilationDir == null) {
                     for (AttributeValue value : rootDIE.getAttributeValues()) {
                         if (value.getName() == AttributeName.DW_AT_comp_dir) {
-                            path = Paths.get(value.getDataAsString(stringTable));
+                            compilationDir = Paths.get(value.getDataAsString(stringTable));
                             break;
                         }
                     }
                 }
             }
         }
-        return null;
+        return compilationDir;
     }
 
     @Override

@@ -26,82 +26,22 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourcecrumbs.refimpl.elf;
-
-import net.sourcecrumbs.api.debug.symbols.Function;
-import net.sourcecrumbs.api.files.ObjectFile;
-import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
-import net.sourcecrumbs.api.symbols.Symbol;
-import net.sourcecrumbs.api.transunit.TranslationUnit;
-import net.sourcecrumbs.api.debug.symbols.Variable;
-import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
+package net.sourcecrumbs.api.debug.symbols;
 
 /**
- * High-level abstraction of an ELF object file
+ * Represents a container for debugging-related symbols
  *
  * @author mcnulty
  */
-public class ElfObjectFile extends ObjectFile implements ELF {
+public interface DebugSymbolContainer
+{
+    Iterable<Variable> getGlobalVariables();
 
-    private final ElfFile elfFile;
+    Variable getGlobalVariable(String name);
 
-    public ElfObjectFile(ElfFile elfFile) {
-        this.elfFile = elfFile;
-    }
+    Iterable<Function> getFunctions();
 
-    @Override
-    public ElfFile getElfFile() {
-        return elfFile;
-    }
+    Function getFunction(String name);
 
-    @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Symbol> getSymbols() {
-        return null;
-    }
-
-    @Override
-    public Symbol getSymbol(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
-    }
-
-    @Override
-    public Iterable<Variable> getGlobalVariables()
-    {
-        return null;
-    }
-
-    @Override
-    public Variable getGlobalVariable(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Iterable<Function> getFunctions()
-    {
-        return null;
-    }
-
-    @Override
-    public Function getFunction(String name)
-    {
-        return null;
-    }
-
-    @Override
-    public Function getContainingFunction(long pc)
-    {
-        return null;
-    }
+    Function getContainingFunction(long pc);
 }

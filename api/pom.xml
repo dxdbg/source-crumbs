@@ -40,4 +40,12 @@ POSSIBILITY OF SUCH DAMAGE.
     <packaging>jar</packaging>
     <name>Source Crumbs API</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>net.libudi</groupId>
+            <artifactId>java-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

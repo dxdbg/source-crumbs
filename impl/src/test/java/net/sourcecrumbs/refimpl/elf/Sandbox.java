@@ -57,7 +57,7 @@ import static org.junit.Assert.assertTrue;
  * @author mcnulty
  */
 @Ignore
-public class SandboxTest extends BaseNativeFileTest {
+public class Sandbox extends BaseNativeFileTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
