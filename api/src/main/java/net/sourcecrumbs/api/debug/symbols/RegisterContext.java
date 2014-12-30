@@ -28,6 +28,8 @@
 
 package net.sourcecrumbs.api.debug.symbols;
 
+import java.math.BigInteger;
+
 import net.libudi.api.Register;
 
 /**
@@ -37,5 +39,5 @@ import net.libudi.api.Register;
  */
 public interface RegisterContext
 {
-    long getRegisterValue(Register register) throws ContextInspectionException;
+    BigInteger getRegisterValue(Register register) throws ContextInspectionException;
 }

@@ -42,6 +42,7 @@ import net.sourcecrumbs.refimpl.dwarf.sections.DebugAbbrev;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugInfo;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugLine;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugStr;
+import net.sourcecrumbs.refimpl.dwarf.sections.DebugTypes;
 import net.sourcecrumbs.refimpl.elf.ElfSectionPostProcessor;
 import net.sourcecrumbs.refimpl.elf.spec.ElfFile;
 import net.sourcecrumbs.refimpl.elf.spec.ElfIdent;
@@ -124,6 +125,14 @@ public class DwarfSectionPostProcessor implements ElfSectionPostProcessor {
             ((DebugInfo)debugInfoSection.getSectionContent()).buildDIEs(((DebugAbbrev) debugAbbrevSection.getSectionContent()),
                     ((DebugStr)debugStrSection.getSectionContent()),
                     elfFile.getHeader().getIdent().getByteOrder());
+        }
+
+        ElfSection debugTypesSection = elfFile.getSection(DebugTypes.SECTION_NAME);
+        if (debugAbbrevSection != null && debugAbbrevSection.getSectionContent() instanceof DebugAbbrev &&
+            debugTypesSection != null && debugTypesSection.getSectionContent() instanceof DebugTypes)
+        {
+            ((DebugTypes)debugTypesSection.getSectionContent()).buildDIEs(((DebugAbbrev) debugAbbrevSection.getSectionContent()),
+                                                                          elfFile.getHeader().getIdent().getByteOrder());
         }
     }
 }
