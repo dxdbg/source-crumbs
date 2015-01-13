@@ -74,4 +74,18 @@ POSSIBILITY OF SUCH DAMAGE.
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>limbo-repository</id>
+            <url>http://limbo.sourceforge.net/repository</url>
+        </repository>
+        <repository>
+            <id>pecia-repository</id>
+            <url>http://pecia.sourceforge.net/repository</url>
+        </repository>
+        <repository>
+            <id>preon-repository</id>
+            <url>http://preon.flotsam.nl/repository</url>
+        </repository>
+    </repositories>
 </project>

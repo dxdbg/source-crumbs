@@ -41,6 +41,20 @@ public interface DebugType
     String getName();
 
     /**
+     * @return true if the type is immutable
+     */
+    boolean isImmutable();
+
+    /**
+     * @return ture if the type is a pointer
+     */
+    boolean isPointer();
+
+    boolean isMemberStructure();
+
+    DebugType[] getMemberTypes();
+
+    /**
      * This is relevant for typedefs.
      *
      * @return the base type, if applicable.
