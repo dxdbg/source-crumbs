@@ -22,7 +22,7 @@ public interface Function
 {
     String getName();
 
-    List<Range<Long>> getScope();
+    List<Range<Long>> getScopes();
 
     Long getEntryAddress();
 

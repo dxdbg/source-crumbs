@@ -20,4 +20,11 @@ public interface TranslationUnitContainer
      * @return the translation units in this container
      */
     Iterable<TranslationUnit> getTranslationUnits();
+
+    /**
+     * @param pc the current PC
+     *
+     * @return the TranslationUnit or null if no TranslationUnit matches the specified PC
+     */
+    TranslationUnit getContainingTranslationUnit(long pc);
 }

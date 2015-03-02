@@ -14,11 +14,13 @@ import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.util.EnumUtils;
 
+import net.sourcecrumbs.api.Range;
 import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.api.transunit.SourceLanguage;
 import net.sourcecrumbs.api.transunit.TranslationUnit;
@@ -55,6 +57,8 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
     private SourceLanguage sourceLanguage = null;
 
     private Path compilationDir = null;
+
+    private List<Range<Long>> scopes = null;
 
     @Override
     public long getSectionOffset() {
@@ -156,5 +160,31 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
         }
 
         return path;
+    }
+
+    @Override
+    public List<Range<Long>> getScopes()
+    {
+        if (scopes == null) {
+            synchronized (this) {
+                if (scopes == null) {
+                    scopes = new LinkedList<>();
+
+                    // TODO handle DW_AT_ranges
+                    long start = 0, end = 0;
+                    for (AttributeValue value : rootDIE.getAttributeValues()) {
+                        if (value.getName() == AttributeName.DW_AT_low_pc) {
+                            start = value.getDataAsLong();
+                        }else if(value.getName() == AttributeName.DW_AT_high_pc) {
+                            end = value.getDataAsLong();
+                        }
+                    }
+                    if (start != 0 && end != 0) {
+                        scopes.add(new Range<>(start, end));
+                    }
+                }
+            }
+        }
+        return scopes;
     }
 }

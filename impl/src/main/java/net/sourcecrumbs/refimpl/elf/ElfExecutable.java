@@ -65,6 +65,12 @@ public class ElfExecutable extends Executable implements ELF {
     }
 
     @Override
+    public TranslationUnit getContainingTranslationUnit(long pc)
+    {
+        return null;
+    }
+
+    @Override
     public Iterable<Variable> getGlobalVariables()
     {
         return null;

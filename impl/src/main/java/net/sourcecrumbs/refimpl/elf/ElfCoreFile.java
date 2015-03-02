@@ -52,6 +52,12 @@ public class ElfCoreFile extends CoreFile implements ELF {
     }
 
     @Override
+    public TranslationUnit getContainingTranslationUnit(long pc)
+    {
+        return null;
+    }
+
+    @Override
     public ElfFile getElfFile() {
         return elfFile;
     }
