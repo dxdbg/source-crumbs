@@ -24,5 +24,5 @@ public interface Variable
 
     DebugType getType();
 
-    Range<Long> getContainingScope();
+    Range<Long> getScope();
 }

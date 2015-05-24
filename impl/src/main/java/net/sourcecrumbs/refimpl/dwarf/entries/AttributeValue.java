@@ -17,6 +17,7 @@ import com.google.common.primitives.UnsignedBytes;
 
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeForm;
 import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
+import net.sourcecrumbs.refimpl.dwarf.entries.expr.DwarfExpression;
 import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 
 /**
@@ -110,5 +111,40 @@ public class AttributeValue {
 
     public String getDataAsString(Charset charset) {
         return new String(data, charset);
+    }
+
+
+    public DIE getReferencedDie(CompilationUnit relativeUnit)
+    {
+        return getReferencedDie(relativeUnit, ByteOrder.nativeOrder());
+    }
+
+    public DIE getReferencedDie(CompilationUnit relativeUnit, ByteOrder byteOrder)
+    {
+        long offset;
+        switch (form) {
+            case DW_FORM_ref1:
+            case DW_FORM_ref2:
+            case DW_FORM_ref4:
+            case DW_FORM_ref8:
+                offset = getDataAsLong(byteOrder);
+                break;
+            default:
+                return null;
+        }
+
+        return relativeUnit.getRootDIE().findDieByOffset(offset);
+    }
+
+    public DwarfExpression getExpression(ByteOrder byteOrder)
+    {
+        switch(form) {
+            case DW_FORM_exprloc:
+                break;
+            default:
+                break;
+        }
+
+        return null;
     }
 }

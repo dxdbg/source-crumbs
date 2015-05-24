@@ -9,6 +9,7 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourcecrumbs.api.debug.symbols.Function;
@@ -40,7 +41,7 @@ public class ElfExecutable extends Executable implements ELF {
 
     @Override
     public List<Library> getLibraries() {
-        return null;
+        return Collections.<Library>emptyList();
     }
 
     @Override
@@ -50,53 +51,53 @@ public class ElfExecutable extends Executable implements ELF {
 
     @Override
     public Iterable<Symbol> getSymbols() {
-        return null;
+        return elfFile.getSymbols();
     }
 
     @Override
     public Symbol getSymbol(String name)
     {
-        return null;
+        return elfFile.getSymbol(name);
     }
 
     @Override
     public Iterable<TranslationUnit> getTranslationUnits() {
-        return null;
+        return elfFile.getTranslationUnits();
     }
 
     @Override
     public TranslationUnit getContainingTranslationUnit(long pc)
     {
-        return null;
+        return elfFile.getContainingTranslationUnit(pc);
     }
 
     @Override
     public Iterable<Variable> getGlobalVariables()
     {
-        return null;
+        return elfFile.getGlobalVariables();
     }
 
     @Override
     public Variable getGlobalVariable(String name)
     {
-        return null;
+        return elfFile.getGlobalVariable(name);
     }
 
     @Override
     public Iterable<Function> getFunctions()
     {
-        return null;
+        return elfFile.getFunctions();
     }
 
     @Override
     public Function getFunction(String name)
     {
-        return null;
+        return elfFile.getFunction(name);
     }
 
     @Override
     public Function getContainingFunction(long pc)
     {
-        return null;
+        return elfFile.getContainingFunction(pc);
     }
 }

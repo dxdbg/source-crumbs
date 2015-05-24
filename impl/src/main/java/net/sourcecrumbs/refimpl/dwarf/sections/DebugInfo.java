@@ -10,7 +10,7 @@
 package net.sourcecrumbs.refimpl.dwarf.sections;
 
 import java.nio.ByteOrder;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -39,6 +39,8 @@ public class DebugInfo implements SectionContent {
 
     private TreeMap<Long, CompilationUnit> unitsByStartingAddress = new TreeMap<>();
 
+    private ByteOrder byteOrder = null;
+
     /**
      * Build the DIEs, given information available in the DebugAbbrev section
      *
@@ -48,7 +50,10 @@ public class DebugInfo implements SectionContent {
      *
      * @throws UnknownFormatException when the data is not in the expected format
      */
-    public void buildDIEs(DebugAbbrev debugAbbrev, DebugStr debugStr, ByteOrder byteOrder) throws UnknownFormatException {
+    public void buildDIEs(DebugAbbrev debugAbbrev, DebugStr debugStr, ByteOrder byteOrder) throws UnknownFormatException
+    {
+        this.byteOrder = byteOrder;
+
         for (CompilationUnit compilationUnit : compilationUnits) {
             for (AbbreviationTable abbrevTable : debugAbbrev.getAbbreviationTables()) {
                 if (abbrevTable.getSectionOffset() == compilationUnit.getHeader().getDebugAbbrevOffset()) {
@@ -79,6 +84,16 @@ public class DebugInfo implements SectionContent {
 
     public List<CompilationUnit> getCompilationUnits()
     {
-        return new ArrayList<>(compilationUnits);
+        return new LinkedList<>(compilationUnits);
+    }
+
+    public ByteOrder getByteOrder()
+    {
+        return byteOrder;
+    }
+
+    public void setByteOrder(ByteOrder byteOrder)
+    {
+        this.byteOrder = byteOrder;
     }
 }

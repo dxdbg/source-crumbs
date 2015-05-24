@@ -17,8 +17,16 @@ import org.codehaus.preon.annotation.BoundList;
 import org.codehaus.preon.annotation.If;
 import org.codehaus.preon.annotation.Init;
 
+import net.sourcecrumbs.api.debug.symbols.DebugSymbolContainer;
+import net.sourcecrumbs.api.debug.symbols.Function;
+import net.sourcecrumbs.api.debug.symbols.Variable;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.machinecode.MachineCodeSource;
+import net.sourcecrumbs.api.symbols.Symbol;
+import net.sourcecrumbs.api.symbols.SymbolContainer;
+import net.sourcecrumbs.api.transunit.TranslationUnit;
+import net.sourcecrumbs.api.transunit.TranslationUnitContainer;
+import net.sourcecrumbs.refimpl.dwarf.debug.symbols.DwarfDebugSymbolContainer;
 import net.sourcecrumbs.refimpl.dwarf.DwarfMachineCodeMapping;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugInfo;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugLine;
@@ -32,8 +40,8 @@ import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
  *
  * @author mcnulty
  */
-public class ElfFile implements MachineCodeSource {
-
+public class ElfFile implements MachineCodeSource, DebugSymbolContainer, TranslationUnitContainer, SymbolContainer
+{
     @Bound
     private ElfHeader header;
 
@@ -48,6 +56,10 @@ public class ElfFile implements MachineCodeSource {
     private ElfSection[] sections;
 
     private final Map<String, ElfSection> sectionsByName = new HashMap<>();
+
+    private DwarfMachineCodeMapping machineCodeMapping = null;
+
+    private DwarfDebugSymbolContainer debugSymbolContainer = null;
 
     @Init
     public void initialize() {
@@ -83,6 +95,37 @@ public class ElfFile implements MachineCodeSource {
         }
     }
 
+    private void initMachineCodeMapping()
+    {
+        if (machineCodeMapping == null) {
+            synchronized (this) {
+                if (machineCodeMapping == null) {
+                    ElfSection debugInfoSection = getSection(DebugInfo.SECTION_NAME);
+                    ElfSection debugLineSection = getSection(DebugLine.SECTION_NAME);
+                    if (debugInfoSection != null && debugInfoSection.getSectionContent() instanceof DebugInfo &&
+                            debugLineSection != null && debugLineSection.getSectionContent() instanceof DebugLine) {
+                        machineCodeMapping = new DwarfMachineCodeMapping((DebugInfo) debugInfoSection.getSectionContent(),
+                                (DebugLine) debugLineSection.getSectionContent());
+                    }
+                }
+            }
+        }
+    }
+
+    private void initDebugSymbolContainer()
+    {
+        if (debugSymbolContainer == null) {
+            synchronized (this) {
+                if (debugSymbolContainer == null) {
+                    ElfSection debugInfoSection = getSection(DebugInfo.SECTION_NAME);
+                    if (debugInfoSection != null && debugInfoSection.getSectionContent() instanceof DebugInfo) {
+                        debugSymbolContainer = new DwarfDebugSymbolContainer((DebugInfo) debugInfoSection.getSectionContent());
+                    }
+                }
+            }
+        }
+    }
+
     public ElfHeader getHeader() {
         return header;
     }
@@ -112,14 +155,68 @@ public class ElfFile implements MachineCodeSource {
     }
 
     @Override
-    public MachineCodeMapping getMachineCodeMapping() {
-        ElfSection debugInfoSection = getSection(DebugInfo.SECTION_NAME);
-        ElfSection debugLineSection = getSection(DebugLine.SECTION_NAME);
-        if (debugInfoSection != null && debugInfoSection.getSectionContent() instanceof DebugInfo &&
-            debugLineSection != null && debugLineSection.getSectionContent() instanceof DebugLine) {
-            return new DwarfMachineCodeMapping((DebugInfo)debugInfoSection.getSectionContent(),
-                    (DebugLine)debugLineSection.getSectionContent());
-        }
+    public MachineCodeMapping getMachineCodeMapping()
+    {
+        initMachineCodeMapping();
+        return machineCodeMapping;
+    }
+
+    @Override
+    public Iterable<Variable> getGlobalVariables()
+    {
+        initDebugSymbolContainer();
+        return debugSymbolContainer.getGlobalVariables();
+    }
+
+    @Override
+    public Variable getGlobalVariable(String name)
+    {
+        initDebugSymbolContainer();
+        return debugSymbolContainer.getGlobalVariable(name);
+    }
+
+    @Override
+    public Iterable<Function> getFunctions()
+    {
+        initDebugSymbolContainer();
+        return debugSymbolContainer.getFunctions();
+    }
+
+    @Override
+    public Function getFunction(String name)
+    {
+        initDebugSymbolContainer();
+        return debugSymbolContainer.getFunction(name);
+    }
+
+    @Override
+    public Function getContainingFunction(long pc)
+    {
+        initDebugSymbolContainer();
+        return debugSymbolContainer.getContainingFunction(pc);
+    }
+
+    @Override
+    public Iterable<Symbol> getSymbols()
+    {
+        return null;
+    }
+
+    @Override
+    public Symbol getSymbol(String name)
+    {
+        return null;
+    }
+
+    @Override
+    public Iterable<TranslationUnit> getTranslationUnits()
+    {
+        return null;
+    }
+
+    @Override
+    public TranslationUnit getContainingTranslationUnit(long pc)
+    {
         return null;
     }
 }

@@ -20,8 +20,11 @@ import org.codehaus.preon.annotation.BoundEnumOption;
  */
 public enum AttributeForm {
 
+    @BoundEnumOption(0x01)
+    DW_FORM_addr(address),
+
     @BoundEnumOption(0x03)
-    DW_FORM_addr(block),
+    DW_FORM_block2(block),
 
     @BoundEnumOption(0x04)
     DW_FORM_block4(block),
@@ -71,11 +74,8 @@ public enum AttributeForm {
     @BoundEnumOption(0x13)
     DW_FORM_ref4(reference),
 
-    @BoundEnumOption(0x01)
-    DW_FORM_ref8(address),
-
     @BoundEnumOption(0x14)
-    DW_FORM_block2(reference),
+    DW_FORM_ref8(address),
 
     @BoundEnumOption(0x15)
     DW_FORM_ref_udata(reference),

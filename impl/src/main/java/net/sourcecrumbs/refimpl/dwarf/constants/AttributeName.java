@@ -299,6 +299,45 @@ public enum AttributeName {
     @BoundEnumOption(0x6e)
     DW_AT_linkage_name(string),
 
+    @BoundEnumOption(0x3fe1)
+    DW_AT_APPLE_optimized,
+
+    @BoundEnumOption(0x3fe2)
+    DW_AT_APPLE_flags,
+
+    @BoundEnumOption(0x3fe3)
+    DW_AT_APPLE_isa,
+
+    @BoundEnumOption(0x3fe4)
+    DW_AT_APPLE_block,
+
+    @BoundEnumOption(0x3fe5)
+    DW_AT_APPLE_major_runtime_vers,
+
+    @BoundEnumOption(0x3fe6)
+    DW_AT_APPLE_runtime_class,
+
+    @BoundEnumOption(0x3fe7)
+    DW_AT_APPLE_omit_frame_ptr,
+
+    @BoundEnumOption(0x3fe8)
+    DW_AT_APPLE_property_name,
+
+    @BoundEnumOption(0x3fe9)
+    DW_AT_APPLE_property_getter,
+
+    @BoundEnumOption(0x3fea)
+    DW_AT_APPLE_property_setter,
+
+    @BoundEnumOption(0x3feb)
+    DW_AT_APPLE_property_attribute,
+
+    @BoundEnumOption(0x3fec)
+    DW_AT_APPLE_objc_complete_type,
+
+    @BoundEnumOption(0x3fed)
+    DW_AT_APPLE_property,
+
     @BoundEnumOption(0x2000)
     DW_AT_lo_user,
 

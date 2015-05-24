@@ -48,7 +48,7 @@ public class DwarfDump extends BaseNativeFileTest
     private void printDIE(DIE die, String indent, StringTable stringTable)
     {
         System.out.print(indent);
-        System.out.println(die.getTag());
+        System.out.println(die.getTag() + "[" + die.getOffset() + "]");
         for (AttributeValue v : die.getAttributeValues()) {
             StringBuilder builder = new StringBuilder();
             switch (v.getForm()) {

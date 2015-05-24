@@ -20,6 +20,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.sourcecrumbs.api.debug.symbols.Function;
 import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.machinecode.SourceLineRange;
@@ -30,6 +31,7 @@ import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
 import net.sourcecrumbs.refimpl.elf.spec.segments.InterpreterSegment;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -75,6 +77,20 @@ public class Sandbox extends BaseNativeFileTest {
 
             nextAddress = mapping.getNextStatementAddress(nextAddress);
         }
+    }
+
+    @Test
+    public void loadSymbols() throws Exception
+    {
+        ElfReader reader = new ElfReader();
+
+        Executable exec = reader.openExecutable(filePath);
+        assertTrue(exec instanceof ElfExecutable);
+
+        Function main = exec.getFunction("main");
+        assertNotNull(main);
+        assertEquals("main", main.getName());
+        assertEquals("void", main.getReturnType().getName());
     }
 
     @Override

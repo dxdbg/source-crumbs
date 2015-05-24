@@ -14,8 +14,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.refimpl.dwarf.constants.AbbreviationTag;
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeForm;
+import net.sourcecrumbs.refimpl.dwarf.constants.AttributeName;
 import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
 
 /**
@@ -23,7 +28,9 @@ import net.sourcecrumbs.refimpl.dwarf.types.LEB128;
  *
  * @author mcnulty
  */
-public class DIE {
+public class DIE
+{
+    private static final Logger logger = LoggerFactory.getLogger(DIE.class);
 
     private final long offset;
 
@@ -197,7 +204,15 @@ public class DIE {
                         throw new UnknownFormatException(String.format("Failed to decode data for attribute form %s",
                                 spec.getForm()));
                 }
-                attributeValues.add(new AttributeValue(spec.getName(), spec.getForm(), valueData));
+
+                AttributeName name = spec.getName();
+                AttributeForm form = spec.getForm();
+                if (name == null || form == null) {
+                    logger.debug("Found unknown attribute value specification for DIE with tag {}",
+                            abbrevDeclaration.getTag());
+                }else {
+                    attributeValues.add(new AttributeValue(name, form, valueData));
+                }
             }
         }else{
             this.parent = null;
@@ -230,6 +245,23 @@ public class DIE {
         return children;
     }
 
+    public DIE findDieByOffset(long offset)
+    {
+        // Base case: the offset matches this entry
+        if (this.offset == offset) {
+            return this;
+        }
+
+        for (DIE child : children) {
+            DIE result = child.findDieByOffset(offset);
+            if (result != null) {
+                return result;
+            }
+        }
+
+        return null;
+    }
+
     public static DIE buildDIETree(AbbreviationTable abbrevTable,
                                    ByteBuffer buffer,
                                    long rootOffset,
@@ -260,5 +292,11 @@ public class DIE {
         }
 
         return rootDIE;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "[" + tag + "," + Long.toHexString(offset) + "]";
     }
 }

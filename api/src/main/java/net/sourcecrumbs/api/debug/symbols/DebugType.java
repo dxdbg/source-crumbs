@@ -27,7 +27,7 @@ public interface DebugType
     boolean isImmutable();
 
     /**
-     * @return ture if the type is a pointer
+     * @return true if the type is a pointer
      */
     boolean isPointer();
 

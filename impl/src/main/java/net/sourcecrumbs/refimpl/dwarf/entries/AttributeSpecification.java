@@ -45,4 +45,10 @@ public class AttributeSpecification implements ListTerminator {
     public AttributeForm getForm() {
         return EnumUtils.getBoundEnumOptionIndex(AttributeForm.class).get(formValue.getValue());
     }
+
+    @Override
+    public String toString()
+    {
+        return getName() + "[" + nameValue.getValue() + "]" + getForm() + "[" + formValue.getValue() + "]";
+    }
 }
