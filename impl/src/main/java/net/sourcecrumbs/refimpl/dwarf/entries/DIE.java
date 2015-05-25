@@ -210,8 +210,9 @@ public class DIE
                 AttributeName name = spec.getName();
                 AttributeForm form = spec.getForm();
                 if (name == null || form == null) {
-                    logger.debug("Found unknown attribute value specification for DIE with tag {}",
-                            abbrevDeclaration.getTag());
+                    logger.debug("Found unknown attribute value specification for DIE[{},{}]",
+                            abbrevDeclaration.getTag(),
+                            Long.toHexString(offset));
                 }else {
                     attributeValues.add(new AttributeValue(name, form, valueData));
                 }

@@ -30,7 +30,7 @@ public class DwarfDumpSandboxTest extends BaseNativeFileTest
     @Test
     public void dumpUrl() throws Exception
     {
-        DwarfDump.dwarfDump(filePath);
+        DwarfDump.dwarfDump(filePath, true);
     }
 
     @Override

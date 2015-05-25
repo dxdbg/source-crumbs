@@ -299,6 +299,62 @@ public enum AttributeName {
     @BoundEnumOption(0x6e)
     DW_AT_linkage_name(string),
 
+    // Extensions //
+
+    // GCC Extensions //
+    @BoundEnumOption(0x2108)
+    DW_AT_GNU_guarded_by,
+
+    @BoundEnumOption(0x2109)
+    DW_AT_GNU_pt_guarded_by,
+
+    @BoundEnumOption(0x210a)
+    DW_AT_GNU_guarded,
+
+    @BoundEnumOption(0x210b)
+    DW_AT_GNU_pt_guarded,
+
+    @BoundEnumOption(0x210c)
+    DW_AT_GNU_locks_excluded,
+
+    @BoundEnumOption(0x210d)
+    DW_AT_GNU_exclusive_locks_required,
+
+    @BoundEnumOption(0x210e)
+    DW_AT_GNU_shared_locks_required,
+
+    @BoundEnumOption(0x210f)
+    DW_AT_GNU_odr_signature,
+
+    @BoundEnumOption(0x2110)
+    DW_AT_GNU_template_name,
+
+    @BoundEnumOption(0x2111)
+    DW_AT_GNU_call_site_value,
+
+    @BoundEnumOption(0x2112)
+    DW_AT_GNU_call_site_data_value,
+
+    @BoundEnumOption(0x2113)
+    DW_AT_GNU_call_site_target,
+
+    @BoundEnumOption(0x2114)
+    DW_AT_GNU_call_site_target_clobbered,
+
+    @BoundEnumOption(0x2115)
+    DW_AT_GNU_tail_call,
+
+    @BoundEnumOption(0x2116)
+    DW_AT_GNU_all_tail_call_sites,
+
+    @BoundEnumOption(0x2117)
+    DW_AT_GNU_all_call_sites,
+
+    @BoundEnumOption(0x2118)
+    DW_AT_GNU_all_source_call_sites,
+
+    // LLVM extensions //
+
     @BoundEnumOption(0x3fe1)
     DW_AT_APPLE_optimized,
 

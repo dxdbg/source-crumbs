@@ -83,6 +83,11 @@ public final class DwarfDump
 
     public static void dwarfDump(Path filePath) throws UnknownFormatException, IOException
     {
+        dwarfDump(filePath, false);
+    }
+
+    public static void dwarfDump(Path filePath, boolean parseDebugSymbols) throws UnknownFormatException, IOException
+    {
         ElfReader reader = new ElfReader();
 
         Executable exec = reader.openExecutable(filePath);
@@ -95,6 +100,11 @@ public final class DwarfDump
         for (CompilationUnit compilationUnit : debugInfo.getCompilationUnits()) {
             printCompilationUnit(compilationUnit);
             printDIE(compilationUnit.getRootDIE(), "", compilationUnit.getStringTable());
+        }
+
+        if (parseDebugSymbols) {
+            elfExec.getFunctions();
+            elfExec.getGlobalVariables();
         }
     }
 

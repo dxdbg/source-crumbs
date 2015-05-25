@@ -9,6 +9,7 @@
 
 package net.sourcecrumbs.refimpl.elf.spec;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +63,10 @@ public class ElfSymbolContainer implements SymbolContainer
     @Override
     public List<Symbol> getSymbolsByName(String name)
     {
-        return new LinkedList<>(symbolsByName.get(name));
+        List<ElfSymbol> symbols = symbolsByName.get(name);
+        if (symbols != null) {
+            return new LinkedList<>(symbols);
+        }
+        return Collections.<Symbol>emptyList();
     }
 }

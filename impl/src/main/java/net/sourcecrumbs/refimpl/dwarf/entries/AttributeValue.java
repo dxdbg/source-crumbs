@@ -133,6 +133,9 @@ public class AttributeValue {
                 return null;
         }
 
+        // The offset is relative to the offset of the CompilationUnit, but the offsets stored with DIEs are absolute
+        offset += relativeUnit.getSectionOffset();
+
         return relativeUnit.getRootDIE().findDieByOffset(offset);
     }
 
@@ -140,7 +143,7 @@ public class AttributeValue {
     {
         switch(form) {
             case DW_FORM_exprloc:
-                break;
+                return new DwarfExpression(data);
             default:
                 break;
         }
