@@ -46,6 +46,8 @@ public class DIE
 
     private final List<AttributeValue> attributeValues = new LinkedList<>();
 
+    private long childrenEndOffset;
+
     /**
      * Constructor.
      *
@@ -221,7 +223,7 @@ public class DIE
         }
     }
 
-    public boolean getChildrenPresent() {
+    public boolean isChildrenPresent() {
         return childrenPresent;
     }
 
@@ -243,6 +245,11 @@ public class DIE
 
     public List<DIE> getChildren() {
         return children;
+    }
+
+    public long getChildrenEndOffset()
+    {
+        return childrenEndOffset;
     }
 
     public DIE findDieByOffset(long offset)
@@ -282,12 +289,14 @@ public class DIE
                 long childOffset = rootOffset + buffer.position();
                 currentChild = new DIE(abbrevTable, buffer, childOffset, is32bitDwarf, addressSize,
                                        currentParent);
-            }while(currentChild.getAbbreviationCode() != 0 && !currentChild.getChildrenPresent());
+            }while(currentChild.getAbbreviationCode() != 0 && !currentChild.isChildrenPresent());
 
-            if (currentChild.getAbbreviationCode() != 0 && currentChild.getChildrenPresent()) {
+            if (currentChild.getAbbreviationCode() != 0 && currentChild.isChildrenPresent()) {
                 // Start a new chain of siblings
                 parents.push(currentParent);
                 parents.push(currentChild);
+            }else{
+                currentParent.childrenEndOffset = currentChild.offset;
             }
         }
 

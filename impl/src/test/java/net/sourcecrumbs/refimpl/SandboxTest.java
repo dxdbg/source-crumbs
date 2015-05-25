@@ -7,7 +7,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package net.sourcecrumbs.refimpl.elf;
+package net.sourcecrumbs.refimpl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,6 +25,8 @@ import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.machinecode.SourceLineRange;
 import net.sourcecrumbs.refimpl.BaseNativeFileTest;
+import net.sourcecrumbs.refimpl.elf.ElfExecutable;
+import net.sourcecrumbs.refimpl.elf.ElfReader;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSegment;
 import net.sourcecrumbs.refimpl.elf.spec.constants.MachineType;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
@@ -40,7 +42,7 @@ import static org.junit.Assert.assertTrue;
  * @author mcnulty
  */
 @Ignore
-public class Sandbox extends BaseNativeFileTest {
+public class SandboxTest extends BaseNativeFileTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -90,7 +92,12 @@ public class Sandbox extends BaseNativeFileTest {
         Function main = exec.getFunction("main");
         assertNotNull(main);
         assertEquals("main", main.getName());
-        assertEquals("void", main.getReturnType().getName());
+        assertEquals("int", main.getReturnType().getName());
+        assertEquals(2, main.getFormalParameters().size());
+        assertEquals("argc", main.getFormalParameters().get(0).getName());
+        assertEquals("int", main.getFormalParameters().get(0).getType().getName());
+        assertEquals("argv", main.getFormalParameters().get(1).getName());
+        assertEquals("char**", main.getFormalParameters().get(1).getType().getName());
     }
 
     @Override

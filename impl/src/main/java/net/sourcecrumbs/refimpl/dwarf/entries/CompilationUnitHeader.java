@@ -72,4 +72,9 @@ public class CompilationUnitHeader {
     public int getOffsetLength() {
         return  unitLength.getOffsetLength();
     }
+
+    public InitialLength getInitialLengthField()
+    {
+        return unitLength;
+    }
 }

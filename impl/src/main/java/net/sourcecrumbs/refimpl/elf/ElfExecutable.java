@@ -55,9 +55,9 @@ public class ElfExecutable extends Executable implements ELF {
     }
 
     @Override
-    public Symbol getSymbol(String name)
+    public List<Symbol> getSymbolsByName(String name)
     {
-        return elfFile.getSymbol(name);
+        return elfFile.getSymbolsByName(name);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class DwarfVariable implements Variable
                     if (typeEntry == null) {
                         logger.debug("Failed to determine type for variable entry: {}", entry);
                     }else{
-                        type = DwarfType.getType(compilationUnit, entry, byteOrder);
+                        type = DwarfType.getType(compilationUnit, typeEntry, byteOrder);
                     }
                     break;
                 case DW_AT_location:

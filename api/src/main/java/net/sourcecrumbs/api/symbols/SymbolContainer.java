@@ -10,6 +10,8 @@
 package net.sourcecrumbs.api.symbols;
 
 
+import java.util.List;
+
 /**
  * Represents a container for Symbols
  *
@@ -25,7 +27,7 @@ public interface SymbolContainer
     /**
      * @param name the name of the symbol
      *
-     * @return the symbol or null if no symbol with the specified name exists
+     * @return the symbols with the specified name or empty if no symbols exist with that name
      */
-    Symbol getSymbol(String name);
+    List<Symbol> getSymbolsByName(String name);
 }

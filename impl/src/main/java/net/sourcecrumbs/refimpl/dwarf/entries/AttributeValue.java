@@ -60,11 +60,11 @@ public class AttributeValue {
         int length = (data.length < 8 ? data.length : 8);
         if (targetOrder == ByteOrder.LITTLE_ENDIAN) {
             for (int i = 0; i < length; ++i) {
-                output |= (data[i] << i*8);
+                output |= (UnsignedBytes.toInt(data[i]) << i*8);
             }
         }else{
             for (int i = length-1; i >= 0; --i) {
-                output |= (data[i] << i*8);
+                output |= (UnsignedBytes.toInt(data[i]) << i*8);
             }
         }
         return output;

@@ -89,4 +89,17 @@ public class Elf32Symbol extends ElfSymbol {
     public void setSectionIndex(short sectionIndex) {
         this.sectionIndex = sectionIndex;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Elf32Symbol{" +
+                "info=" + info +
+                ", nameIndex=" + nameIndex +
+                ", value=" + value +
+                ", size=" + size +
+                ", other=" + other +
+                ", sectionIndex=" + sectionIndex +
+                '}';
+    }
 }

@@ -74,6 +74,9 @@ public class DwarfType implements DebugType
     @Override
     public String getName()
     {
+        if (name == null && pointer && baseType != null) {
+            return baseType.getName() + "*";
+        }
         return name;
     }
 

@@ -10,6 +10,8 @@
 package net.sourcecrumbs.refimpl.elf.spec;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.preon.annotation.Bound;
@@ -31,6 +33,7 @@ import net.sourcecrumbs.refimpl.dwarf.DwarfMachineCodeMapping;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugInfo;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugLine;
 import net.sourcecrumbs.refimpl.elf.spec.preon.AbsoluteOffset;
+import net.sourcecrumbs.refimpl.elf.spec.sections.SectionContent;
 import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
 import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
@@ -61,9 +64,11 @@ public class ElfFile implements MachineCodeSource, DebugSymbolContainer, Transla
 
     private DwarfDebugSymbolContainer debugSymbolContainer = null;
 
-    @Init
-    public void initialize() {
+    private ElfSymbolContainer elfSymbolContainer = null;
 
+    @Init
+    public void initialize()
+    {
         // Populate name fields
         if (header.getSectionNameStrIndex() < sections.length && header.getSectionNameStrIndex() >= 0) {
             ElfSection shStrTableSection = sections[header.getSectionNameStrIndex()];
@@ -121,6 +126,24 @@ public class ElfFile implements MachineCodeSource, DebugSymbolContainer, Transla
                     if (debugInfoSection != null && debugInfoSection.getSectionContent() instanceof DebugInfo) {
                         debugSymbolContainer = new DwarfDebugSymbolContainer((DebugInfo) debugInfoSection.getSectionContent());
                     }
+                }
+            }
+        }
+    }
+
+    private void initSymbolContainer()
+    {
+        if (elfSymbolContainer == null) {
+            synchronized (this) {
+                if (elfSymbolContainer == null) {
+                    List<SymbolTable> symbolTables = new LinkedList<>();
+                    for (ElfSection section : sections) {
+                        if (section.getSectionContent() instanceof SymbolTable) {
+                            SymbolTable symbolTable = (SymbolTable) section.getSectionContent();
+                            symbolTables.add(symbolTable);
+                        }
+                    }
+                    elfSymbolContainer = new ElfSymbolContainer(symbolTables);
                 }
             }
         }
@@ -199,13 +222,15 @@ public class ElfFile implements MachineCodeSource, DebugSymbolContainer, Transla
     @Override
     public Iterable<Symbol> getSymbols()
     {
-        return null;
+        initSymbolContainer();
+        return elfSymbolContainer.getSymbols();
     }
 
     @Override
-    public Symbol getSymbol(String name)
+    public List<Symbol> getSymbolsByName(String name)
     {
-        return null;
+        initSymbolContainer();
+        return elfSymbolContainer.getSymbolsByName(name);
     }
 
     @Override

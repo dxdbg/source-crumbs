@@ -54,10 +54,11 @@ public class DebugInfo implements SectionContent {
     {
         this.byteOrder = byteOrder;
 
+        long currentOffset = 0L;
         for (CompilationUnit compilationUnit : compilationUnits) {
             for (AbbreviationTable abbrevTable : debugAbbrev.getAbbreviationTables()) {
                 if (abbrevTable.getSectionOffset() == compilationUnit.getHeader().getDebugAbbrevOffset()) {
-                    compilationUnit.buildDIEs(abbrevTable, debugStr, byteOrder);
+                    compilationUnit.buildDIEs(abbrevTable, currentOffset, debugStr, byteOrder);
                 }
             }
             if (compilationUnit.getRootDIE().getTag() == AbbreviationTag.DW_TAG_compile_unit) {
@@ -68,6 +69,7 @@ public class DebugInfo implements SectionContent {
                     }
                 }
             }
+            currentOffset = compilationUnit.getRootDIE().getChildrenEndOffset() + 1;
         }
     }
 

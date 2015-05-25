@@ -12,6 +12,7 @@ package net.sourcecrumbs.refimpl.elf.spec.sym;
 import org.codehaus.preon.annotation.BoundEnumOption;
 import org.codehaus.preon.util.EnumUtils;
 
+import net.sourcecrumbs.api.symbols.Symbol;
 import net.sourcecrumbs.refimpl.elf.spec.Address;
 import net.sourcecrumbs.refimpl.elf.spec.WordField;
 import net.sourcecrumbs.refimpl.elf.spec.constants.SymbolBinding;
@@ -22,8 +23,8 @@ import net.sourcecrumbs.refimpl.elf.spec.constants.SymbolType;
  *
  * @author mcnulty
  */
-public abstract class ElfSymbol {
-
+public abstract class ElfSymbol implements Symbol
+{
     /** The name index for an undefined symbol */
     public static final int STN_UNDEF = 0;
 
@@ -53,12 +54,23 @@ public abstract class ElfSymbol {
 
     public abstract void setSectionIndex(short sectionIndex);
 
+    @Override
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public long getAddress()
+    {
+        Address value = getValue();
+        if (value != null) {
+            return value.getValue();
+        }
+        return 0L;
     }
 
     public SymbolBinding getSymbolBinding() {
@@ -86,4 +98,6 @@ public abstract class ElfSymbol {
             throw new IllegalArgumentException(e);
         }
     }
+
+
 }

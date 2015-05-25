@@ -60,7 +60,7 @@ public class DwarfFunction implements Function
                     if (typeEntry == null) {
                         logger.debug("Failed to determine type for function entry: {}", entry);
                     }else{
-                        returnType = DwarfType.getType(compilationUnit, entry, byteOrder);
+                        returnType = DwarfType.getType(compilationUnit, typeEntry, byteOrder);
                     }
                     break;
                 case DW_AT_entry_pc:
@@ -92,6 +92,10 @@ public class DwarfFunction implements Function
 
         if (returnType == null) {
             returnType = DwarfVoidType.INSTANCE;
+        }
+
+        if (entryAddress == null && start != null) {
+            entryAddress = start;
         }
 
         for (DIE child : entry.getChildren()) {
@@ -153,7 +157,9 @@ public class DwarfFunction implements Function
     public Iterable<Variable> getLocalVariables()
     {
         List<Variable> result = new LinkedList<>();
-        localVarsByName.values().forEach(result::addAll);
+        for (List<DwarfVariable> vars : localVarsByName.values()) {
+            result.addAll(vars);
+        }
         return result;
     }
 

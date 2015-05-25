@@ -78,12 +78,12 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
         this.header = header;
     }
 
-    public void buildDIEs(AbbreviationTable abbrevTable, StringTable stringTable, ByteOrder byteOrder) throws UnknownFormatException {
+    public void buildDIEs(AbbreviationTable abbrevTable, long startingOffset, StringTable stringTable, ByteOrder byteOrder) throws UnknownFormatException {
         ByteBuffer buffer = ByteBuffer.wrap(compilationUnitContent);
         buffer.order(byteOrder);
 
         // the offset from the first byte of the CompilationUnitHeader to the first DIE
-        long rootOffset = header.getUnitLength() - 2 - (header.getOffsetLength()/8) - 1;
+        long rootOffset = startingOffset + header.getInitialLengthField().getSize() + 2 + (header.getOffsetLength()/8) + 1;
         rootDIE = DIE.buildDIETree(abbrevTable, buffer, rootOffset, header.is32bitDWARF(), header.getAddressSize());
 
         // All the data is now retrievable via the DIEs

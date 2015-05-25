@@ -9,6 +9,8 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
+import java.util.List;
+
 import net.sourcecrumbs.api.debug.symbols.Function;
 import net.sourcecrumbs.api.debug.symbols.Variable;
 import net.sourcecrumbs.api.files.Library;
@@ -46,7 +48,7 @@ public class ElfLibrary extends Library implements ELF {
     }
 
     @Override
-    public Symbol getSymbol(String name)
+    public List<Symbol> getSymbolsByName(String name)
     {
         return null;
     }

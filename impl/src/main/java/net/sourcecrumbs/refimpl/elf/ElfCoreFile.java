@@ -9,6 +9,8 @@
 
 package net.sourcecrumbs.refimpl.elf;
 
+import java.util.List;
+
 import net.sourcecrumbs.api.debug.symbols.Function;
 import net.sourcecrumbs.api.files.CoreFile;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
@@ -41,7 +43,7 @@ public class ElfCoreFile extends CoreFile implements ELF {
     }
 
     @Override
-    public Symbol getSymbol(String name)
+    public List<Symbol> getSymbolsByName(String name)
     {
         return null;
     }

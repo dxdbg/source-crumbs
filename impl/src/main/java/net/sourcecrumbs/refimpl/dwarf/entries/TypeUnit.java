@@ -65,7 +65,7 @@ public class TypeUnit implements SectionOffset
         ByteBuffer buffer = ByteBuffer.wrap(typeUnitContent);
         buffer.order(byteOrder);
 
-        // the offset from the first byte of the CompilationUnitHeader to the first DIE
+        // the offset from the first byte of the TypeUnitHeader to the first DIE
         long rootOffset = header.getUnitLength() - 2 - (header.getOffsetLength()/8) - 1;
         rootDIE = DIE.buildDIETree(abbrevTable, buffer, rootOffset, header.is32bitDWARF(), header.getAddressSize());
 

@@ -7,17 +7,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package net.sourcecrumbs.refimpl.dwarf;
+package net.sourcecrumbs.refimpl.util;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.junit.Test;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.google.common.primitives.UnsignedBytes;
 
 import net.sourcecrumbs.api.files.Executable;
-import net.sourcecrumbs.refimpl.BaseNativeFileTest;
+import net.sourcecrumbs.api.files.UnknownFormatException;
 import net.sourcecrumbs.refimpl.dwarf.entries.AttributeValue;
 import net.sourcecrumbs.refimpl.dwarf.entries.CompilationUnit;
 import net.sourcecrumbs.refimpl.dwarf.entries.DIE;
@@ -26,29 +25,30 @@ import net.sourcecrumbs.refimpl.elf.ElfExecutable;
 import net.sourcecrumbs.refimpl.elf.ElfReader;
 import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 
-import static org.junit.Assert.assertTrue;
-
 /**
- * Utility test to dump DWARF
- *
  * @author mcnulty
  */
-public class DwarfDump extends BaseNativeFileTest
+public final class DwarfDump
 {
-    private void printCompilationUnit(CompilationUnit compilationUnit)
+    private DwarfDump()
     {
-        System.out.printf("Compilation Unit: Name(%s), Language(%s), Path(%s), CompilationDirectory(%s)",
+    }
+
+    private static void printCompilationUnit(CompilationUnit compilationUnit)
+    {
+        System.out.printf("Compilation Unit: Name(%s), Language(%s), Path(%s), CompilationDirectory(%s), Offset(0x%x)",
                 compilationUnit.getName(),
                 compilationUnit.getLanguage(),
                 compilationUnit.getPath(),
-                compilationUnit.getCompilationDirectory());
+                compilationUnit.getCompilationDirectory(),
+                compilationUnit.getSectionOffset());
         System.out.println();
     }
 
-    private void printDIE(DIE die, String indent, StringTable stringTable)
+    private static void printDIE(DIE die, String indent, StringTable stringTable)
     {
         System.out.print(indent);
-        System.out.println(die.getTag() + "[" + die.getOffset() + "]");
+        System.out.println(die.getTag() + "[" + Long.toHexString(die.getOffset()) + "]");
         for (AttributeValue v : die.getAttributeValues()) {
             StringBuilder builder = new StringBuilder();
             switch (v.getForm()) {
@@ -81,13 +81,11 @@ public class DwarfDump extends BaseNativeFileTest
         }
     }
 
-    @Test
-    public void dumpUrl() throws Exception
+    public static void dwarfDump(Path filePath) throws UnknownFormatException, IOException
     {
         ElfReader reader = new ElfReader();
 
         Executable exec = reader.openExecutable(filePath);
-        assertTrue(exec instanceof ElfExecutable);
 
         ElfExecutable elfExec = (ElfExecutable) exec;
 
@@ -100,9 +98,13 @@ public class DwarfDump extends BaseNativeFileTest
         }
     }
 
-    @Override
-    protected URL getFileUrl() throws MalformedURLException
+    public static void main(String[] args)
     {
-        return new URL("http://mcnulty.github.io/native-file-tests/files/linux/gcc/4.8.3/simple-64bit-dynamic");
+        try {
+            DwarfDump.dwarfDump(Paths.get(args[0]));
+        }catch (Exception e) {
+            System.err.println("Failed to dump DWARF data from " + args[0]);
+            e.printStackTrace();
+        }
     }
 }

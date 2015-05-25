@@ -59,4 +59,12 @@ public class InitialLength {
     public void setOffsetLength(int offsetLength) {
         this.offsetLength = offsetLength;
     }
+
+    public int getSize()
+    {
+        if (x32length == X64_LENGTH_SENTINEL) {
+            return 96 / 8;
+        }
+        return 32 / 8;
+    }
 }
