@@ -61,6 +61,8 @@ public class DwarfType implements DebugType
                         baseType = new DwarfType(compilationUnit, typeEntry, byteOrder);
                     }
                     break;
+                default:
+                    break;
             }
         }
     }

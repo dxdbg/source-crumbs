@@ -157,9 +157,7 @@ public class DwarfFunction implements Function
     public Iterable<Variable> getLocalVariables()
     {
         List<Variable> result = new LinkedList<>();
-        for (List<DwarfVariable> vars : localVarsByName.values()) {
-            result.addAll(vars);
-        }
+        localVarsByName.values().forEach(result::addAll);
         return result;
     }
 

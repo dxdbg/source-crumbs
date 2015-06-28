@@ -54,9 +54,7 @@ public class ElfSymbolContainer implements SymbolContainer
     public Iterable<Symbol> getSymbols()
     {
         List<Symbol> result = new LinkedList<>();
-        for (List<ElfSymbol> syms : symbolsByName.values()) {
-            result.addAll(syms);
-        }
+        symbolsByName.values().forEach(result::addAll);
         return result;
     }
 
