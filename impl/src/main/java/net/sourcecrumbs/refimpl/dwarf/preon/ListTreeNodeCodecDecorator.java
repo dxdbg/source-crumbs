@@ -25,7 +25,7 @@ public class ListTreeNodeCodecDecorator implements CodecDecorator {
     @Override
     public <T> Codec<T> decorate(Codec<T> codec, AnnotatedElement metadata, Class<T> type, ResolverContext context) {
         if (ListTreeNode.class.isAssignableFrom(type)) {
-            return new ListTreeNodeCodec<T>(codec);
+            return new ListTreeNodeCodec(codec);
         }
         return codec;
     }
