@@ -9,22 +9,16 @@
 
 package net.sourcecrumbs.refimpl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import net.sourcecrumbs.api.debug.symbols.Function;
 import net.sourcecrumbs.api.files.Executable;
 import net.sourcecrumbs.api.machinecode.MachineCodeMapping;
 import net.sourcecrumbs.api.machinecode.SourceLineRange;
-import net.sourcecrumbs.refimpl.BaseNativeFileTest;
 import net.sourcecrumbs.refimpl.elf.ElfExecutable;
 import net.sourcecrumbs.refimpl.elf.ElfReader;
 import net.sourcecrumbs.refimpl.elf.spec.ElfSegment;
@@ -44,13 +38,13 @@ import static org.junit.Assert.assertTrue;
 @Ignore
 public class SandboxTest extends BaseNativeFileTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Path nativeFilePath = getExecutablePath("basic.310b3f661611270328fde43a330a321c7d02173c");
 
     @Test
     public void loadExec() throws Exception {
         ElfReader reader = new ElfReader();
 
-        Executable exec = reader.openExecutable(filePath);
+        Executable exec = reader.openExecutable(nativeFilePath);
         assertTrue(exec instanceof ElfExecutable);
 
         ElfExecutable elfExec = (ElfExecutable) exec;
@@ -86,7 +80,7 @@ public class SandboxTest extends BaseNativeFileTest {
     {
         ElfReader reader = new ElfReader();
 
-        Executable exec = reader.openExecutable(filePath);
+        Executable exec = reader.openExecutable(nativeFilePath);
         assertTrue(exec instanceof ElfExecutable);
 
         Function main = exec.getFunction("main");
@@ -98,10 +92,5 @@ public class SandboxTest extends BaseNativeFileTest {
         assertEquals("int", main.getFormalParameters().get(0).getType().getName());
         assertEquals("argv", main.getFormalParameters().get(1).getName());
         assertEquals("char**", main.getFormalParameters().get(1).getType().getName());
-    }
-
-    @Override
-    protected URL getFileUrl() throws MalformedURLException {
-        return new URL("http://mcnulty.github.io/native-file-tests/files/linux/clang/3.2-11/basic-64bit-dynamic");
     }
 }

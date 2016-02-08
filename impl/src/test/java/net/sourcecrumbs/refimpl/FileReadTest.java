@@ -9,23 +9,17 @@
 package net.sourcecrumbs.refimpl;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import net.sourcecrumbs.refimpl.dwarf.DwarfSectionPostProcessor;
 import net.sourcecrumbs.refimpl.elf.ElfReader;
-import net.sourcecrumbs.refimpl.elf.ElfSectionPostProcessor;
 
 /**
  * A test that validates reading in all files from the native-file-tests repository doesn't result in an exception
@@ -35,57 +29,36 @@ import net.sourcecrumbs.refimpl.elf.ElfSectionPostProcessor;
 @RunWith(Parameterized.class)
 public class FileReadTest extends BaseNativeFileTest {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    private static URL nativeFileTestsBaseUrl;
-    private static URL indexUrl;
-    static {
-        try {
-            nativeFileTestsBaseUrl = new URL("http://mcnulty.github.io/native-file-tests/");
-            indexUrl = new URL(nativeFileTestsBaseUrl, "index.json");
-        }catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private static ElfReader reader;
     static {
         reader = new ElfReader();
     }
 
-    private final URL fileUrl;
+    private final Path nativeFilePath;
 
     @Parameters
-    public static Collection<Object[]> getUrls() throws IOException {
-        try (InputStream indexStream = indexUrl.openStream()) {
-            NativeFileTestsIndex index = objectMapper.readValue(indexStream, NativeFileTestsIndex.class);
-            List<Object[]> urls = new ArrayList<>();
-            for (String file : index.getFiles()) {
-                urls.add(new URL[]{ new URL(nativeFileTestsBaseUrl, file) });
-            }
-            return urls;
-        }
+    public static Collection<Object[]> getPaths() throws IOException {
+        initMetadata();
+
+        return Stream.concat(getObjectPaths().stream(), getExecutablePaths().stream())
+                     .map(p -> new Object[]{ p })
+                     .collect(Collectors.toList());
     }
 
     /**
      * Constructor.
      *
-     * @param fileUrl the file
+     * @param nativeFilePath
      */
-    public FileReadTest(URL fileUrl) {
-        this.fileUrl = fileUrl;
+    public FileReadTest(Path nativeFilePath) {
+        this.nativeFilePath = nativeFilePath;
     }
 
     @Test
     public void readFile() throws Exception {
 
         // Validate that this call does not cause any exceptions
-        System.out.println(fileUrl);
-        reader.open(filePath);
-    }
-
-    @Override
-    protected URL getFileUrl() throws MalformedURLException {
-        return fileUrl;
+        System.out.println(nativeFilePath.toAbsolutePath().toString());
+        reader.open(nativeFilePath);
     }
 }
