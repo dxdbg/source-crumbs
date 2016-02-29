@@ -149,11 +149,26 @@ public class CompilationUnit implements SectionOffset, TranslationUnit {
         if (path == null) {
             synchronized (this) {
                 if (path == null) {
+                    String name = null;
+                    String compDir = null;
                     for (AttributeValue value : rootDIE.getAttributeValues()) {
                         if (value.getName() == AttributeName.DW_AT_name) {
-                            path = Paths.get(value.getDataAsString(stringTable));
-                            break;
+                            name = value.getDataAsString(stringTable);
+                        }else if (value.getName() == AttributeName.DW_AT_comp_dir) {
+                            compDir = value.getDataAsString(stringTable);
                         }
+                    }
+                    if (name != null) {
+                        if (compDir != null)
+                        {
+                            path = Paths.get(compDir, name);
+                        }
+                        else
+                        {
+                            path = Paths.get(name);
+                        }
+                    }else{
+                        path = null;
                     }
                 }
             }
