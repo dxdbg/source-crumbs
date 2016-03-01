@@ -10,21 +10,13 @@
 package net.sourcecrumbs.refimpl;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.BeforeClass;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static org.junit.Assert.assertNotNull;
+import net.sourcecrumbs.file.tests.NativeFileTestsInfo;
 
 /**
  * A base test that can be used to retrieve a file from a URL that is used for the test
@@ -33,55 +25,32 @@ import static org.junit.Assert.assertNotNull;
  */
 public abstract class BaseNativeFileTest {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Path basePath = Paths.get(System.getProperty("native.file.tests.basePath"));
-    private static final Map<String, Path> objectPaths = new HashMap<>();
-    private static final Map<String, Path> executablePaths = new HashMap<>();
+    private static NativeFileTestsInfo info = null;
 
     @BeforeClass
     public static void initMetadata() throws IOException
     {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(basePath, "*.json.*")) {
-            for (Path jsonFile : stream)
-            {
-                String baseName = jsonFile.getFileName().toString().split("\\.")[0];
-
-                try (InputStream jsonFileStream = Files.newInputStream(jsonFile)) {
-                    NativeFileMetadata metadata = objectMapper.readValue(jsonFileStream, NativeFileMetadata.class);
-                    String objectFileName = baseName + ".o." +
-                            metadata.getObjectSha1();
-                    objectPaths.put(objectFileName, Paths.get(basePath.toAbsolutePath().toString(),
-                            objectFileName));
-                    String executableFileName = baseName + "." +
-                            metadata.getExecutableSha1();
-                    executablePaths.put(executableFileName, Paths.get(basePath.toAbsolutePath().toString(),
-                            executableFileName));
-                }
-            }
-        }
+        info = new NativeFileTestsInfo(basePath);
     }
 
-    protected static Path getObjectPath(String objectFileName)
+    protected static Path getFirstObjectPath(String objectFileName)
     {
-        Path objectFilePath = objectPaths.get(objectFileName);
-        assertNotNull(objectFilePath);
-        return objectFilePath;
+        return info.getFirstObjectPath(objectFileName);
     }
 
-    protected static Path getExecutablePath(String executableFileName)
+    protected static Path getFirstExecutablePath(String executableFileName)
     {
-        Path executableFilePath = executablePaths.get(executableFileName);
-        assertNotNull(executableFilePath);
-        return executableFilePath;
+        return info.getFirstExecutablePath(executableFileName);
     }
 
     protected static List<Path> getObjectPaths()
     {
-        return objectPaths.values().stream().collect(Collectors.toList());
+        return info.getObjectPaths();
     }
 
     protected static List<Path> getExecutablePaths()
     {
-        return executablePaths.values().stream().collect(Collectors.toList());
+        return info.getExecutablePaths();
     }
 }

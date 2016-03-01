@@ -7,7 +7,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package net.sourcecrumbs.refimpl;
+package net.sourcecrumbs.file.tests;
 
 import java.util.Map;
 

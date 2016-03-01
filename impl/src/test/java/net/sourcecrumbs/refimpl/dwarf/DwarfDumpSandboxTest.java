@@ -27,6 +27,6 @@ public class DwarfDumpSandboxTest extends BaseNativeFileTest
     @Test
     public void dumpUrl() throws Exception
     {
-        DwarfDump.dwarfDump(getExecutablePath("basic.310b3f661611270328fde43a330a321c7d02173c"), true);
+        DwarfDump.dwarfDump(getFirstExecutablePath("basic"), true);
     }
 }

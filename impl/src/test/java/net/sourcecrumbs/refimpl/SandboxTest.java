@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
 @Ignore
 public class SandboxTest extends BaseNativeFileTest {
 
-    private final Path nativeFilePath = getExecutablePath("basic.310b3f661611270328fde43a330a321c7d02173c");
+    private final Path nativeFilePath = getFirstExecutablePath("basic");
 
     @Test
     public void loadExec() throws Exception {
