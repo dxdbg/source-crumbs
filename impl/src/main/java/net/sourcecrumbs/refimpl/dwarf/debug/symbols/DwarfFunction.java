@@ -11,6 +11,7 @@ package net.sourcecrumbs.refimpl.dwarf.debug.symbols;
 
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +20,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import net.sourcecrumbs.api.Range;
 import net.sourcecrumbs.api.debug.symbols.DebugType;
 import net.sourcecrumbs.api.debug.symbols.Function;

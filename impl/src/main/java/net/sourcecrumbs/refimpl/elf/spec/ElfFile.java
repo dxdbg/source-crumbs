@@ -9,6 +9,7 @@
 
 package net.sourcecrumbs.refimpl.elf.spec;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,12 +29,12 @@ import net.sourcecrumbs.api.symbols.Symbol;
 import net.sourcecrumbs.api.symbols.SymbolContainer;
 import net.sourcecrumbs.api.transunit.TranslationUnit;
 import net.sourcecrumbs.api.transunit.TranslationUnitContainer;
+import net.sourcecrumbs.refimpl.dwarf.DwarfTranslationUnitContainer;
 import net.sourcecrumbs.refimpl.dwarf.debug.symbols.DwarfDebugSymbolContainer;
 import net.sourcecrumbs.refimpl.dwarf.DwarfMachineCodeMapping;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugInfo;
 import net.sourcecrumbs.refimpl.dwarf.sections.DebugLine;
 import net.sourcecrumbs.refimpl.elf.spec.preon.AbsoluteOffset;
-import net.sourcecrumbs.refimpl.elf.spec.sections.SectionContent;
 import net.sourcecrumbs.refimpl.elf.spec.sections.StringTable;
 import net.sourcecrumbs.refimpl.elf.spec.sections.SymbolTable;
 import net.sourcecrumbs.refimpl.elf.spec.sym.ElfSymbol;
@@ -63,6 +64,8 @@ public class ElfFile implements MachineCodeSource, DebugSymbolContainer, Transla
     private DwarfMachineCodeMapping machineCodeMapping = null;
 
     private DwarfDebugSymbolContainer debugSymbolContainer = null;
+
+    private DwarfTranslationUnitContainer translationUnitContainer = null;
 
     private ElfSymbolContainer elfSymbolContainer = null;
 
@@ -149,6 +152,20 @@ public class ElfFile implements MachineCodeSource, DebugSymbolContainer, Transla
         }
     }
 
+    private void initTranslationUnitContainer()
+    {
+        if (translationUnitContainer == null) {
+            synchronized (this) {
+                if (translationUnitContainer == null) {
+                    ElfSection debugInfoSection = getSection(DebugInfo.SECTION_NAME);
+                    if (debugInfoSection != null && debugInfoSection.getSectionContent() instanceof DebugInfo) {
+                        translationUnitContainer = new DwarfTranslationUnitContainer((DebugInfo) debugInfoSection.getSectionContent());
+                    }
+                }
+            }
+        }
+    }
+
     public ElfHeader getHeader() {
         return header;
     }
@@ -188,60 +205,88 @@ public class ElfFile implements MachineCodeSource, DebugSymbolContainer, Transla
     public Iterable<Variable> getGlobalVariables()
     {
         initDebugSymbolContainer();
-        return debugSymbolContainer.getGlobalVariables();
+        if (debugSymbolContainer != null) {
+            return debugSymbolContainer.getGlobalVariables();
+        }
+        return Collections.<Variable>emptyList();
     }
 
     @Override
     public Variable getGlobalVariable(String name)
     {
         initDebugSymbolContainer();
-        return debugSymbolContainer.getGlobalVariable(name);
+        if (debugSymbolContainer != null) {
+            return debugSymbolContainer.getGlobalVariable(name);
+        }
+        return null;
     }
 
     @Override
     public Iterable<Function> getFunctions()
     {
         initDebugSymbolContainer();
-        return debugSymbolContainer.getFunctions();
+        if (debugSymbolContainer != null) {
+            return debugSymbolContainer.getFunctions();
+        }
+        return Collections.<Function>emptyList();
     }
 
     @Override
     public Function getFunction(String name)
     {
         initDebugSymbolContainer();
-        return debugSymbolContainer.getFunction(name);
+        if (debugSymbolContainer != null) {
+            return debugSymbolContainer.getFunction(name);
+        }
+        return null;
     }
 
     @Override
     public Function getContainingFunction(long pc)
     {
         initDebugSymbolContainer();
-        return debugSymbolContainer.getContainingFunction(pc);
+        if (debugSymbolContainer != null) {
+            return debugSymbolContainer.getContainingFunction(pc);
+        }
+        return null;
     }
 
     @Override
     public Iterable<Symbol> getSymbols()
     {
         initSymbolContainer();
-        return elfSymbolContainer.getSymbols();
+        if (elfSymbolContainer != null) {
+            return elfSymbolContainer.getSymbols();
+        }
+        return null;
     }
 
     @Override
     public List<Symbol> getSymbolsByName(String name)
     {
         initSymbolContainer();
-        return elfSymbolContainer.getSymbolsByName(name);
+        if (elfSymbolContainer != null) {
+            return elfSymbolContainer.getSymbolsByName(name);
+        }
+        return null;
     }
 
     @Override
     public Iterable<TranslationUnit> getTranslationUnits()
     {
+        initTranslationUnitContainer();
+        if (translationUnitContainer != null) {
+            return translationUnitContainer.getTranslationUnits();
+        }
         return null;
     }
 
     @Override
     public TranslationUnit getContainingTranslationUnit(long pc)
     {
+        if (translationUnitContainer != null) {
+            return translationUnitContainer.getContainingTranslationUnit(pc);
+        }
         return null;
     }
 }
