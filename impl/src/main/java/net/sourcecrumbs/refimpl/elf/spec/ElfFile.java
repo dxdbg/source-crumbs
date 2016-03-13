@@ -284,6 +284,7 @@ public class ElfFile implements MachineCodeSource, DebugSymbolContainer, Transla
     @Override
     public TranslationUnit getContainingTranslationUnit(long pc)
     {
+        initTranslationUnitContainer();
         if (translationUnitContainer != null) {
             return translationUnitContainer.getContainingTranslationUnit(pc);
         }
