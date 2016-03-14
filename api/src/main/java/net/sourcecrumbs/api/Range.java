@@ -40,4 +40,10 @@ public class Range<T extends Number> {
     public int getIntLength() {
         return end.intValue() - start.intValue();
     }
+
+    @Override
+    public String toString()
+    {
+        return start + ":" + end;
+    }
 }
