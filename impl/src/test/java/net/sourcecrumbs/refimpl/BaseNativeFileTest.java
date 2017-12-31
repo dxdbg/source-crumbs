@@ -16,12 +16,10 @@ import java.util.List;
 
 import org.junit.BeforeClass;
 
-import net.sourcecrumbs.file.tests.NativeFileTestsInfo;
+import net.libudi.nativefiletests.NativeFileTestsInfo;
 
 /**
  * A base test that can be used to retrieve a file from a URL that is used for the test
- *
- * @author mcnulty
  */
 public abstract class BaseNativeFileTest {
 

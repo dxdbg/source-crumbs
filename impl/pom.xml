@@ -68,6 +68,12 @@
             <version>1.0.13</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.libudi</groupId>
+            <artifactId>native-file-tests</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
